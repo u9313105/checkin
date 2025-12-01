@@ -13,26 +13,29 @@
 
     <style>
         :root {
-            /* 嘉大紅金配色 - 專業且喜氣 */
-            --primary: #b91c1c;       /* 深紅 */
-            --primary-dark: #7f1d1d;
-            --accent: #d97706;        /* 金色 */
-            --bg-color: #f3f4f6;      /* 專業灰底 */
-            --card-bg: #ffffff;
-            --text-main: #111827;
-            --text-sub: #4b5563;
-            --border: #e5e7eb;
-            --radius: 16px;
-            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            /* --- 嘉大紅金配色系統 --- */
+            --primary: #b91c1c;       /* 嘉大紅 */
+            --primary-dark: #7f1d1d;  /* 深紅 (按鈕漸層) */
+            --accent: #d97706;        /* 質感金 */
+            
+            /* 背景與介面色調 */
+            --bg-color: #f3f4f6;
+            --bg-gradient: linear-gradient(135deg, #fff1f2 0%, #e5e7eb 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            
+            --text-main: #111827;     /* 深灰黑 */
+            --text-sub: #4b5563;      /* 次要灰 */
+            --border-color: #e5e7eb;
+            
+            --shadow: 0 20px 40px -5px rgba(185, 28, 28, 0.15);
+            --radius: 24px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: var(--bg-color);
-            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-            background-size: 20px 20px;
+            background: var(--bg-gradient);
             margin: 0;
             min-height: 100vh;
             display: flex;
@@ -41,9 +44,31 @@
             justify-content: center;
             color: var(--text-main);
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* 主卡片設計 */
+        /* 背景裝飾 (喜氣圓暈) */
+        .bg-decoration {
+            position: absolute;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(185, 28, 28, 0.08) 0%, transparent 70%);
+            top: -10%; right: -10%;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .bg-decoration-2 {
+            position: absolute;
+            width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+            bottom: -10%; left: -10%;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 主卡片容器 */
         .main-card {
             background: var(--card-bg);
             width: 100%;
@@ -54,168 +79,196 @@
             text-align: center;
             position: relative;
             z-index: 1;
-            border-top: 6px solid var(--primary);
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-top: 6px solid var(--primary); /* 頂部紅條 */
+            animation: cardEntry 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 450px; /* 確保高度一致 */
+            display: flex;
+            flex-direction: column;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes cardEntry {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Logo 與標題 */
+        /* Logo */
         .logo { 
             width: 100px; 
             height: auto; 
-            margin-bottom: 20px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
-
-        h1 {
-            margin: 0 0 8px 0;
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--text-main);
-            letter-spacing: 1px;
+            margin: 0 auto 20px; 
+            display: block;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
         
-        h1 span { color: var(--primary); }
+        /* 標題區 */
+        h1 {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0 0 8px 0;
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+        }
+        h1 span { color: var(--text-main); font-size: 0.9em; }
 
         .subtitle {
             font-size: 14px;
             color: var(--text-sub);
             margin-bottom: 30px;
-            font-weight: 400;
-            line-height: 1.5;
+            font-weight: 500;
         }
 
-        /* 資訊顯示區 (確認員編) */
-        .info-box {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 25px;
+        /* 載入中畫面 */
+        #loading-view {
+            flex: 1;
             display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 15px;
-            text-align: left;
+            min-height: 200px;
         }
-        .info-icon { 
-            width: 45px; height: 45px;
-            background: #e0f2fe; color: #0284c7;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-        }
-        .info-content div:first-child { font-size: 12px; color: var(--text-sub); }
-        .info-content div:last-child { font-size: 18px; font-weight: 700; color: var(--text-main); font-family: 'Montserrat', sans-serif; }
 
-        /* 輸入區塊 */
-        .input-group { margin-bottom: 20px; text-align: left; }
+        /* 輸入表單區 */
+        #form-area {
+            display: none; /* 初始隱藏 */
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .input-group { margin-bottom: 25px; }
         
         .input-label {
             display: block;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 10px;
-            text-align: center;
+            margin-bottom: 12px;
         }
 
         .code-input {
             width: 100%;
-            padding: 15px;
-            font-size: 26px;
+            padding: 16px;
+            font-size: 28px;
             font-weight: 700;
             text-align: center;
-            letter-spacing: 8px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
+            letter-spacing: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
             outline: none;
             background: #fff;
-            color: var(--text-main);
             transition: all 0.3s ease;
             font-family: 'Montserrat', monospace;
+            color: var(--primary);
         }
-        
+
         .code-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.1);
+            transform: translateY(-2px);
         }
-        .code-input::placeholder { color: #e5e7eb; letter-spacing: 4px; }
+        .code-input::placeholder { color: #e5e7eb; letter-spacing: 4px; font-size: 24px; }
 
         /* 按鈕 */
         .btn {
             width: 100%;
             padding: 16px;
             border: none;
-            border-radius: 12px;
-            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.25);
+            transition: all 0.2s;
+            box-shadow: 0 8px 20px -6px rgba(185, 28, 28, 0.4);
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { background: #9ca3af; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn:active { transform: scale(0.98); box-shadow: none; }
+        .btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* 狀態訊息卡 */
-        #status-area { margin-top: 25px; display: none; animation: fadeIn 0.3s; }
-        
-        .status-card {
-            padding: 15px; border-radius: 12px; font-size: 14px; line-height: 1.5;
-            display: flex; align-items: flex-start; gap: 12px; text-align: left;
+        /* 狀態訊息卡 (成功/失敗/提示) */
+        #status-area { 
+            display: none; 
+            flex: 1;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 0.4s ease-out;
         }
+
+        .status-card {
+            padding: 25px 20px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            text-align: center;
+        }
+        
         .st-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
         .st-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
         .st-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
         
-        .st-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
-        .st-title { font-weight: 700; margin-bottom: 2px; display: block; font-size: 15px; }
+        .st-icon { font-size: 48px; margin-bottom: 5px; }
+        .st-title { font-weight: 900; font-size: 20px; display: block; margin-bottom: 5px; }
 
-        /* 頁尾 */
+        /* 頁尾版權 */
         footer {
             margin-top: 40px;
             font-size: 11px;
-            color: #6b7280;
+            color: #9ca3af;
             text-align: center;
             line-height: 1.6;
+            z-index: 1;
+            font-weight: 500;
         }
 
-        .hidden { display: none !important; }
-        .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s infinite linear; }
+        /* 載入動畫 Spinner */
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 15px;
+        }
+        .btn .spinner { width: 20px; height: 20px; border-width: 3px; border-top-color: #fff; margin: 0; }
+
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .hidden { display: none !important; }
+        .mt-20 { margin-top: 20px; }
     </style>
 </head>
 <body>
 
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration-2"></div>
+
     <div class="main-card">
         <img src="assets/images/logo.png" alt="NCYU Logo" class="logo" onerror="this.style.display='none'">
-        
         <h1><span>2026</span> 新春團拜報到</h1>
         <p class="subtitle">國立嘉義大學人事室 敬邀</p>
 
-        <div id="info-area" class="hidden">
-            <div class="info-box">
-                <div class="info-icon">🆔</div>
-                <div class="info-content">
-                    <div>您的員工編號</div>
-                    <div id="disp-eid">Checking...</div>
-                </div>
-            </div>
+        <div id="loading-view">
+            <div class="spinner"></div>
+            <div style="color:#6b7280; font-size:14px; font-weight:500;">正在確認您的身分...</div>
         </div>
 
         <div id="form-area">
             <div class="input-group">
-                <label class="input-label">請輸入現場 4 位數報到碼</label>
+                <label for="code-input" class="input-label">請輸入 4 位數現場報到碼</label>
                 <input type="tel" id="code-input" maxlength="4" placeholder="●●●●" inputmode="numeric" autocomplete="one-time-code" class="code-input">
             </div>
             
+            <div style="text-align: center; font-size: 13px; color: #9ca3af; margin-bottom: 20px;">
+                員編：<span id="disp-eid" style="font-family: monospace; font-weight: bold; color: #4b5563;">---</span>
+            </div>
+
             <button id="btn-submit" class="btn" onclick="submitCheckIn()">
                 確認報到
             </button>
@@ -239,37 +292,40 @@
 
         // 初始化
         document.addEventListener("DOMContentLoaded", () => {
-            // 1. 解析 URL 參數
+            // 1. 解析網址參數
             if (!parseUrlParams()) {
-                showStatus('error', '連結無效', 'QR Code 資料不完整，請重新掃描。');
-                document.getElementById('form-area').classList.add('hidden');
+                document.getElementById('loading-view').classList.add('hidden');
+                showStatus('error', '連結無效', 'QR Code 資料不完整或格式錯誤，<br>請嘗試重新掃描。');
                 return;
             }
 
-            // 2. 顯示員編確認
+            // 顯示員編 (輔助確認)
             document.getElementById('disp-eid').textContent = eid;
-            document.getElementById('info-area').classList.remove('hidden');
 
-            // 3. 優化輸入體驗
+            // 2. 自動發送檢查 (不帶報到碼)
+            // 目的：如果是已報到者，直接顯示成功，不用輸入密碼
+            checkStatus();
+
+            // 3. 綁定輸入框互動
             const input = document.getElementById('code-input');
-            input.focus();
-            
-            // 限制只能輸入數字 & 自動送出
             input.addEventListener('input', (e) => {
+                // 濾除非數字
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                
+                // 滿 4 碼自動送出
                 if (e.target.value.length === 4) {
                     input.blur(); // 收起鍵盤
                     submitCheckIn();
                 }
             });
-
+            
             // Enter 鍵支援
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') submitCheckIn();
             });
         });
 
-        // 解析參數 (支援 Base64 加密參數與明碼)
+        // 解析參數
         function parseUrlParams() {
             const params = new URLSearchParams(window.location.search);
             const rawData = params.get('data');
@@ -292,25 +348,63 @@
             return (eid && uuid);
         }
 
-        // 提交報到
+        // 初始狀態檢查
+        function checkStatus() {
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ employee_id: eid, uuid: uuid }) // 僅傳送身分
+            })
+            .then(res => res.json())
+            .then(data => {
+                // 隱藏載入動畫
+                document.getElementById('loading-view').classList.add('hidden');
+
+                if (data.success) {
+                    // 情況 A: 已報到 -> 直接顯示成功畫面
+                    if (data.is_repeated) {
+                        showStatus('info', '您已完成報到', `<b>${data.name}</b> 您好<br>系統顯示您先前已完成報到手續。<br>祝您中大獎！`);
+                    } else {
+                        // 極少見情況：API 允許無碼報到 (通常不會發生，但以防萬一)
+                        showStatus('success', '報到成功', `🎉 歡迎 <b>${data.name}</b> 蒞臨！`);
+                    }
+                } else {
+                    // 情況 B: 未報到 (或需要驗證碼) -> 顯示輸入框
+                    if (data.require_code) {
+                        document.getElementById('form-area').style.display = 'block';
+                        // 延遲聚焦，提升手機體驗
+                        setTimeout(() => document.getElementById('code-input').focus(), 500);
+                    } else {
+                        // 其他錯誤 (如查無此人)
+                        showStatus('error', '驗證失敗', data.message);
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('loading-view').classList.add('hidden');
+                showStatus('error', '連線錯誤', '無法連接伺服器，請檢查您的網路訊號。');
+            });
+        }
+
+        // 提交報到 (帶入報到碼)
         function submitCheckIn() {
             const input = document.getElementById('code-input');
             const btn = document.getElementById('btn-submit');
             const code = input.value.trim();
 
             if (code.length < 4) {
-                if(navigator.vibrate) navigator.vibrate(200); // 震動提示
+                if(navigator.vibrate) navigator.vibrate(200);
                 input.focus();
                 return;
             }
 
-            // 鎖定介面
+            // UI 鎖定
             btn.disabled = true;
             btn.innerHTML = '<div class="spinner"></div> 驗證中...';
             input.disabled = true;
             hideStatus();
 
-            // 發送請求
             fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -323,42 +417,36 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    // 報到成功
+                    // 成功：隱藏表單，顯示結果
                     document.getElementById('form-area').classList.add('hidden');
-                    
-                    if (data.is_repeated) {
-                        showStatus('info', '您已完成報到', `${data.name} 您好，系統顯示您先前已完成報到手續。`);
-                    } else {
-                        showStatus('success', `🎉 ${data.name} 報到成功！`, data.message || "祝您幸運中大獎！");
-                    }
+                    showStatus('success', '報到成功！', `🎉 歡迎 <b>${data.name}</b> 蒞臨<br>${data.message || "祝您幸運中大獎！"}`);
                 } else {
-                    // 失敗 (如驗證碼錯誤)
+                    // 失敗：顯示錯誤，重置表單
                     showStatus('error', '報到失敗', data.message);
                     resetForm();
                 }
             })
             .catch(err => {
                 console.error(err);
-                showStatus('error', '連線錯誤', '無法連接伺服器，請檢查網路訊號。');
+                showStatus('error', '連線錯誤', '無法連接伺服器，請稍後再試。');
                 resetForm();
             });
         }
 
-        // 重置表單 (失敗時)
         function resetForm() {
             const input = document.getElementById('code-input');
             const btn = document.getElementById('btn-submit');
             
+            // 延遲重置，讓使用者看清楚錯誤訊息
             setTimeout(() => {
                 btn.disabled = false;
-                btn.textContent = "確認報到";
+                btn.innerText = "確認報到";
                 input.disabled = false;
                 input.value = '';
                 input.focus();
-            }, 1500); // 延遲讓使用者看清楚錯誤訊息
+            }, 2000);
         }
 
-        // 顯示狀態卡
         function showStatus(type, title, desc) {
             const box = document.getElementById('status-area');
             let icon = '✅';
@@ -374,7 +462,7 @@
                     </div>
                 </div>
             `;
-            box.style.display = 'block';
+            box.style.display = 'flex';
         }
 
         function hideStatus() {
