@@ -4,170 +4,344 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>國立嘉義大學 - 2026 新春團拜報到</title>
+    <meta name="description" content="國立嘉義大學人事室新春團拜活動專用報到系統">
     <meta name="theme-color" content="#b91c1c">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #b91c1c;
+            /* 品牌色系 */
+            --primary: #b91c1c;       /* 嘉大紅 */
+            --primary-light: #ef4444;
             --primary-dark: #7f1d1d;
-            --bg-color: #f3f4f6;
+            --bg-gradient: linear-gradient(135deg, #fef2f2 0%, #e5e7eb 100%);
+            
+            /* 文字色系 */
             --text-main: #1f2937;
             --text-sub: #6b7280;
+            --text-light: #9ca3af;
+            
+            /* 介面尺寸 */
+            --card-radius: 24px;
+            --btn-radius: 12px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background: linear-gradient(135deg, #fff1f2 0%, #e5e7eb 100%);
-            margin: 0; min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: var(--bg-gradient);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
+            color: var(--text-main);
+            overflow-x: hidden;
         }
 
+        /* 背景裝飾圓暈 */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .c1 { width: 300px; height: 300px; background: rgba(185, 28, 28, 0.05); top: -50px; right: -50px; }
+        .c2 { width: 200px; height: 200px; background: rgba(234, 179, 8, 0.05); bottom: -20px; left: -20px; }
+
+        /* 主卡片容器 */
         .main-card {
-            background: rgba(255, 255, 255, 0.98);
-            width: 100%; max-width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            max-width: 400px;
             padding: 30px 25px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px -5px rgba(185, 28, 28, 0.15);
+            border-radius: var(--card-radius);
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
             text-align: center;
             border-top: 6px solid var(--primary);
-            position: relative; z-index: 10;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
         }
 
-        .logo { width: 90px; margin-bottom: 10px; }
-        h1 { margin: 0; font-size: 24px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
-        .subtitle { font-size: 13px; color: var(--text-sub); margin-bottom: 25px; font-weight: 500; }
+        /* Logo 與標題 */
+        .logo { 
+            width: 80px; 
+            height: auto; 
+            margin-bottom: 15px; 
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        h1 { 
+            margin: 0 0 5px 0; 
+            font-size: 24px; 
+            font-weight: 900; 
+            color: var(--primary); 
+            letter-spacing: 1px; 
+        }
+        h1 span { font-size: 0.9em; color: #4b5563; }
+        .subtitle { 
+            font-size: 13px; 
+            color: var(--text-sub); 
+            margin-bottom: 25px; 
+            font-weight: 500; 
+            letter-spacing: 0.5px;
+        }
 
         /* 個人資訊卡片 (重點設計) */
         .profile-card {
-            background: #fff;
+            background: #ffffff;
             border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 20px;
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px 20px;
             margin-bottom: 25px;
             text-align: left;
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            animation: slideDown 0.5s ease-out;
         }
-        .profile-card::before {
-            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary);
-        }
-        .profile-row { margin-bottom: 8px; }
-        .profile-row:last-child { margin-bottom: 0; }
-        .profile-label { font-size: 12px; color: #9ca3af; display: block; margin-bottom: 2px; }
-        .profile-value { font-size: 18px; font-weight: 700; color: var(--text-main); }
-        .profile-value.big { font-size: 22px; color: var(--primary); }
 
-        /* 輸入框區 */
-        .input-area { margin-top: 20px; animation: slideUp 0.4s ease-out; }
-        .code-input {
-            width: 100%; padding: 15px; font-size: 28px; font-weight: 700; text-align: center;
-            letter-spacing: 10px; border: 2px solid #e5e7eb; border-radius: 12px;
-            background: #f9fafb; outline: none; color: var(--text-main);
-            transition: all 0.3s;
+        .profile-row { display: flex; flex-direction: column; margin-bottom: 10px; }
+        .profile-row:last-child { margin-bottom: 0; }
+        
+        .profile-label { 
+            font-size: 12px; 
+            color: var(--text-light); 
+            margin-bottom: 2px; 
+            font-weight: 500;
         }
-        .code-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(185,28,28,0.1); }
+        .profile-value { 
+            font-size: 16px; 
+            font-weight: 700; 
+            color: var(--text-main); 
+            font-family: 'Roboto Mono', 'Noto Sans TC', monospace;
+        }
+        .profile-value.highlight { 
+            color: var(--primary); 
+            font-size: 20px; 
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        /* 輸入區塊 */
+        .input-section {
+            margin-top: 20px;
+            animation: slideUp 0.4s ease-out;
+        }
+        .input-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .code-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--btn-radius);
+            background: #f9fafb;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .code-input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.1);
+            transform: translateY(-1px);
+        }
+        .code-input::placeholder {
+            color: #d1d5db;
+            letter-spacing: 4px;
+            font-size: 20px;
+        }
 
         /* 按鈕 */
         .btn {
-            width: 100%; padding: 15px; margin-top: 20px; border: none; border-radius: 12px;
+            width: 100%;
+            padding: 16px;
+            margin-top: 20px;
+            border: none;
+            border-radius: var(--btn-radius);
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white; font-size: 16px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(185,28,28,0.3); transition: transform 0.1s;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(185, 28, 28, 0.3);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { background: #d1d5db; box-shadow: none; cursor: not-allowed; }
+        .btn:active { transform: scale(0.98); box-shadow: none; }
+        .btn:disabled { 
+            background: #d1d5db; 
+            color: #9ca3af;
+            cursor: not-allowed; 
+            box-shadow: none; 
+            transform: none;
+        }
 
-        /* 狀態切換 */
-        .hidden { display: none; }
-        .spinner { width: 30px; height: 30px; border: 3px solid #e5e7eb; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
+        /* 狀態訊息 */
+        .status-msg {
+            margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 10px;
+            border-radius: 8px;
+            display: none; /* JS控制顯示 */
+        }
+        .status-error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+        .status-info { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+        /* 成功畫面 */
+        .success-view {
+            padding: 20px 0;
+            animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .checkmark-circle {
+            width: 80px; height: 80px;
+            background: #d1fae5;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .checkmark { font-size: 40px; color: #059669; }
+        .success-title { font-size: 22px; font-weight: 900; color: #059669; margin-bottom: 5px; }
+        .success-desc { font-size: 14px; color: var(--text-sub); }
+
+        /* 工具類 */
+        .hidden { display: none !important; }
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        
+        /* Spinner */
+        .spinner {
+            width: 36px; height: 36px;
+            border: 4px solid #e5e7eb;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 30px auto;
+        }
+
+        /* 動畫定義 */
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
-        /* 成功動畫 */
-        .success-checkmark { font-size: 60px; margin-bottom: 10px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        footer { margin-top: 30px; font-size: 12px; color: #9ca3af; text-align: center; }
+        footer { 
+            margin-top: 30px; 
+            font-size: 11px; 
+            color: #9ca3af; 
+            text-align: center; 
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
 
+    <div class="bg-circle c1"></div>
+    <div class="bg-circle c2"></div>
+
     <div class="main-card">
         <img src="assets/images/logo.png" alt="NCYU" class="logo" onerror="this.style.display='none'">
-        <h1>2026 新春團拜</h1>
+        <h1><span>2026</span> 新春團拜</h1>
         <p class="subtitle">國立嘉義大學 人事室 敬邀</p>
 
-        <div id="loading-view">
+        <div id="view-loading">
             <div class="spinner"></div>
-            <div style="color:#6b7280; font-size:14px;">身分確認中...</div>
+            <div style="color:var(--text-sub); font-size:14px; font-weight:500;">正在確認身分...</div>
         </div>
 
-        <div id="content-view" class="hidden">
+        <div id="view-content" class="hidden">
             <div class="profile-card">
-                <div class="profile-row">
-                    <span class="profile-label">教職員工編號</span>
-                    <span class="profile-value" id="disp-eid">---</span>
-                </div>
-                <div style="display:flex; gap:15px; margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
                     <div style="flex:1;">
-                        <span class="profile-label">姓名</span>
-                        <span class="profile-value big" id="disp-name">---</span>
+                        <span class="profile-label">教職員工編號</span>
+                        <span class="profile-value" id="disp-eid">---</span>
                     </div>
-                    <div style="flex:1;">
+                    <div style="flex:1; text-align:right;">
                         <span class="profile-label">單位</span>
                         <span class="profile-value" id="disp-dept">---</span>
                     </div>
                 </div>
+                <div class="profile-row">
+                    <span class="profile-label">姓名</span>
+                    <span class="profile-value highlight" id="disp-name">---</span>
+                </div>
             </div>
 
-            <div id="status-msg" style="margin-bottom:15px; font-weight:bold; line-height:1.5;"></div>
+            <div id="status-box" class="status-msg"></div>
 
-            <div id="input-section" class="input-area hidden">
-                <label style="display:block; margin-bottom:10px; font-weight:700; color:#4b5563;">請輸入現場報到碼</label>
-                <input type="tel" id="code-input" maxlength="4" placeholder="●●●●" class="code-input" autocomplete="one-time-code">
+            <div id="section-input" class="input-section hidden">
+                <label class="input-label" for="code-input">請輸入現場 4 位數報到碼</label>
+                <input type="tel" id="code-input" maxlength="4" placeholder="●●●●" class="code-input" inputmode="numeric" autocomplete="one-time-code">
                 <button id="btn-submit" class="btn">確認報到</button>
             </div>
 
-            <div id="success-section" class="hidden" style="padding: 20px 0;">
-                <div class="success-checkmark">✅</div>
-                <div style="font-size:18px; font-weight:bold; color:#059669;">報到完成</div>
-                <div style="color:#6b7280; font-size:14px; margin-top:5px;">祝您幸運中大獎！</div>
+            <div id="section-success" class="success-view hidden">
+                <div class="checkmark-circle"><div class="checkmark">✓</div></div>
+                <div class="success-title">報到成功</div>
+                <div class="success-desc">祝您幸運中大獎！</div>
+                <button onclick="location.reload()" class="btn" style="margin-top:20px; background:#e5e7eb; color:#4b5563; box-shadow:none;">重新整理</button>
             </div>
         </div>
 
-        <div id="error-view" class="hidden">
-            <div style="font-size:50px;">❌</div>
-            <h3 style="margin:10px 0;">連結無效</h3>
-            <p style="color:#6b7280;">無法識別身分，請重新掃描 QR Code</p>
+        <div id="view-error" class="hidden" style="padding:20px 0;">
+            <div style="font-size:48px; margin-bottom:10px;">❌</div>
+            <h3 style="margin:0 0 10px 0; color:#ef4444;">連結無效</h3>
+            <p style="color:#6b7280; font-size:14px; line-height:1.6;">
+                無法識別您的身分資訊。<br>請確認 QR Code 是否正確，或洽詢工作人員。
+            </p>
         </div>
     </div>
 
-    <footer>© 2026 National Chiayi University</footer>
+    <footer>
+        © 2026 National Chiayi University<br>Personnel Office
+    </footer>
 
     <script>
+        // ================= 配置區 =================
+        // 請確認此 API 路徑與您的伺服器配置一致
         const API_URL = "https://personnel.kncyu.link/api/checkin/index.php";
-        let state = { eid: null, uuid: null, isSubmitting: false };
+        // =========================================
 
-        // DOM 元素
+        let state = {
+            eid: null,
+            uuid: null,
+            isSubmitting: false
+        };
+
+        // DOM 元素快取
         const els = {
-            loading: document.getElementById('loading-view'),
-            content: document.getElementById('content-view'),
-            error: document.getElementById('error-view'),
+            loading: document.getElementById('view-loading'),
+            content: document.getElementById('view-content'),
+            error: document.getElementById('view-error'),
             
             // 顯示欄位
             dispEid: document.getElementById('disp-eid'),
             dispName: document.getElementById('disp-name'),
             dispDept: document.getElementById('disp-dept'),
-            statusMsg: document.getElementById('status-msg'),
+            statusBox: document.getElementById('status-box'),
             
             // 區塊
-            inputSec: document.getElementById('input-section'),
-            successSec: document.getElementById('success-section'),
+            secInput: document.getElementById('section-input'),
+            secSuccess: document.getElementById('section-success'),
             
-            // 輸入
+            // 表單
             input: document.getElementById('code-input'),
             btn: document.getElementById('btn-submit')
         };
@@ -178,24 +352,22 @@
                 showView('error');
                 return;
             }
-            checkStatus(); // 初始檢查
             
-            // 綁定事件
-            els.input.addEventListener('input', (e) => {
-                e.target.value = e.target.value.replace(/[^0-9]/g, ''); // 限數字
-                if(e.target.value.length === 4) {
-                    els.input.blur();
-                    submitCheckIn();
-                }
-            });
-            els.btn.addEventListener('click', submitCheckIn);
+            // 初始檢查 (不帶驗證碼，僅為了取得身分資訊與狀態)
+            checkStatus(); 
+
+            // 綁定互動事件
+            setupEvents();
         });
 
+        // 解析 URL 參數 (支援 Base64 encoded 'data' 或明文參數)
         function parseUrlParams() {
             const params = new URLSearchParams(window.location.search);
             const rawData = params.get('data');
+
             try {
                 if (rawData) {
+                    // Base64 解碼 (支援 UTF-8)
                     const decoded = decodeURIComponent(escape(window.atob(rawData)));
                     const p = new URLSearchParams(decoded);
                     state.eid = p.get('eid');
@@ -204,57 +376,110 @@
                     state.eid = params.get('eid');
                     state.uuid = params.get('uuid');
                 }
-            } catch (e) { return false; }
+            } catch (e) {
+                console.error("Params Parse Error", e);
+                return false;
+            }
             return (state.eid && state.uuid);
         }
 
+        // 核心檢查函式
         async function checkStatus(code = null) {
             try {
-                const payload = { employee_id: state.eid, uuid: state.uuid };
+                const payload = { 
+                    employee_id: state.eid, 
+                    uuid: state.uuid 
+                };
                 if (code) payload.checkin_code = code;
 
                 const res = await fetch(API_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                
+                // 處理非 200 狀態
+                if (!res.ok) throw new Error("伺服器回應錯誤");
+
                 const data = await res.json();
 
-                // 填入使用者資訊 (只要有回傳就填，不管狀態)
+                // 1. 填入使用者資訊 (只要有回傳就顯示)
                 if (data.name) {
                     els.dispName.textContent = data.name;
                     els.dispEid.textContent = data.employee_id || state.eid;
                     els.dispDept.textContent = data.department || '未設定';
                     showView('content');
                 } else {
-                    // 若連名字都查不到，代表無效
-                    if(!code) { showView('error'); return; }
+                    // 若連名字都查不到且是第一次載入，視為無效連結
+                    if (!code) { showView('error'); return; }
                 }
 
+                // 2. 判斷邏輯
                 if (data.success) {
-                    // 成功或已報到
-                    showSuccessMode(data.is_repeated);
+                    // 情況 A: 報到成功 或 已報到 (is_repeated)
+                    handleSuccess(data);
                 } else {
-                    // 需要輸入碼
+                    // 情況 B: 需要輸入驗證碼 或 驗證碼錯誤
                     if (data.require_code) {
-                        showInputMode(data.message);
+                        handleInputRequired(data.message, code !== null);
                     } else {
-                        alert(data.message); // 其他錯誤
-                        resetInput();
+                        // 其他錯誤 (如身分不符)
+                        showErrorMsg(data.message);
                     }
                 }
+
             } catch (err) {
                 console.error(err);
-                alert("連線錯誤，請檢查網路");
-                resetInput();
+                showErrorMsg("連線不穩定，請檢查網路後重試");
+            } finally {
+                // 解除鎖定
+                state.isSubmitting = false;
+                resetButton();
             }
         }
 
+        // 處理成功狀態
+        function handleSuccess(data) {
+            els.secInput.classList.add('hidden');
+            els.secSuccess.classList.remove('hidden');
+            els.statusBox.style.display = 'none';
+
+            // 若是重複報到，修改文字提示
+            if (data.is_repeated) {
+                document.querySelector('.success-title').textContent = "您已完成報到";
+                document.querySelector('.success-title').style.color = "#0369a1"; // 藍色系
+                document.querySelector('.checkmark-circle').style.background = "#e0f2fe";
+                document.querySelector('.checkmark').style.color = "#0284c7";
+                document.querySelector('.success-desc').textContent = "無需重複操作";
+            }
+        }
+
+        // 處理需要輸入狀態
+        function handleInputRequired(msg, isRetry) {
+            els.secInput.classList.remove('hidden');
+            els.secSuccess.classList.add('hidden');
+            
+            // 顯示提示訊息 (只有在錯誤時才顯示紅字，初始顯示灰字)
+            if (isRetry) {
+                showErrorMsg(msg || "驗證碼錯誤");
+                vibrateError();
+                els.input.value = ''; // 清空錯誤碼
+                els.input.focus();
+            } else {
+                // 第一次進入，安靜顯示
+                els.statusBox.style.display = 'none';
+                setTimeout(() => els.input.focus(), 500); // 自動聚焦
+            }
+        }
+
+        // 提交動作
         function submitCheckIn() {
             if (state.isSubmitting) return;
+
             const code = els.input.value.trim();
             if (code.length < 4) {
-                alert("請輸入完整 4 位數");
+                vibrateError();
+                showErrorMsg("請輸入完整 4 位數");
                 els.input.focus();
                 return;
             }
@@ -263,53 +488,60 @@
             els.btn.textContent = "驗證中...";
             els.btn.disabled = true;
             els.input.disabled = true;
+            els.statusBox.style.display = 'none'; // 隱藏舊訊息
 
-            checkStatus(code).finally(() => {
-                state.isSubmitting = false;
-            });
+            checkStatus(code);
         }
 
-        // --- 介面模式切換 ---
+        // --- 輔助函式 ---
+
+        function setupEvents() {
+            // 輸入框限制數字
+            els.input.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                if (e.target.value.length === 4) {
+                    els.input.blur(); // 收起鍵盤
+                    submitCheckIn();  // 自動送出
+                }
+            });
+
+            // Enter 鍵支援
+            els.input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') submitCheckIn();
+            });
+
+            els.btn.addEventListener('click', submitCheckIn);
+        }
 
         function showView(name) {
             els.loading.classList.add('hidden');
             els.content.classList.add('hidden');
             els.error.classList.add('hidden');
-            if(name === 'content') els.content.classList.remove('hidden');
-            if(name === 'error') els.error.classList.remove('hidden');
+            
+            if (name === 'content') els.content.classList.remove('hidden');
+            if (name === 'error') els.error.classList.remove('hidden');
         }
 
-        function showInputMode(msg) {
-            els.statusMsg.textContent = msg || "請完成報到手續";
-            els.statusMsg.style.color = "#4b5563";
-            els.inputSec.classList.remove('hidden');
-            els.successSec.classList.add('hidden');
-            
-            // 重置按鈕狀態
-            resetInput();
-            setTimeout(() => els.input.focus(), 300);
+        function showErrorMsg(msg) {
+            els.statusBox.textContent = msg;
+            els.statusBox.className = "status-msg status-error";
+            els.statusBox.style.display = "block";
         }
 
-        function showSuccessMode(isRepeated) {
-            els.statusMsg.textContent = "";
-            els.inputSec.classList.add('hidden');
-            els.successSec.classList.remove('hidden');
-            
-            if(isRepeated) {
-                els.successSec.innerHTML = `
-                    <div style="font-size:50px;">ℹ️</div>
-                    <div style="font-size:18px; font-weight:bold; color:#0369a1;">您已完成報到</div>
-                    <div style="color:#6b7280; font-size:14px; margin-top:5px;">無需重複操作</div>
-                `;
+        function resetButton() {
+            if (els.secSuccess.classList.contains('hidden')) {
+                els.btn.textContent = "確認報到";
+                els.btn.disabled = false;
+                els.input.disabled = false;
             }
         }
 
-        function resetInput() {
-            els.btn.textContent = "確認報到";
-            els.btn.disabled = false;
-            els.input.disabled = false;
-            if(!els.successSec.classList.contains('hidden')) return; // 若已成功就不重置聚焦
-            els.input.value = '';
+        function vibrateError() {
+            // 手機震動回饋 (如果支援)
+            if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+            // 搖晃動畫
+            els.input.classList.add('shake');
+            setTimeout(() => els.input.classList.remove('shake'), 400);
         }
     </script>
 </body>
