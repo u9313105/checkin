@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="robots" content="noindex, nofollow">
-    <title>國立嘉義大學 - 2026 新春團拜報到系統</title>
+    
+    <title>國立嘉義大學 - 2026 新春團拜報到</title>
     <meta name="description" content="國立嘉義大學人事室新春團拜活動專用報到系統">
     <meta name="theme-color" content="#b91c1c">
 
@@ -18,7 +19,7 @@
 
     <style>
         :root {
-            /* 品牌色系 */
+            /* 品牌色系設定 */
             --primary: #b91c1c;       /* 嘉大紅 */
             --primary-hover: #991b1b;
             --bg-gradient: linear-gradient(135deg, #fef2f2 0%, #f3f4f6 100%);
@@ -39,7 +40,8 @@
             font-family: 'Noto Sans TC', sans-serif;
             background: var(--bg-gradient);
             margin: 0;
-            min-height: 100dvh; /* 使用 dynamic viewport height 解決手機網址列問題 */
+            /* 使用 dynamic viewport height (dvh) 解決手機瀏覽器網址列伸縮問題 */
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -47,16 +49,18 @@
             padding: 20px;
             color: var(--text-main);
             overflow-x: hidden;
-            -webkit-text-size-adjust: 100%; /* 禁止 iOS 自動放大字體 */
+            /* 禁止 iOS 自動放大字體 */
+            -webkit-text-size-adjust: 100%;
         }
 
-        /* 背景裝飾圓暈 */
+        /* 背景動態圓暈效果 */
         .bg-circle {
             position: fixed;
             border-radius: 50%;
             z-index: -1;
             filter: blur(40px);
             opacity: 0.6;
+            pointer-events: none;
         }
         .c1 { width: 300px; height: 300px; background: rgba(185, 28, 28, 0.08); top: -50px; right: -50px; animation: float 6s ease-in-out infinite; }
         .c2 { width: 200px; height: 200px; background: rgba(234, 179, 8, 0.08); bottom: -20px; left: -20px; animation: float 8s ease-in-out infinite reverse; }
@@ -67,12 +71,12 @@
             100% { transform: translateY(0px); }
         }
 
-        /* 主卡片容器 (玻璃擬態) */
+        /* 主卡片容器 (玻璃擬態設計) */
         .main-card {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             width: 100%;
             max-width: 420px;
-            padding: 40px 25px;
+            padding: 30px 25px;
             border-radius: var(--card-radius);
             box-shadow: 
                 0 20px 40px -5px rgba(0, 0, 0, 0.1), 
@@ -87,7 +91,7 @@
             transition: all 0.3s ease;
         }
 
-        /* Logo 與標題 */
+        /* Logo 容器 */
         .logo-container {
             width: 90px;
             height: 90px;
@@ -114,19 +118,19 @@
         .subtitle { 
             font-size: 14px; 
             color: var(--text-sub); 
-            margin-bottom: 30px; 
+            margin-bottom: 25px; 
             font-weight: 500; 
             letter-spacing: 1px;
         }
 
-        /* 個人資訊卡片 */
+        /* 個人資訊卡片樣式 */
         .profile-card {
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-left: 5px solid var(--primary);
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: left;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
             animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -155,7 +159,7 @@
             font-family: 'Noto Sans TC', sans-serif;
         }
 
-        /* 輸入區塊 */
+        /* 輸入區塊樣式 */
         .input-section {
             margin-top: 25px;
             animation: slideUp 0.4s ease-out;
@@ -185,9 +189,10 @@
             outline: none;
             transition: all 0.3s;
             font-family: 'Roboto Mono', monospace;
-            /* 關鍵修正：確保手機跳出數字鍵盤 */
+            /* 修正 Firefox 數字輸入框箭頭 */
             -moz-appearance: textfield;
         }
+        /* 修正 Chrome/Safari 數字輸入框箭頭 */
         .code-input::-webkit-outer-spin-button,
         .code-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -205,7 +210,7 @@
             font-size: 24px;
         }
 
-        /* 按鈕 */
+        /* 按鈕樣式 */
         .btn {
             width: 100%;
             padding: 16px;
@@ -222,6 +227,8 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            -webkit-user-select: none;
+            user-select: none;
         }
         .btn:active { transform: scale(0.98); box-shadow: none; }
         .btn:disabled { 
@@ -232,7 +239,7 @@
             transform: none;
         }
 
-        /* 狀態訊息 */
+        /* 狀態訊息樣式 */
         .status-msg {
             margin: 15px 0;
             font-size: 14px;
@@ -247,7 +254,7 @@
         .status-error { background: #fef2f2; color: #991b1b; border-color: #ef4444; }
         .status-info { background: #eff6ff; color: #1e40af; border-color: #3b82f6; }
 
-        /* 成功畫面 */
+        /* 成功畫面樣式 */
         .success-view {
             padding: 30px 0;
             animation: zoomIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -264,11 +271,11 @@
         .success-title { font-size: 24px; font-weight: 900; color: #059669; margin-bottom: 8px; }
         .success-desc { font-size: 15px; color: var(--text-sub); }
 
-        /* 工具類 */
+        /* 通用工具類 */
         .hidden { display: none !important; }
         .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         
-        /* Spinner */
+        /* 載入中動畫 */
         .spinner {
             width: 40px; height: 40px;
             border: 4px solid #e5e7eb;
@@ -278,12 +285,7 @@
             margin: 30px auto 15px;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
-
+        /* 頁尾樣式 */
         footer { 
             margin-top: 40px; 
             font-size: 12px; 
@@ -293,8 +295,15 @@
             opacity: 0.8;
         }
         
-        /* 錯誤頁面樣式 */
+        /* 錯誤頁面圖示 */
         .error-icon { font-size: 64px; margin-bottom: 15px; display: block; }
+
+        /* 動畫定義 */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
 <body>
@@ -304,7 +313,7 @@
 
     <main class="main-card">
         <div class="logo-container">
-            <img src="assets/images/logo.png" alt="NCYU Logo" class="logo" onerror="this.style.display='none';this.parentElement.innerHTML='🏫'">
+            <img src="assets/images/logo.png" alt="NCYU Logo" class="logo" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'font-size:48px\'>🏫</span>'">
         </div>
         <h1><span>2026</span> 新春團拜</h1>
         <p class="subtitle">國立嘉義大學 人事室 敬邀</p>
@@ -356,10 +365,13 @@
 
         <div id="view-error" class="hidden" style="padding:20px 0;">
             <span class="error-icon">❌</span>
-            <h3 style="margin:0 0 10px 0; color:#ef4444; font-size:20px;">連結無效</h3>
-            <p style="color:#6b7280; font-size:15px; line-height:1.6;">
+            <h3 id="error-title" style="margin:0 0 10px 0; color:#ef4444; font-size:20px;">連結無效</h3>
+            <p id="error-desc" style="color:#6b7280; font-size:15px; line-height:1.6;">
                 無法識別您的身分資訊。<br>請重新掃描 QR Code 或洽詢工作人員。
             </p>
+            <div id="db-sync-hint" class="hidden" style="margin-top:20px; padding:10px; background:#fef2f2; border-radius:8px; font-size:12px; color:#991b1b; text-align:left;">
+                <strong>管理員提示：</strong> 雲端資料庫查無此人。<br>請確認是否已在電腦端執行「匯入名單」至雲端。
+            </div>
         </div>
     </main>
 
@@ -370,7 +382,7 @@
     <script>
         /**
          * ================= 配置區 =================
-         * 請確認此 API 路徑與您的伺服器配置一致
+         * 請確認此 API 路徑與您的雲端伺服器配置一致
          */
         const API_URL = "https://personnel.kncyu.link/api/checkin/index.php";
         // =========================================
@@ -385,6 +397,9 @@
             loading: document.getElementById('view-loading'),
             content: document.getElementById('view-content'),
             error: document.getElementById('view-error'),
+            errorTitle: document.getElementById('error-title'),
+            errorDesc: document.getElementById('error-desc'),
+            dbSyncHint: document.getElementById('db-sync-hint'),
             
             // 顯示欄位
             dispEid: document.getElementById('disp-eid'),
@@ -404,15 +419,15 @@
         // 初始化
         document.addEventListener("DOMContentLoaded", () => {
             if (!parseUrlParams()) {
-                showView('error');
+                showErrorView("連結參數錯誤", "網址缺少必要的參數，請重新掃描 QR Code。");
                 return;
             }
-            // 初始檢查 (取得身分資訊)
+            // 執行初始檢查 (不帶驗證碼)
             checkStatus(); 
             setupEvents();
         });
 
-        // 解析 URL 參數 (UTF-8 安全版)
+        // 解析 URL 參數 (包含 Base64 解碼)
         function parseUrlParams() {
             const params = new URLSearchParams(window.location.search);
             const rawData = params.get('data');
@@ -438,7 +453,7 @@
             return (state.eid && state.uuid);
         }
 
-        // 核心檢查函式 (含 Timeout 機制)
+        // 核心檢查函式 (含 Timeout 與錯誤處理)
         async function checkStatus(code = null) {
             try {
                 const payload = { 
@@ -460,41 +475,54 @@
                 
                 clearTimeout(timeoutId);
 
-                if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+                // 處理 HTTP 錯誤
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
 
                 const data = await res.json();
 
-                // 1. 填入使用者資訊
+                // Step 1: 檢查是否找到使用者資料
                 if (data.name) {
+                    // 找到人了 -> 顯示資料
                     els.dispName.textContent = data.name;
                     els.dispEid.textContent = data.employee_id || state.eid;
                     els.dispDept.textContent = data.department || '未設定';
                     showView('content');
-                } else {
-                    if (!code) { showView('error'); return; }
-                }
 
-                // 2. 判斷邏輯
-                if (data.success) {
-                    handleSuccess(data);
-                } else {
-                    if (data.require_code) {
-                        handleInputRequired(data.message, code !== null);
+                    // Step 2: 判斷報到邏輯
+                    if (data.success) {
+                        handleSuccess(data);
                     } else {
-                        showErrorMsg(data.message);
+                        // 需要驗證碼 或 其他錯誤
+                        if (data.require_code) {
+                            handleInputRequired(data.message, code !== null);
+                        } else {
+                            showStatusMsg(data.message, 'error');
+                        }
+                    }
+                } else {
+                    // API 回傳成功但沒名字 -> 表示「查無此人」
+                    // 這通常是因為資料庫沒同步
+                    if (!code) { 
+                        showErrorView("查無此人", "系統找不到您的資料，請洽工作人員。", true);
+                        return; 
                     }
                 }
 
             } catch (err) {
                 console.error(err);
-                const msg = err.name === 'AbortError' ? "連線逾時，請檢查網路" : "伺服器連線失敗";
-                showErrorMsg(msg);
+                const isTimeout = err.name === 'AbortError';
+                if(code) {
+                    showStatusMsg(isTimeout ? "連線逾時，請檢查網路" : "伺服器連線失敗", 'error');
+                } else {
+                    showErrorView("系統連線失敗", isTimeout ? "連線逾時，請檢查您的網路狀況。" : "無法連接到伺服器，請稍後再試。");
+                }
             } finally {
                 state.isSubmitting = false;
                 resetButton();
             }
         }
 
+        // 顯示成功畫面
         function handleSuccess(data) {
             els.secInput.classList.add('hidden');
             els.secSuccess.classList.remove('hidden');
@@ -509,32 +537,34 @@
             }
         }
 
+        // 顯示輸入框
         function handleInputRequired(msg, isRetry) {
             els.secInput.classList.remove('hidden');
             els.secSuccess.classList.add('hidden');
             
             if (isRetry) {
-                showErrorMsg(msg || "驗證碼錯誤");
+                showStatusMsg(msg || "驗證碼錯誤", 'error');
                 vibrateError();
                 els.input.value = '';
-                // 手機上不自動 focus 以免鍵盤跳出擋住錯誤訊息
+                // 手機上不自動 focus，避免鍵盤擋住錯誤訊息
             } else {
                 els.statusBox.style.display = 'none';
             }
         }
 
+        // 提交表單
         function submitCheckIn() {
             if (state.isSubmitting) return;
 
             const code = els.input.value.trim();
             if (code.length < 4) {
                 vibrateError();
-                showErrorMsg("請輸入完整 4 位數驗證碼");
+                showStatusMsg("請輸入完整 4 位數驗證碼", 'error');
                 return;
             }
 
             state.isSubmitting = true;
-            els.btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;margin:0;border-width:2px;border-top-color:#fff;"></span> 驗證中...';
+            els.btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;margin:0;border-width:2px;border-top-color:#fff;"></div> 驗證中...';
             els.btn.disabled = true;
             els.input.disabled = true;
             els.statusBox.style.display = 'none';
@@ -542,6 +572,7 @@
             checkStatus(code);
         }
 
+        // 事件綁定
         function setupEvents() {
             // 限制輸入純數字
             els.input.addEventListener('input', (e) => {
@@ -559,6 +590,7 @@
             els.btn.addEventListener('click', submitCheckIn);
         }
 
+        // 切換視圖
         function showView(name) {
             els.loading.classList.add('hidden');
             els.content.classList.add('hidden');
@@ -568,12 +600,23 @@
             if (name === 'error') els.error.classList.remove('hidden');
         }
 
-        function showErrorMsg(msg) {
+        // 顯示致命錯誤頁面
+        function showErrorView(title, desc, showSyncHint = false) {
+            showView('error');
+            els.errorTitle.textContent = title;
+            els.errorDesc.innerHTML = desc;
+            if(showSyncHint) els.dbSyncHint.classList.remove('hidden');
+            else els.dbSyncHint.classList.add('hidden');
+        }
+
+        // 顯示一般狀態訊息
+        function showStatusMsg(msg, type) {
             els.statusBox.textContent = msg;
-            els.statusBox.className = "status-msg status-error";
+            els.statusBox.className = `status-msg status-${type}`;
             els.statusBox.style.display = "block";
         }
 
+        // 重置按鈕狀態
         function resetButton() {
             if (els.secSuccess.classList.contains('hidden')) {
                 els.btn.textContent = "確認報到";
@@ -582,6 +625,7 @@
             }
         }
 
+        // 震動回饋
         function vibrateError() {
             if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
             els.input.classList.add('shake');
