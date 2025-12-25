@@ -73,7 +73,7 @@
 
         /* 主卡片容器 (玻璃擬態設計) */
         .main-card {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             width: 100%;
             max-width: 420px;
             padding: 30px 25px;
@@ -189,10 +189,8 @@
             outline: none;
             transition: all 0.3s;
             font-family: 'Roboto Mono', monospace;
-            /* 修正 Firefox 數字輸入框箭頭 */
-            -moz-appearance: textfield;
+            -moz-appearance: textfield; /* Firefox */
         }
-        /* 修正 Chrome/Safari 數字輸入框箭頭 */
         .code-input::-webkit-outer-spin-button,
         .code-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -238,6 +236,7 @@
             box-shadow: none; 
             transform: none;
         }
+        .hidden-force { display: none !important; }
 
         /* 狀態訊息樣式 */
         .status-msg {
@@ -250,6 +249,7 @@
             text-align: left;
             border-left-width: 4px;
             border-left-style: solid;
+            animation: fadeIn 0.3s;
         }
         .status-error { background: #fef2f2; color: #991b1b; border-color: #ef4444; }
         .status-info { background: #eff6ff; color: #1e40af; border-color: #3b82f6; }
@@ -304,6 +304,7 @@
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -427,7 +428,7 @@
             setupEvents();
         });
 
-        // 解析 URL 參數 (包含 Base64 解碼)
+        // 解析 URL 參數 (包含 Base64 UTF-8 解碼)
         function parseUrlParams() {
             const params = new URLSearchParams(window.location.search);
             const rawData = params.get('data');
@@ -435,8 +436,11 @@
             try {
                 if (rawData) {
                     // ★ 關鍵修正：使用 TextDecoder 處理 UTF-8 中文
+                    // 先將 Base64 轉為 Binary String
                     const binaryString = atob(rawData);
+                    // 再轉為 Uint8Array
                     const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+                    // 最後用 TextDecoder 解碼為正確的中文
                     const decoded = new TextDecoder().decode(bytes);
                     
                     const p = new URLSearchParams(decoded);
@@ -453,7 +457,7 @@
             return (state.eid && state.uuid);
         }
 
-        // 核心檢查函式 (含 Timeout 與錯誤處理)
+        // 核心檢查函式 (含 Timeout、防快取、錯誤處理)
         async function checkStatus(code = null) {
             try {
                 const payload = { 
@@ -466,11 +470,15 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-                const res = await fetch(API_URL, {
+                // ★ 強制防快取：加上隨機時間戳記與 no-store 標頭
+                const targetUrl = `${API_URL}?t=${Date.now()}`;
+
+                const res = await fetch(targetUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
-                    signal: controller.signal
+                    signal: controller.signal,
+                    cache: 'no-store'
                 });
                 
                 clearTimeout(timeoutId);
@@ -492,16 +500,22 @@
                     if (data.success) {
                         handleSuccess(data);
                     } else {
-                        // 需要驗證碼 或 其他錯誤
+                        // 失敗 (可能系統關閉、時間未到、或驗證碼錯誤)
+                        
                         if (data.require_code) {
+                            // 需要驗證碼 (系統開放中)
                             handleInputRequired(data.message, code !== null);
                         } else {
+                            // 系統關閉或其他阻擋 -> 顯示紅框錯誤訊息
                             showStatusMsg(data.message, 'error');
+                            
+                            // ★ 關鍵：強制隱藏輸入框與按鈕，防止偷跑
+                            els.secInput.classList.add('hidden-force');
+                            els.secInput.style.display = 'none';
                         }
                     }
                 } else {
                     // API 回傳成功但沒名字 -> 表示「查無此人」
-                    // 這通常是因為資料庫沒同步
                     if (!code) { 
                         showErrorView("查無此人", "系統找不到您的資料，請洽工作人員。", true);
                         return; 
@@ -537,9 +551,12 @@
             }
         }
 
-        // 顯示輸入框
+        // 顯示輸入框 (只有在系統開放時才會執行此處)
         function handleInputRequired(msg, isRetry) {
             els.secInput.classList.remove('hidden');
+            els.secInput.classList.remove('hidden-force');
+            els.secInput.style.display = 'block';
+            
             els.secSuccess.classList.add('hidden');
             
             if (isRetry) {
@@ -548,6 +565,7 @@
                 els.input.value = '';
                 // 手機上不自動 focus，避免鍵盤擋住錯誤訊息
             } else {
+                // 第一次載入，不顯示錯誤訊息
                 els.statusBox.style.display = 'none';
             }
         }
@@ -618,8 +636,12 @@
 
         // 重置按鈕狀態
         function resetButton() {
-            if (els.secSuccess.classList.contains('hidden')) {
-                els.btn.textContent = "確認報到";
+            // 如果成功畫面未顯示，且沒有顯示「關閉」的訊息，才恢復按鈕
+            // 這樣可以防止在「系統關閉」狀態下，按鈕又跳回來
+            const isClosed = els.statusBox.textContent.includes('關閉') || els.statusBox.textContent.includes('截止');
+            
+            if (els.secSuccess.classList.contains('hidden') && !isClosed) {
+                els.btn.innerHTML = "確認報到";
                 els.btn.disabled = false;
                 els.input.disabled = false;
             }
