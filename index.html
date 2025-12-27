@@ -3,446 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="robots" content="noindex, nofollow">
-    
     <title>國立嘉義大學 - 2026 新春團拜報到</title>
-    <meta name="description" content="國立嘉義大學人事室新春團拜活動專用報到系統">
     <meta name="theme-color" content="#b91c1c">
-
-    <meta property="og:title" content="2026 新春團拜報到">
-    <meta property="og:description" content="國立嘉義大學人事室敬邀">
-    <meta property="og:image" content="assets/images/logo.png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            /* 品牌色系設定 */
-            --primary: #b91c1c;       /* 嘉大紅 */
-            --primary-hover: #991b1b;
+            --primary: #b91c1c;
             --bg-gradient: linear-gradient(135deg, #fef2f2 0%, #f3f4f6 100%);
-            
-            /* 文字色系 */
             --text-main: #1f2937;
-            --text-sub: #6b7280;
-            --text-light: #9ca3af;
-            
-            /* 介面尺寸 */
             --card-radius: 24px;
-            --btn-radius: 12px;
         }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #ef4444;
+                --bg-gradient: linear-gradient(135deg, #1f1f1f 0%, #000000 100%);
+                --text-main: #f3f4f6;
+            }
+            .main-card { background: rgba(30, 30, 30, 0.95) !important; box-shadow: none !important; }
+            .profile-card { background: #2d2d2d !important; border-color: #444 !important; }
+            .code-input { background: #333 !important; color: #fff !important; border-color: #555 !important; }
+        }
 
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background: var(--bg-gradient);
-            margin: 0;
-            /* 使用 dynamic viewport height (dvh) 解決手機瀏覽器網址列伸縮問題 */
             min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; color: var(--text-main);
             overflow-x: hidden;
-            /* 禁止 iOS 自動放大字體 */
-            -webkit-text-size-adjust: 100%;
+            -webkit-user-select: none; user-select: none;
         }
 
-        /* 背景動態圓暈效果 */
-        .bg-circle {
-            position: fixed;
-            border-radius: 50%;
-            z-index: -1;
-            filter: blur(40px);
-            opacity: 0.6;
-            pointer-events: none;
+        /* Offline Banner */
+        #offline-banner {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: #ef4444; color: white; text-align: center;
+            padding: 5px; font-size: 13px; font-weight: bold;
+            transform: translateY(-100%); transition: transform 0.3s; z-index: 9999;
         }
-        .c1 { width: 300px; height: 300px; background: rgba(185, 28, 28, 0.08); top: -50px; right: -50px; animation: float 6s ease-in-out infinite; }
-        .c2 { width: 200px; height: 200px; background: rgba(234, 179, 8, 0.08); bottom: -20px; left: -20px; animation: float 8s ease-in-out infinite reverse; }
+        #offline-banner.show { transform: translateY(0); }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* 主卡片容器 (玻璃擬態設計) */
         .main-card {
             background: rgba(255, 255, 255, 0.95);
-            width: 100%;
-            max-width: 420px;
-            padding: 30px 25px;
-            border-radius: var(--card-radius);
-            box-shadow: 
-                0 20px 40px -5px rgba(0, 0, 0, 0.1), 
-                0 10px 15px -3px rgba(0, 0, 0, 0.05),
-                inset 0 0 0 1px rgba(255,255,255,0.5);
-            text-align: center;
+            width: 100%; max-width: 420px;
+            padding: 30px 25px; border-radius: var(--card-radius);
+            box-shadow: 0 20px 40px -5px rgba(0,0,0,0.1);
             border-top: 6px solid var(--primary);
-            position: relative;
-            z-index: 10;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
 
-        /* Logo 容器 */
-        .logo-container {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .logo { 
-            max-width: 100%; 
-            max-height: 100%; 
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-        }
-        
-        h1 { 
-            margin: 0 0 5px 0; 
-            font-size: 26px; 
-            font-weight: 900; 
-            color: var(--primary); 
-            letter-spacing: 1px; 
-            line-height: 1.2;
-        }
-        h1 span { font-size: 0.85em; color: #4b5563; font-weight: 700; }
-        .subtitle { 
-            font-size: 14px; 
-            color: var(--text-sub); 
-            margin-bottom: 25px; 
-            font-weight: 500; 
-            letter-spacing: 1px;
-        }
+        h1 { margin: 0 0 5px 0; font-size: 26px; font-weight: 900; color: var(--primary); }
+        .subtitle { font-size: 14px; color: #6b7280; margin-bottom: 25px; font-weight: 500; }
 
-        /* 個人資訊卡片樣式 */
         .profile-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-left: 5px solid var(--primary);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: left;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            background: #ffffff; border: 1px solid #e5e7eb; border-left: 5px solid var(--primary);
+            border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: left;
             animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .profile-value { font-size: 18px; font-weight: 700; font-family: 'Roboto Mono', monospace; }
+        .profile-value.highlight { color: var(--primary); font-size: 24px; font-family: 'Noto Sans TC'; }
 
-        .profile-row { display: flex; flex-direction: column; margin-bottom: 12px; }
-        .profile-row:last-child { margin-bottom: 0; }
-        
-        .profile-label { 
-            font-size: 12px; 
-            color: var(--text-light); 
-            margin-bottom: 4px; 
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .profile-value { 
-            font-size: 17px; 
-            font-weight: 700; 
-            color: var(--text-main); 
-            font-family: 'Roboto Mono', 'Noto Sans TC', monospace;
-        }
-        .profile-value.highlight { 
-            color: var(--primary); 
-            font-size: 22px; 
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-
-        /* 輸入區塊樣式 */
-        .input-section {
-            margin-top: 25px;
-            animation: slideUp 0.4s ease-out;
-        }
-        .input-label {
-            display: block;
-            font-size: 15px;
-            color: var(--text-main);
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-        .code-input-wrapper {
-            position: relative;
-            margin-bottom: 20px;
-        }
+        /* iOS Input Fix: Font size >= 16px prevents zoom */
         .code-input {
-            width: 100%;
-            padding: 16px;
-            font-size: 32px;
-            font-weight: 700;
-            text-align: center;
-            letter-spacing: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: var(--btn-radius);
-            background: #f9fafb;
-            color: var(--text-main);
-            outline: none;
-            transition: all 0.3s;
-            font-family: 'Roboto Mono', monospace;
-            -moz-appearance: textfield; /* Firefox */
+            width: 100%; padding: 16px; font-size: 32px; font-weight: 700; text-align: center;
+            letter-spacing: 12px; border: 2px solid #e5e7eb; border-radius: 12px;
+            background: #f9fafb; color: var(--text-main); outline: none;
+            text-transform: uppercase; /* 自動大寫 */
         }
-        .code-input::-webkit-outer-spin-button,
-        .code-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .code-input:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.1);
-            transform: translateY(-2px);
-        }
-        .code-input::placeholder {
-            color: #d1d5db;
-            letter-spacing: 4px;
-            font-size: 24px;
-        }
+        .code-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(185,28,28,0.1); }
 
-        /* 按鈕樣式 */
         .btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: var(--btn-radius);
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
             background: linear-gradient(135deg, var(--primary) 0%, #991b1b 100%);
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 8px 15px -3px rgba(185, 28, 28, 0.3);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            -webkit-user-select: none;
-            user-select: none;
+            color: white; font-size: 18px; font-weight: 700; cursor: pointer;
+            transition: 0.2s; margin-top: 15px;
         }
-        .btn:active { transform: scale(0.98); box-shadow: none; }
-        .btn:disabled { 
-            background: #d1d5db; 
-            color: #9ca3af;
-            cursor: not-allowed; 
-            box-shadow: none; 
-            transform: none;
-        }
-        .hidden-force { display: none !important; }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background: #d1d5db; cursor: not-allowed; }
 
-        /* 狀態訊息樣式 */
-        .status-msg {
-            margin: 15px 0;
-            font-size: 14px;
-            line-height: 1.6;
-            padding: 12px;
-            border-radius: 8px;
-            display: none;
-            text-align: left;
-            border-left-width: 4px;
-            border-left-style: solid;
-            animation: fadeIn 0.3s;
-        }
+        .status-msg { margin: 15px 0; padding: 12px; border-radius: 8px; text-align: left; border-left: 4px solid; display: none; }
         .status-error { background: #fef2f2; color: #991b1b; border-color: #ef4444; }
-        .status-info { background: #eff6ff; color: #1e40af; border-color: #3b82f6; }
+        .status-wait { background: #fff7ed; color: #c2410c; border-color: #f97316; }
 
-        /* 成功畫面樣式 */
-        .success-view {
-            padding: 30px 0;
-            animation: zoomIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .checkmark-circle {
-            width: 90px; height: 90px;
-            background: #d1fae5;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 0 8px rgba(209, 250, 229, 0.4);
-        }
-        .checkmark { font-size: 48px; color: #059669; }
-        .success-title { font-size: 24px; font-weight: 900; color: #059669; margin-bottom: 8px; }
-        .success-desc { font-size: 15px; color: var(--text-sub); }
-
-        /* 通用工具類 */
         .hidden { display: none !important; }
-        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        
-        /* 載入中動畫 */
-        .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid #e5e7eb;
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 30px auto 15px;
-        }
-
-        /* 頁尾樣式 */
-        footer { 
-            margin-top: 40px; 
-            font-size: 12px; 
-            color: #9ca3af; 
-            text-align: center; 
-            line-height: 1.6;
-            opacity: 0.8;
-        }
-        
-        /* 錯誤頁面圖示 */
-        .error-icon { font-size: 64px; margin-bottom: 15px; display: block; }
-
-        /* 動畫定義 */
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .shake { animation: shake 0.5s; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
     </style>
 </head>
 <body>
-
-    <div class="bg-circle c1"></div>
-    <div class="bg-circle c2"></div>
+    <div id="offline-banner">⚠️ 網路已斷線，請檢查連線</div>
 
     <main class="main-card">
-        <div class="logo-container">
-            <img src="assets/images/logo.png" alt="NCYU Logo" class="logo" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'font-size:48px\'>🏫</span>'">
-        </div>
         <h1><span>2026</span> 新春團拜</h1>
         <p class="subtitle">國立嘉義大學 人事室 敬邀</p>
 
         <div id="view-loading">
-            <div class="spinner"></div>
-            <div style="color:var(--text-sub); font-size:15px; font-weight:500;">正在確認身分...</div>
+            <div style="font-size:40px; animation:spin 1s infinite linear">⏳</div>
+            <div style="margin-top:10px;">身分驗證中...</div>
         </div>
 
         <div id="view-content" class="hidden">
             <div class="profile-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                    <div style="flex:1;">
-                        <span class="profile-label">教職員工編號</span>
-                        <span class="profile-value" id="disp-eid">---</span>
-                    </div>
-                    <div style="flex:1; text-align:right;">
-                        <span class="profile-label">單位</span>
-                        <span class="profile-value" id="disp-dept">---</span>
-                    </div>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-label">姓名</span>
-                    <span class="profile-value highlight" id="disp-name">---</span>
+                <div style="font-size:12px; color:#999;">參與者資訊</div>
+                <div class="profile-value highlight" id="disp-name"></div>
+                <div style="display:flex; justify-content:space-between; margin-top:8px;">
+                    <span class="profile-value" id="disp-eid" style="font-size:16px; color:#666;"></span>
+                    <span class="profile-value" id="disp-dept" style="font-size:16px; color:#666;"></span>
                 </div>
             </div>
 
             <div id="status-box" class="status-msg"></div>
 
-            <div id="section-input" class="input-section hidden">
-                <label class="input-label" for="code-input">請輸入現場 4 位數報到碼</label>
-                <div class="code-input-wrapper">
-                    <input type="text" id="code-input" maxlength="4" placeholder="●●●●" 
-                           class="code-input" inputmode="numeric" pattern="[0-9]*" 
-                           autocomplete="one-time-code">
-                </div>
+            <div id="countdown-box" class="status-msg status-wait hidden">
+                <strong>⏳ 報到尚未開始</strong><br>
+                距離開始還有：<span id="timer-val">--:--</span>
+            </div>
+
+            <div id="section-input" class="hidden">
+                <label style="display:block; margin-bottom:10px; font-weight:bold;">輸入現場驗證碼</label>
+                <input type="text" id="code-input" maxlength="4" placeholder="CODE" class="code-input" inputmode="text" autocomplete="off">
                 <button id="btn-submit" class="btn">確認報到</button>
             </div>
 
-            <div id="section-success" class="success-view hidden">
-                <div class="checkmark-circle"><div class="checkmark">✓</div></div>
-                <div class="success-title">報到成功</div>
-                <div class="success-desc">祝您幸運中大獎！</div>
-                <button onclick="location.reload()" class="btn" style="margin-top:25px; background:#f3f4f6; color:#4b5563; box-shadow:none;">
-                    ↻ 重新整理
-                </button>
+            <div id="section-success" class="hidden" style="text-align:center; padding:20px;">
+                <div style="font-size:60px; color:#10b981; margin-bottom:10px;">🎉</div>
+                <h2 style="color:#10b981; margin:0;">報到成功</h2>
+                <p style="color:#666;">祝您幸運中大獎！</p>
+                <button onclick="location.reload()" class="btn" style="background:#f3f4f6; color:#4b5563;">重新整理</button>
             </div>
         </div>
 
-        <div id="view-error" class="hidden" style="padding:20px 0;">
-            <span class="error-icon">❌</span>
-            <h3 id="error-title" style="margin:0 0 10px 0; color:#ef4444; font-size:20px;">連結無效</h3>
-            <p id="error-desc" style="color:#6b7280; font-size:15px; line-height:1.6;">
-                無法識別您的身分資訊。<br>請重新掃描 QR Code 或洽詢工作人員。
-            </p>
-            <div id="db-sync-hint" class="hidden" style="margin-top:20px; padding:10px; background:#fef2f2; border-radius:8px; font-size:12px; color:#991b1b; text-align:left;">
-                <strong>管理員提示：</strong> 雲端資料庫查無此人。<br>請確認是否已在電腦端執行「匯入名單」至雲端。
-            </div>
+        <div id="view-error" class="hidden" style="color:#ef4444; padding:20px;">
+            <div style="font-size:50px;">❌</div>
+            <h3 id="error-msg">連結無效</h3>
         </div>
     </main>
 
-    <footer>
-        © 2026 National Chiayi University<br>Personnel Office
+    <footer style="margin-top:30px; font-size:12px; color:#999; text-align:center;">
+        © 2026 NCYU Personnel Office<br>System Version: 2.0.0 (Enhanced)
     </footer>
 
     <script>
-        /**
-         * ================= 配置區 =================
-         * 請確認此 API 路徑與您的雲端伺服器配置一致
-         */
+        // API Configuration
         const API_URL = "https://personnel.kncyu.link/api/checkin/index.php";
-        // =========================================
 
-        const state = {
-            eid: null,
-            uuid: null,
-            isSubmitting: false
-        };
-
+        // State
+        const state = { eid: null, uuid: null, submitting: false };
         const els = {
             loading: document.getElementById('view-loading'),
             content: document.getElementById('view-content'),
             error: document.getElementById('view-error'),
-            errorTitle: document.getElementById('error-title'),
-            errorDesc: document.getElementById('error-desc'),
-            dbSyncHint: document.getElementById('db-sync-hint'),
-            
-            // 顯示欄位
-            dispEid: document.getElementById('disp-eid'),
-            dispName: document.getElementById('disp-name'),
-            dispDept: document.getElementById('disp-dept'),
+            inputSec: document.getElementById('section-input'),
+            successSec: document.getElementById('section-success'),
             statusBox: document.getElementById('status-box'),
-            
-            // 區塊
-            secInput: document.getElementById('section-input'),
-            secSuccess: document.getElementById('section-success'),
-            
-            // 表單
+            countdownBox: document.getElementById('countdown-box'),
+            timerVal: document.getElementById('timer-val'),
             input: document.getElementById('code-input'),
             btn: document.getElementById('btn-submit')
         };
 
-        // 初始化
-        document.addEventListener("DOMContentLoaded", () => {
-            if (!parseUrlParams()) {
-                showErrorView("連結參數錯誤", "網址缺少必要的參數，請重新掃描 QR Code。");
-                return;
+        // Audio Assets (Base64 for inline simplicity, or verify path)
+        const audioSuccess = new Audio('assets/sounds/success.mp3'); // 需準備檔案
+        const audioError = new Audio('assets/sounds/error.mp3');
+
+        // Init
+        document.addEventListener("DOMContentLoaded", async () => {
+            setupWakeLock();
+            setupNetworkListener();
+            
+            if(parseParams()) {
+                await checkStatus();
+                setupEvents();
+            } else {
+                showError("參數錯誤", "無效的 QR Code");
             }
-            // 執行初始檢查 (不帶驗證碼)
-            checkStatus(); 
-            setupEvents();
         });
 
-        // 解析 URL 參數 (包含 Base64 UTF-8 解碼)
-        function parseUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            const rawData = params.get('data');
-
+        // 1. Wake Lock API (螢幕恆亮)
+        async function setupWakeLock() {
             try {
-                if (rawData) {
-                    // ★ 關鍵修正：使用 TextDecoder 處理 UTF-8 中文
-                    // 先將 Base64 轉為 Binary String
-                    const binaryString = atob(rawData);
-                    // 再轉為 Uint8Array
-                    const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
-                    // 最後用 TextDecoder 解碼為正確的中文
-                    const decoded = new TextDecoder().decode(bytes);
-                    
+                if ('wakeLock' in navigator) {
+                    await navigator.wakeLock.request('screen');
+                    console.log("Wake Lock active");
+                }
+            } catch(e) { console.log("Wake Lock failed", e); }
+        }
+
+        // 2. Offline Detection
+        function setupNetworkListener() {
+            const banner = document.getElementById('offline-banner');
+            const update = () => banner.classList.toggle('show', !navigator.onLine);
+            window.addEventListener('online', update);
+            window.addEventListener('offline', update);
+        }
+
+        function parseParams() {
+            const params = new URLSearchParams(window.location.search);
+            const data = params.get('data');
+            try {
+                if(data) {
+                    // Robust Decoding
+                    const decoded = new TextDecoder().decode(Uint8Array.from(atob(data), c => c.charCodeAt(0)));
                     const p = new URLSearchParams(decoded);
                     state.eid = p.get('eid');
                     state.uuid = p.get('uuid');
@@ -450,208 +213,140 @@
                     state.eid = params.get('eid');
                     state.uuid = params.get('uuid');
                 }
-            } catch (e) {
-                console.error("Params Parse Error", e);
-                return false;
-            }
-            return (state.eid && state.uuid);
+                return state.eid && state.uuid;
+            } catch(e) { return false; }
         }
 
-        // 核心檢查函式 (含 Timeout、防快取、錯誤處理)
         async function checkStatus(code = null) {
             try {
-                const payload = { 
-                    employee_id: state.eid, 
-                    uuid: state.uuid 
-                };
-                if (code) payload.checkin_code = code;
-
-                // 設定 8 秒逾時，避免網路卡住
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                setTimeout(() => controller.abort(), 8000);
 
-                // ★ 強制防快取：加上隨機時間戳記與 no-store 標頭
-                const targetUrl = `${API_URL}?t=${Date.now()}`;
-
-                const res = await fetch(targetUrl, {
+                const res = await fetch(`${API_URL}?t=${Date.now()}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    signal: controller.signal,
-                    cache: 'no-store'
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ ...state, checkin_code: code }),
+                    signal: controller.signal
                 });
-                
-                clearTimeout(timeoutId);
 
-                // 處理 HTTP 錯誤
-                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
-
+                if(!res.ok) throw new Error("Server Error");
                 const data = await res.json();
 
-                // Step 1: 檢查是否找到使用者資料
-                if (data.name) {
-                    // 找到人了 -> 顯示資料
-                    els.dispName.textContent = data.name;
-                    els.dispEid.textContent = data.employee_id || state.eid;
-                    els.dispDept.textContent = data.department || '未設定';
-                    showView('content');
+                // Render Info
+                if(data.name) {
+                    document.getElementById('disp-name').textContent = data.name;
+                    document.getElementById('disp-eid').textContent = data.employee_id;
+                    document.getElementById('disp-dept').textContent = data.department;
+                    
+                    els.loading.classList.add('hidden');
+                    els.content.classList.remove('hidden');
 
-                    // Step 2: 判斷報到邏輯
-                    if (data.success) {
-                        handleSuccess(data);
-                    } else {
-                        // 失敗 (可能系統關閉、時間未到、或驗證碼錯誤)
-                        
-                        if (data.require_code) {
-                            // 需要驗證碼 (系統開放中)
-                            handleInputRequired(data.message, code !== null);
-                        } else {
-                            // 系統關閉或其他阻擋 -> 顯示紅框錯誤訊息
-                            showStatusMsg(data.message, 'error');
-                            
-                            // ★ 關鍵：強制隱藏輸入框與按鈕，防止偷跑
-                            els.secInput.classList.add('hidden-force');
-                            els.secInput.style.display = 'none';
+                    if(data.success) {
+                        showSuccess(data.is_repeated);
+                    } else if (data.require_code) {
+                        // 驗證碼輸入模式
+                        els.inputSec.classList.remove('hidden');
+                        els.statusBox.style.display = 'none';
+                        if(code) { // 這是重試
+                             showMsg(data.message, 'error'); 
+                             vibrate(false);
+                             els.input.value = '';
                         }
+                    } else if (data.start_time) {
+                        // 倒數計時模式
+                        els.inputSec.classList.add('hidden');
+                        startCountdown(data.start_time);
+                    } else {
+                        // 系統關閉
+                        els.inputSec.classList.add('hidden');
+                        showMsg(data.message, 'error');
                     }
                 } else {
-                    // API 回傳成功但沒名字 -> 表示「查無此人」
-                    if (!code) { 
-                        showErrorView("查無此人", "系統找不到您的資料，請洽工作人員。", true);
-                        return; 
-                    }
+                    showError("查無此人", "資料庫無此記錄");
                 }
-
-            } catch (err) {
-                console.error(err);
-                const isTimeout = err.name === 'AbortError';
-                if(code) {
-                    showStatusMsg(isTimeout ? "連線逾時，請檢查網路" : "伺服器連線失敗", 'error');
-                } else {
-                    showErrorView("系統連線失敗", isTimeout ? "連線逾時，請檢查您的網路狀況。" : "無法連接到伺服器，請稍後再試。");
-                }
+            } catch(e) {
+                if(code) showMsg("連線失敗，請重試", 'error');
+                else showError("連線失敗", "無法連接伺服器");
             } finally {
-                state.isSubmitting = false;
-                resetButton();
+                state.submitting = false;
+                els.btn.textContent = "確認報到";
+                els.btn.disabled = false;
             }
         }
 
-        // 顯示成功畫面
-        function handleSuccess(data) {
-            els.secInput.classList.add('hidden');
-            els.secSuccess.classList.remove('hidden');
+        function showSuccess(isRepeated) {
+            els.inputSec.classList.add('hidden');
+            els.successSec.classList.remove('hidden');
             els.statusBox.style.display = 'none';
-
-            if (data.is_repeated) {
-                document.querySelector('.success-title').textContent = "您已完成報到";
-                document.querySelector('.success-title').style.color = "#0369a1";
-                document.querySelector('.checkmark-circle').style.background = "#e0f2fe";
-                document.querySelector('.checkmark').style.color = "#0284c7";
-                document.querySelector('.success-desc').textContent = "無需重複操作";
+            els.countdownBox.classList.add('hidden');
+            
+            if(!isRepeated) {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                audioSuccess.play().catch(()=>{});
+                vibrate(true);
             }
         }
 
-        // 顯示輸入框 (只有在系統開放時才會執行此處)
-        function handleInputRequired(msg, isRetry) {
-            els.secInput.classList.remove('hidden');
-            els.secInput.classList.remove('hidden-force');
-            els.secInput.style.display = 'block';
-            
-            els.secSuccess.classList.add('hidden');
-            
-            if (isRetry) {
-                showStatusMsg(msg || "驗證碼錯誤", 'error');
-                vibrateError();
-                els.input.value = '';
-                // 手機上不自動 focus，避免鍵盤擋住錯誤訊息
-            } else {
-                // 第一次載入，不顯示錯誤訊息
-                els.statusBox.style.display = 'none';
-            }
+        function setupEvents() {
+            els.input.addEventListener('input', (e) => {
+                e.target.value = e.target.value.toUpperCase(); // 自動轉大寫
+                if(e.target.value.length === 4) submit();
+            });
+            els.btn.onclick = submit;
         }
 
-        // 提交表單
-        function submitCheckIn() {
-            if (state.isSubmitting) return;
-
+        function submit() {
+            if(state.submitting) return;
             const code = els.input.value.trim();
-            if (code.length < 4) {
-                vibrateError();
-                showStatusMsg("請輸入完整 4 位數驗證碼", 'error');
-                return;
-            }
-
-            state.isSubmitting = true;
-            els.btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;margin:0;border-width:2px;border-top-color:#fff;"></div> 驗證中...';
+            if(code.length < 4) { showMsg("請輸入4碼", 'error'); return; }
+            
+            state.submitting = true;
+            els.btn.textContent = "驗證中...";
             els.btn.disabled = true;
-            els.input.disabled = true;
-            els.statusBox.style.display = 'none';
-
             checkStatus(code);
         }
 
-        // 事件綁定
-        function setupEvents() {
-            // 限制輸入純數字
-            els.input.addEventListener('input', (e) => {
-                e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                if (e.target.value.length === 4) {
-                    els.input.blur(); // 收起鍵盤
-                    submitCheckIn();  // 自動送出
+        function startCountdown(targetTime) {
+            els.countdownBox.classList.remove('hidden');
+            const target = new Date(targetTime).getTime();
+            
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const dist = target - now;
+                
+                if (dist < 0) {
+                    clearInterval(timer);
+                    location.reload(); // 時間到自動重整
+                    return;
                 }
-            });
-
-            els.input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') submitCheckIn();
-            });
-
-            els.btn.addEventListener('click', submitCheckIn);
+                
+                const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((dist % (1000 * 60)) / 1000);
+                els.timerVal.textContent = `${m}分 ${s}秒`;
+            }, 1000);
         }
 
-        // 切換視圖
-        function showView(name) {
-            els.loading.classList.add('hidden');
-            els.content.classList.add('hidden');
-            els.error.classList.add('hidden');
-            
-            if (name === 'content') els.content.classList.remove('hidden');
-            if (name === 'error') els.error.classList.remove('hidden');
-        }
-
-        // 顯示致命錯誤頁面
-        function showErrorView(title, desc, showSyncHint = false) {
-            showView('error');
-            els.errorTitle.textContent = title;
-            els.errorDesc.innerHTML = desc;
-            if(showSyncHint) els.dbSyncHint.classList.remove('hidden');
-            else els.dbSyncHint.classList.add('hidden');
-        }
-
-        // 顯示一般狀態訊息
-        function showStatusMsg(msg, type) {
-            els.statusBox.textContent = msg;
+        function showMsg(text, type) {
+            els.statusBox.textContent = text;
             els.statusBox.className = `status-msg status-${type}`;
-            els.statusBox.style.display = "block";
+            els.statusBox.style.display = 'block';
+            if(type === 'error') audioError.play().catch(()=>{});
         }
 
-        // 重置按鈕狀態
-        function resetButton() {
-            // 如果成功畫面未顯示，且沒有顯示「關閉」的訊息，才恢復按鈕
-            // 這樣可以防止在「系統關閉」狀態下，按鈕又跳回來
-            const isClosed = els.statusBox.textContent.includes('關閉') || els.statusBox.textContent.includes('截止');
-            
-            if (els.secSuccess.classList.contains('hidden') && !isClosed) {
-                els.btn.innerHTML = "確認報到";
-                els.btn.disabled = false;
-                els.input.disabled = false;
+        function showError(title, desc) {
+            els.loading.classList.add('hidden');
+            els.error.classList.remove('hidden');
+            document.getElementById('error-msg').textContent = title + ": " + desc;
+        }
+
+        function vibrate(success) {
+            if(navigator.vibrate) {
+                navigator.vibrate(success ? [100, 50, 100] : [200, 100, 200]);
             }
-        }
-
-        // 震動回饋
-        function vibrateError() {
-            if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
-            els.input.classList.add('shake');
-            setTimeout(() => els.input.classList.remove('shake'), 500);
+            if(!success) {
+                els.input.classList.add('shake');
+                setTimeout(()=>els.input.classList.remove('shake'), 500);
+            }
         }
     </script>
 </body>
