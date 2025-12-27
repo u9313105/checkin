@@ -10,65 +10,70 @@
     <style>
         :root { 
             --primary-color: #800000; 
-            --bg-color: #f8f9fa; 
+            --bg-color: #f4f6f8; 
             --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        body { background-color: var(--bg-color); font-family: "Microsoft JhengHei", sans-serif; padding-bottom: 70px; /* 留給底部 Tab 空間 */ }
+        body { background-color: var(--bg-color); font-family: "Microsoft JhengHei", sans-serif; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
         /* 頂部標題 */
-        .header { background: linear-gradient(135deg, #800000 0%, #a01515 100%); color: white; padding: 20px 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .header h1 { font-size: 1.2rem; font-weight: bold; margin: 0; }
-        .header small { opacity: 0.8; font-size: 0.8rem; }
+        .header { background: linear-gradient(135deg, #800000 0%, #a01515 100%); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .header h1 { font-size: 1.1rem; font-weight: bold; margin: 0; letter-spacing: 1px; }
+        .header small { opacity: 0.85; font-size: 0.75rem; }
 
         /* 狀態列 */
-        .status-bar { padding: 8px; text-align: center; font-size: 0.9rem; font-weight: bold; background: #fff3cd; color: #664d03; transition: all 0.3s; }
+        .status-bar { padding: 8px; text-align: center; font-size: 0.85rem; font-weight: bold; background: #fff3cd; color: #664d03; transition: all 0.3s; }
         .status-open { background: #d1e7dd; color: #0f5132; }
         .status-closed { background: #f8d7da; color: #842029; }
 
         /* 容器 */
-        .container-box { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        .container-box { max-width: 600px; margin: 15px auto; padding: 0 15px; }
 
         /* === 報到區塊 === */
         .view-section { display: none; animation: fadeIn 0.3s; }
         .view-section.active { display: block; }
         
-        .scan-card { background: white; border-radius: 16px; padding: 30px 20px; text-align: center; box-shadow: var(--card-shadow); }
-        .big-input { width: 100%; height: 50px; text-align: center; font-size: 1.2rem; border: 2px solid #ddd; border-radius: 8px; margin: 20px 0; outline: none; }
-        .big-input:focus { border-color: var(--primary-color); }
+        .scan-card { background: white; border-radius: 16px; padding: 30px 20px; text-align: center; box-shadow: var(--card-shadow); border: 1px solid #fff; }
+        .big-input { width: 100%; height: 55px; text-align: center; font-size: 1.3rem; border: 2px solid #e0e0e0; border-radius: 12px; margin: 20px 0; outline: none; background: #f9f9f9; transition: 0.2s; }
+        .big-input:focus { border-color: var(--primary-color); background: white; box-shadow: 0 0 0 4px rgba(128,0,0,0.1); }
         
-        .profile-card { background: white; border-radius: 16px; padding: 20px; text-align: center; border: 1px solid #eee; margin-bottom: 15px; }
-        .avatar { width: 70px; height: 70px; background: #f0f0f0; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #aaa; }
-        .user-name { font-size: 1.5rem; font-weight: bold; color: #333; }
-        .user-dept { background: #eee; padding: 2px 10px; border-radius: 12px; font-size: 0.9rem; color: #555; }
-        .verify-box { background: #fff8e1; padding: 15px; border-radius: 10px; border: 1px dashed #e6c07b; margin-top: 15px; }
-        .code-input { letter-spacing: 5px; font-size: 1.5rem; text-align: center; width: 120px; margin: 10px auto; }
+        .profile-card { background: white; border-radius: 16px; padding: 25px 20px; text-align: center; box-shadow: var(--card-shadow); }
+        .avatar { width: 80px; height: 80px; background: #f0f0f0; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #bbb; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .user-name { font-size: 1.6rem; font-weight: bold; color: #333; margin-bottom: 5px; }
+        .user-dept { background: #eee; padding: 3px 12px; border-radius: 15px; font-size: 0.9rem; color: #555; display: inline-block; }
+        .user-eid { color: var(--primary-color); font-weight: bold; font-family: monospace; font-size: 1.1rem; margin-top: 10px; display: block; }
+
+        .verify-box { background: #fffdf5; padding: 20px; border-radius: 12px; border: 1px dashed #e6c07b; margin-top: 20px; }
+        .code-input { letter-spacing: 8px; font-size: 1.8rem; text-align: center; width: 140px; margin: 10px auto; border: 1px solid #ccc; border-radius: 8px; }
 
         /* 結果頁 (成功) */
         .result-card { background: white; border-radius: 16px; padding: 40px 20px; text-align: center; box-shadow: var(--card-shadow); }
-        .icon-success { color: #198754; font-size: 4rem; margin-bottom: 15px; }
-        .result-time { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 20px; font-size: 0.9rem; color: #666; }
+        .icon-success { color: #198754; font-size: 5rem; margin-bottom: 20px; animation: bounceIn 0.5s; }
+        .result-time { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-top: 25px; font-size: 0.9rem; color: #666; border: 1px solid #eee; }
 
         /* === 中獎名單區塊 === */
-        .winner-card { background: white; border-radius: 12px; margin-bottom: 15px; overflow: hidden; box-shadow: var(--card-shadow); border-left: 5px solid var(--primary-color); }
-        .prize-title { background: #f8f9fa; padding: 10px 15px; font-weight: bold; font-size: 1.1rem; color: #333; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .prize-count { font-size: 0.8rem; background: #800000; color: white; padding: 2px 8px; border-radius: 10px; }
-        .winner-list { padding: 10px 15px; display: flex; flex-wrap: wrap; gap: 8px; }
-        .winner-tag { background: #fff0f0; color: #800000; border: 1px solid #ffcccc; padding: 5px 10px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; flex: 1 1 40%; text-align: center; white-space: nowrap; }
+        .winner-card { background: white; border-radius: 12px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary-color); }
+        .prize-title { background: #fff; padding: 12px 15px; font-weight: bold; font-size: 1.05rem; color: #333; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .prize-count { font-size: 0.75rem; background: #800000; color: white; padding: 2px 8px; border-radius: 10px; }
+        .winner-list { padding: 12px 15px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .winner-tag { background: #fff5f5; color: #800000; border: 1px solid #ffe0e0; padding: 6px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; flex: 1 1 45%; text-align: center; }
+        .winner-tag small { display: block; font-weight: normal; color: #999; font-size: 0.8rem; margin-top: 2px; }
         
-        .empty-state { text-align: center; padding: 50px 0; color: #999; }
-        .empty-state i { font-size: 3rem; margin-bottom: 10px; opacity: 0.5; }
+        .empty-state { text-align: center; padding: 60px 0; color: #999; }
+        .empty-state i { font-size: 4rem; margin-bottom: 15px; opacity: 0.3; }
 
-        /* === 底部導航列 === */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); display: flex; height: 60px; z-index: 1000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; text-decoration: none; font-size: 0.8rem; transition: 0.2s; cursor: pointer; }
-        .nav-item i { font-size: 1.4rem; margin-bottom: 2px; }
-        .nav-item.active { color: var(--primary-color); }
-        .nav-item.active i { transform: scale(1.1); }
+        /* === 底部導航列 (Tab Bar) === */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -2px 15px rgba(0,0,0,0.08); display: flex; height: 65px; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aaa; text-decoration: none; font-size: 0.75rem; transition: 0.2s; cursor: pointer; border-top: 3px solid transparent; }
+        .nav-item i { font-size: 1.5rem; margin-bottom: 4px; transition: 0.2s; }
+        .nav-item.active { color: var(--primary-color); border-top-color: var(--primary-color); background: #fffcfc; }
+        .nav-item.active i { transform: translateY(-2px); }
 
-        /* Loader */
-        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); display:none; justify-content:center; align-items:center; z-index:2000; }
+        /* Debug Console */
+        #debug-console { display: none; background: #333; color: #0f0; padding: 10px; font-size: 12px; position: fixed; bottom: 70px; left: 0; width: 100%; max-height: 150px; overflow-y: auto; z-index: 9999; opacity: 0.9; }
+        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); display:none; justify-content:center; align-items:center; z-index:2000; backdrop-filter: blur(2px); }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounceIn { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -80,16 +85,18 @@
 
 <div id="status-bar" class="status-bar">連線中...</div>
 
+<div id="debug-console"></div>
+
 <div class="container-box">
     
     <div id="tab-checkin" class="view-section active">
         
         <div id="view-scan" class="scan-card">
-            <i class="fa-solid fa-qrcode fa-3x text-secondary mb-3"></i>
-            <h5 class="fw-bold text-secondary">報到專區</h5>
-            <p class="text-muted small">請輸入員工編號或掃描 QR Code</p>
+            <i class="fa-solid fa-qrcode fa-3x text-secondary mb-3" style="opacity: 0.5;"></i>
+            <h5 class="fw-bold text-dark">報到專區</h5>
+            <p class="text-muted small mb-0">請輸入員工編號或掃描 QR Code</p>
             <input type="text" id="input-id" class="big-input" placeholder="員工編號 / UUID" autocomplete="off">
-            <button id="btn-lookup" class="btn btn-danger w-100 py-2 fw-bold shadow-sm">查詢資料</button>
+            <button id="btn-lookup" class="btn btn-danger w-100 py-3 fw-bold shadow-sm rounded-3">查詢資料</button>
         </div>
 
         <div id="view-confirm" style="display:none;">
@@ -97,26 +104,26 @@
                 <div class="avatar"><i class="fa-solid fa-user"></i></div>
                 <div id="conf-name" class="user-name"></div>
                 <div id="conf-dept" class="user-dept"></div>
-                <div id="conf-eid" class="text-danger fw-bold mt-2"></div>
+                <span id="conf-eid" class="user-eid"></span>
             </div>
 
-            <div id="mode-auto" style="display:none; text-align:center;">
+            <div id="mode-auto" style="display:none; text-align:center; margin-top: 20px;">
                 <div class="spinner-border text-danger mb-2" role="status"></div>
-                <p class="text-muted">資料確認無誤，自動報到中...</p>
+                <p class="text-muted small">資料確認無誤，自動報到中...</p>
             </div>
 
             <div id="mode-code" class="verify-box" style="display:none;">
-                <label class="fw-bold text-dark mb-2">請輸入現場 4 位數驗證碼</label>
+                <label class="fw-bold text-dark mb-2 d-block text-center">請輸入現場 4 位數驗證碼</label>
                 <input type="tel" id="input-verify-code" class="form-control code-input" maxlength="4" placeholder="8899">
-                <button id="btn-submit" class="btn btn-primary w-100 fw-bold mt-3">確認報到</button>
+                <button id="btn-submit" class="btn btn-primary w-100 fw-bold mt-3 py-3 rounded-3">確認報到</button>
             </div>
             
-            <button onclick="app.reset()" class="btn btn-light w-100 mt-3 text-secondary">取消</button>
+            <button onclick="app.reset()" class="btn btn-link w-100 mt-3 text-secondary text-decoration-none">取消 / 重新查詢</button>
         </div>
 
         <div id="view-success" class="result-card" style="display:none;">
             <i class="fa-solid fa-circle-check icon-success"></i>
-            <h2 class="fw-bold mb-2">報到成功</h2>
+            <h2 class="fw-bold mb-2 text-dark">報到成功</h2>
             <p class="text-muted">歡迎參加 2026 新春團拜</p>
             
             <div class="result-time">
@@ -124,22 +131,23 @@
                 <strong id="success-time" class="text-dark fs-5">--:--:--</strong>
             </div>
             
-            <div class="mt-4">
-                <p class="small text-secondary">您已完成報到手續。<br>請留意現場廣播或切換至「中獎名單」查看開獎資訊。</p>
+            <div class="mt-4 p-3 bg-light rounded text-start">
+                <p class="small text-secondary mb-0"><i class="fa-solid fa-info-circle me-1"></i> 您已完成報到手續，請直接入場。</p>
+                <p class="small text-secondary mb-0 mt-2"><i class="fa-solid fa-trophy me-1"></i> 您可以切換下方 <b>「中獎名單」</b> 查看開獎資訊。</p>
             </div>
         </div>
     </div>
 
     <div id="tab-winners" class="view-section">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold m-0 border-start border-4 border-danger ps-2">即時開獎資訊</h5>
-            <small id="last-update" class="text-muted" style="font-size:0.75rem;">剛剛更新</small>
+        <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+            <h5 class="fw-bold m-0 border-start border-4 border-danger ps-2 text-dark">即時開獎資訊</h5>
+            <small id="last-update" class="text-muted bg-white px-2 py-1 rounded border" style="font-size:0.75rem;">更新中...</small>
         </div>
         
         <div id="winner-list-container">
             <div class="empty-state">
-                <i class="fa-solid fa-gift"></i>
-                <p>目前尚未開出任何獎項</p>
+                <div class="spinner-border text-secondary mb-3" role="status"></div>
+                <p>載入中...</p>
             </div>
         </div>
     </div>
@@ -152,120 +160,122 @@
         <span>線上報到</span>
     </div>
     <div class="nav-item" onclick="app.switchTab('winners', this)">
-        <i class="fa-solid fa-trophy"></i>
+        <i class="fa-solid fa-gift"></i>
         <span>中獎名單</span>
     </div>
 </div>
 
 <div id="loader" class="loader-overlay">
-    <div class="spinner-border text-danger" role="status"></div>
+    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status"></div>
 </div>
 
 <script>
-// ★ 請再次確認您的 API 網址 (必須是 https)
+// ★ API 設定 (確保網址正確且支援 HTTPS)
 const API_BASE = 'https://personnel.kncyu.link/api/checkin/index.php'; 
+
+// 除錯工具
+function logDebug(msg) {
+    const el = document.getElementById('debug-console');
+    el.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+    console.log(msg);
+}
 
 const app = {
     state: {
-        mode: 'AUTO',
+        mode: 'AUTO',     // 報到模式
         currentUser: null,
-        locked: false,
+        locked: false,    // 是否鎖定 (非開放時間)
         timer: null,
-        lastWinnerHash: ''
+        lastWinnerHash: '', // 用於檢查中獎名單是否有更新
+        isPolling: false
     },
 
     init() {
-        console.log("App Initializing...");
+        logDebug("App Initializing...");
         this.checkUrlParams();
-        this.startStatusSync(); // 這是關鍵，它會去連線 API
-        this.startWinnerSync();
+        this.startStatusSync(); // 啟動狀態同步
+        this.startWinnerSync(); // 啟動中獎名單同步
 
+        // 事件綁定
         document.getElementById('input-id').addEventListener('keypress', e => { if(e.key==='Enter') this.lookupUser(); });
         document.getElementById('btn-lookup').onclick = () => this.lookupUser();
         document.getElementById('btn-submit').onclick = () => this.submitCheckIn();
         document.getElementById('input-verify-code').addEventListener('keypress', e => { if(e.key==='Enter') this.submitCheckIn(); });
     },
 
-    // ... (switchTab, checkUrlParams 保持不變) ...
+    // --- Tab 切換 ---
     switchTab(tabName, el) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         if(el) el.classList.add('active');
+        
         document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
         document.getElementById('tab-' + tabName).classList.add('active');
+        
         window.scrollTo(0, 0);
     },
 
+    // --- 報到邏輯 ---
     checkUrlParams() {
         const p = new URLSearchParams(location.search);
         const code = p.get('uuid') || p.get('eid');
         if(code) {
             document.getElementById('input-id').value = code;
-            // 等待一下再查詢，確保 API 狀態已更新
-            setTimeout(() => this.lookupUser(), 1000);
+            setTimeout(() => this.lookupUser(), 500);
         }
     },
 
-    // ★★★ 重點修正：加強連線錯誤的顯示 ★★★
+    // 系統狀態同步 (每 3 秒)
     startStatusSync() {
         const update = async () => {
             try {
-                // 加一個 timestamp 防止快取
+                // 加上 timestamp 防止快取
                 const res = await fetch(`${API_BASE}?action=get_system_status&t=${Date.now()}`);
-                
-                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                if(!res.ok) throw new Error(`HTTP ${res.status}`);
                 
                 const json = await res.json();
-                
                 if(json.success) {
                     const d = json.data;
                     this.updateStatusUI(d.status, d.message);
                     this.state.mode = d.checkin_mode_type || 'AUTO';
                     
-                    // 若在確認頁但系統關閉
+                    // 若在確認頁但系統關閉，踢回首頁
                     const confirmView = document.getElementById('view-confirm');
                     if (d.status !== 'OPEN' && confirmView.style.display !== 'none') {
                         alert("系統已關閉");
                         this.reset();
                     }
                 } else {
-                    this.updateStatusUI('ERROR', json.message || 'API Error');
+                    logDebug("Status API Error: " + json.message);
                 }
             } catch(e) {
-                console.error("Status Sync Error:", e);
-                // 在狀態列顯示具體錯誤
-                this.updateStatusUI('ERROR', '連線失敗 (請檢查 API)');
+                logDebug("Connect Error: " + e.message);
+                this.updateStatusUI('ERROR', '連線失敗，請檢查網路');
+                document.getElementById('debug-console').style.display = 'block'; // 顯示錯誤控制台
             }
         };
         update();
-        setInterval(update, 5000);
+        setInterval(update, 3000);
     },
 
     updateStatusUI(status, msg) {
         const bar = document.getElementById('status-bar');
         bar.innerText = msg;
-        
         let cls = 'status-wait';
-        if (status === 'OPEN') cls = 'status-open';
-        else if (status === 'CLOSED') cls = 'status-closed';
-        else if (status === 'ERROR') cls = 'status-closed'; // 用紅色顯示錯誤
+        if(status === 'OPEN') cls = 'status-open';
+        else if(status === 'CLOSED' || status === 'ENDED') cls = 'status-closed';
+        else if(status === 'ERROR') cls = 'status-closed';
         
         bar.className = `status-bar ${cls}`;
-        
-        // 鎖定邏輯
         this.state.locked = (status !== 'OPEN');
         document.getElementById('btn-lookup').disabled = this.state.locked;
         
-        // 如果是連線錯誤，輸入框也要鎖
         if (status === 'ERROR') {
-            document.getElementById('input-id').disabled = true;
-            document.getElementById('input-id').placeholder = "無法連線到伺服器";
+            document.getElementById('input-id').placeholder = "連線異常...";
         } else {
-            document.getElementById('input-id').disabled = this.state.locked;
             document.getElementById('input-id').placeholder = "員工編號 / UUID";
         }
     },
 
-    // ... (其餘 lookupUser, showConfirm, submitCheckIn, showSuccess, reset, setLoading, startWinnerSync, renderWinners 保持不變) ...
     async lookupUser() {
         if(this.state.locked) return alert("系統目前未開放");
         const code = document.getElementById('input-id').value.trim();
@@ -278,7 +288,7 @@ const app = {
             
             if(json.success) {
                 if(json.data.has_checked_in) {
-                    this.showSuccess(json.data.check_in_time, true);
+                    this.showSuccess(json.data.check_in_time, true); // 已報到
                 } else {
                     this.state.currentUser = { ...json.data, qrcode: code };
                     this.showConfirm();
@@ -287,7 +297,10 @@ const app = {
                 alert(json.message);
                 document.getElementById('input-id').value = '';
             }
-        } catch(e) { alert("連線錯誤: " + e.message); }
+        } catch(e) { 
+            alert("查詢失敗，請檢查網路連線");
+            logDebug("Lookup Error: " + e.message);
+        }
         finally { this.setLoading(false); }
     },
 
@@ -303,7 +316,7 @@ const app = {
         if(this.state.mode === 'AUTO') {
             document.getElementById('mode-auto').style.display = 'block';
             document.getElementById('mode-code').style.display = 'none';
-            setTimeout(() => this.submitCheckIn(), 1500);
+            setTimeout(() => this.submitCheckIn(), 1500); // 1.5秒後自動送出
         } else {
             document.getElementById('mode-auto').style.display = 'none';
             document.getElementById('mode-code').style.display = 'block';
@@ -319,6 +332,7 @@ const app = {
         try {
             const res = await fetch(`${API_BASE}?action=check_in`, {
                 method: 'POST',
+                headers: {'Content-Type': 'application/json'}, // 確保 Header 正確
                 body: JSON.stringify({
                     qrcode: this.state.currentUser.qrcode,
                     verify_code: verifyCode
@@ -331,7 +345,10 @@ const app = {
                 alert(json.message);
                 this.reset();
             }
-        } catch(e) { alert("報到失敗"); }
+        } catch(e) { 
+            alert("報到失敗: " + e.message);
+            logDebug("Checkin Error: " + e.message);
+        }
         finally { this.setLoading(false); }
     },
 
@@ -362,11 +379,14 @@ const app = {
 
     setLoading(bool) { document.getElementById('loader').style.display = bool ? 'flex' : 'none'; },
 
+    // --- 中獎名單同步 (每 15 秒) ---
     startWinnerSync() {
         const fetchWinners = async () => {
             try {
+                // 呼叫 action=get_winners
                 const res = await fetch(`${API_BASE}?action=get_winners&t=${Date.now()}`);
                 const json = await res.json();
+                
                 if(json.success) {
                     const newHash = JSON.stringify(json.data);
                     if(newHash !== this.state.lastWinnerHash) {
@@ -378,28 +398,37 @@ const app = {
             } catch(e) { console.error("Winner sync failed"); }
         };
         fetchWinners();
-        setInterval(fetchWinners, 15000);
+        setInterval(fetchWinners, 15000); 
     },
 
     renderWinners(data) {
         const container = document.getElementById('winner-list-container');
-        if(data.length === 0) {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-gift"></i><p>尚未開獎</p></div>`;
+        if(!data || data.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-gift"></i><p>目前尚未開出任何獎項</p></div>`;
             return;
         }
+
         let html = '';
         data.forEach(prize => {
             let winnersHtml = '';
             prize.winners.forEach(w => {
-                winnersHtml += `<div class="winner-tag">${w.name} <small>(${w.employee_id})</small></div>`;
+                // 顯示格式：王小明 (112233)
+                winnersHtml += `
+                    <div class="winner-tag">
+                        ${w.name} 
+                        <small>(${w.employee_id})</small>
+                    </div>`;
             });
+
             html += `
                 <div class="winner-card">
                     <div class="prize-title">
                         <span>${prize.prize_name}</span>
                         <span class="prize-count">${prize.winners.length} 人</span>
                     </div>
-                    <div class="winner-list">${winnersHtml}</div>
+                    <div class="winner-list">
+                        ${winnersHtml}
+                    </div>
                 </div>
             `;
         });
@@ -407,6 +436,7 @@ const app = {
     }
 };
 
+// 啟動 App
 app.init();
 </script>
 </body>
