@@ -2,442 +2,287 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>國立嘉義大學 - 2026 新春團拜報到</title>
-    <meta name="theme-color" content="#b91c1c">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>國立嘉義大學 - 2026 新春團拜報到系統</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
-        :root {
-            --primary: #b91c1c;
-            --bg-gradient: linear-gradient(135deg, #fef2f2 0%, #f3f4f6 100%);
-            --text-main: #1f2937;
-            --card-radius: 24px;
+        body { 
+            background-color: #f0f2f5; 
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; 
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --primary: #ef4444;
-                --bg-gradient: linear-gradient(135deg, #1f1f1f 0%, #000000 100%);
-                --text-main: #f3f4f6;
-            }
-            .main-card { background: rgba(30, 30, 30, 0.95) !important; box-shadow: none !important; border-top-color: #ef4444 !important; }
-            .profile-card { background: #2d2d2d !important; border-color: #444 !important; border-left-color: #ef4444 !important; }
-            .code-input { background: #333 !important; color: #fff !important; border-color: #555 !important; }
-            h1 { color: #ef4444 !important; }
-            .subtitle { color: #9ca3af !important; }
-        }
-
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background: var(--bg-gradient);
-            min-height: 100dvh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; color: var(--text-main);
-            overflow-x: hidden;
-            -webkit-user-select: none; user-select: none;
-            transition: background 0.3s;
-        }
-
-        /* 斷線提示條 */
-        #offline-banner {
-            position: fixed; top: 0; left: 0; width: 100%; height: 40px;
-            background: #ef4444; color: white; display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: bold; z-index: 9999;
-            transform: translateY(-100%); transition: transform 0.3s; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        #offline-banner.show { transform: translateY(0); }
-
         .main-card {
-            background: rgba(255, 255, 255, 0.95);
-            width: 100%; max-width: 420px;
-            padding: 30px 25px; border-radius: var(--card-radius);
-            box-shadow: 0 20px 40px -5px rgba(0,0,0,0.1);
-            border-top: 6px solid var(--primary);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            position: relative; overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
         }
-
-        h1 { margin: 0 0 5px 0; font-size: 26px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
-        h1 span { font-size: 0.8em; color: inherit; opacity: 0.8; }
-        .subtitle { font-size: 14px; color: #6b7280; margin-bottom: 25px; font-weight: 500; letter-spacing: 1px; }
-
-        .profile-card {
-            background: #ffffff; border: 1px solid #e5e7eb; border-left: 5px solid var(--primary);
-            border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: left;
-            animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        .header-section {
+            background: linear-gradient(135deg, #800000 0%, #a31a1a 100%); /* 嘉大紅 */
+            color: white;
+            padding: 30px;
+            text-align: center;
         }
-        .profile-value { font-size: 18px; font-weight: 700; font-family: 'Roboto Mono', monospace; }
-        .profile-value.highlight { color: var(--primary); font-size: 24px; font-family: 'Noto Sans TC'; margin-bottom: 5px; display: block;}
-
-        /* 輸入框優化 (防止 iOS 縮放) */
-        .code-input {
-            width: 100%; padding: 16px; font-size: 32px; font-weight: 700; text-align: center;
-            letter-spacing: 12px; border: 2px solid #e5e7eb; border-radius: 12px;
-            background: #f9fafb; color: var(--text-main); outline: none;
-            text-transform: uppercase; margin-bottom: 15px;
-            font-family: 'Roboto Mono', monospace;
+        .status-bar {
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
         }
-        .code-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(185,28,28,0.1); background: #fff; }
+        /* 狀態顏色 */
+        .status-open { background-color: #d1e7dd; color: #0f5132; }   /* 綠色: 進行中 */
+        .status-closed { background-color: #f8d7da; color: #842029; } /* 紅色: 已結束/錯誤 */
+        .status-wait { background-color: #fff3cd; color: #664d03; }   /* 黃色: 未開始 */
 
-        .btn {
-            width: 100%; padding: 16px; border: none; border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary) 0%, #991b1b 100%);
-            color: white; font-size: 18px; font-weight: 700; cursor: pointer;
-            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { background: #d1d5db; cursor: not-allowed; transform: none; }
-
-        /* 狀態訊息 */
-        .status-msg { margin: 15px 0; padding: 15px; border-radius: 8px; text-align: left; border-left: 4px solid; display: none; line-height: 1.5; font-size: 14px; }
-        .status-error { background: #fef2f2; color: #991b1b; border-color: #ef4444; }
-        .status-wait { background: #fff7ed; color: #c2410c; border-color: #f97316; }
-
-        .hidden { display: none !important; }
-        .shake { animation: shake 0.5s; }
+        .content-section { padding: 40px; background: white; }
         
-        /* Loading Spinner */
-        .spinner {
-            width: 40px; height: 40px; border: 4px solid #ddd;
-            border-top-color: var(--primary); border-radius: 50%;
-            animation: spin 0.8s linear infinite; margin: 20px auto;
+        .big-input { 
+            height: 70px; 
+            font-size: 28px; 
+            text-align: center; 
+            letter-spacing: 2px;
+            border: 2px solid #ced4da;
+            border-radius: 10px !important;
+        }
+        .big-input:focus {
+            border-color: #800000;
+            box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
         }
 
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .result-box {
+            display: none; /* 預設隱藏 */
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            animation: slideDown 0.4s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .server-time {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
-    <div id="offline-banner">⚠️ 網路連線中斷 (Offline)</div>
 
-    <main class="main-card">
-        <h1><span>2026</span> 新春團拜</h1>
-        <p class="subtitle">國立嘉義大學 人事室 敬邀</p>
-
-        <div id="view-loading">
-            <div class="spinner"></div>
-            <div style="font-weight:bold; color:#666;">系統連線中...</div>
-            <div id="loading-hint" style="font-size:12px; color:#999; margin-top:5px;"></div>
+    <div class="main-card">
+        <div class="header-section">
+            <h1 class="mb-0 fw-bold">國立嘉義大學</h1>
+            <p class="mb-0 mt-2 fs-5">2026 新春團拜報到系統</p>
         </div>
 
-        <div id="view-content" class="hidden">
-            <div class="profile-card">
-                <div style="font-size:12px; color:#999; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Participant Info</div>
-                <div class="profile-value highlight" id="disp-name"></div>
-                <div style="display:flex; justify-content:space-between; border-top:1px dashed #ddd; padding-top:10px; margin-top:5px;">
-                    <div>
-                        <div style="font-size:11px; color:#999;">員工編號</div>
-                        <div class="profile-value" id="disp-eid" style="font-size:16px; color:#555;"></div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:11px; color:#999;">單位</div>
-                        <div class="profile-value" id="disp-dept" style="font-size:16px; color:#555;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="status-box" class="status-msg"></div>
-
-            <div id="countdown-box" class="status-msg status-wait hidden">
-                <strong>⏳ 報到尚未開始</strong><br>
-                距離開放還有：<span id="timer-val" style="font-family:'Roboto Mono'; font-weight:bold;">--:--</span>
-            </div>
-
-            <div id="section-input" class="hidden">
-                <label style="display:block; margin-bottom:8px; font-weight:bold; color:var(--text-main);">請輸入現場驗證碼</label>
-                <input type="text" id="code-input" maxlength="4" placeholder="CODE" class="code-input" inputmode="text" autocomplete="off">
-                <button id="btn-submit" class="btn">確認報到</button>
-            </div>
-
-            <div id="section-success" class="hidden" style="text-align:center; padding:10px;">
-                <div style="font-size:70px; color:#10b981; margin-bottom:10px; animation: slideDown 0.5s;">🎉</div>
-                <h2 style="color:#10b981; margin:0 0 10px 0;">報到成功</h2>
-                <p style="color:#666; margin-bottom:20px;">祝您幸運中大獎！</p>
-                <button onclick="location.reload()" class="btn" style="background:#f3f4f6; color:#4b5563; box-shadow:none;">
-                    <i class="fa fa-refresh"></i> 重新整理
-                </button>
-            </div>
+        <div id="system-status-bar" class="status-wait">
+            正在連線伺服器...
         </div>
 
-        <div id="view-error" class="hidden" style="color:#ef4444; padding:20px;">
-            <div style="font-size:60px; margin-bottom:15px;">❌</div>
-            <h3 id="error-title" style="margin:0;">連結無效</h3>
-            <p id="error-desc" style="color:#666; font-size:14px; margin-top:10px;"></p>
-            <button onclick="location.reload()" class="btn" style="background:#f3f4f6; color:#4b5563; margin-top:20px;">重試</button>
-        </div>
-    </main>
+        <div class="content-section">
+            
+            <label for="qrcode-input" class="form-label h4 mb-4 text-center d-block">
+                請掃描 QR Code 或輸入識別碼
+            </label>
 
-    <footer style="margin-top:30px; font-size:12px; color:#999; text-align:center; opacity:0.6;">
-        © 2026 NCYU Personnel Office<br>System Version: 3.1.0 (Enterprise)
-    </footer>
+            <div class="input-group mb-3">
+                <input type="text" id="qrcode-input" class="form-control big-input" 
+                       placeholder="系統準備中..." disabled autocomplete="off">
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button class="btn btn-secondary btn-lg" id="btn-submit" disabled>報到確認</button>
+            </div>
+
+            <div id="result-area" class="result-box alert-success">
+                <h2 id="res-title" class="fw-bold">報到成功</h2>
+                <div class="fs-4 mt-2" id="res-msg">王小明 (人事室)</div>
+                <div class="text-muted mt-2" id="res-time">時間: 10:00:00</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="server-time" id="server-time-display">Server Time: --:--:--</div>
 
     <script>
-        // === 核心設定 ===
-        let API_URL = "https://personnel.kncyu.link/api/checkin/index.php"; // 預設值 (Fallback)
-        
-        // State
-        const state = { eid: null, uuid: null, submitting: false };
-        const els = {
-            loading: document.getElementById('view-loading'),
-            hint: document.getElementById('loading-hint'),
-            content: document.getElementById('view-content'),
-            error: document.getElementById('view-error'),
-            errorTitle: document.getElementById('error-title'),
-            errorDesc: document.getElementById('error-desc'),
-            inputSec: document.getElementById('section-input'),
-            successSec: document.getElementById('section-success'),
-            statusBox: document.getElementById('status-box'),
-            countdownBox: document.getElementById('countdown-box'),
-            timerVal: document.getElementById('timer-val'),
-            input: document.getElementById('code-input'),
-            btn: document.getElementById('btn-submit')
-        };
+        // 取得 DOM 元素
+        const qrcodeInput = document.getElementById('qrcode-input');
+        const btnSubmit = document.getElementById('btn-submit');
+        const statusBar = document.getElementById('system-status-bar');
+        const resultArea = document.getElementById('result-area');
+        const serverTimeDisplay = document.getElementById('server-time-display');
 
-        // 音效 (使用 Base64 避免找不到檔案)
-        // 這裡僅示範邏輯，實際請確認路徑或使用 Base64
-        const audioSuccess = new Audio('assets/sounds/success.mp3'); 
-        const audioError = new Audio('assets/sounds/error.mp3');
+        let isSystemLocked = true; // 全域鎖定標記
 
-        // === 初始化流程 ===
-        document.addEventListener("DOMContentLoaded", async () => {
-            setupWakeLock();      // 1. 螢幕恆亮
-            setupNetworkCheck();  // 2. 斷線偵測
-            
-            // 3. ★★★ 關鍵：動態載入系統設定 ★★★
-            await loadSystemConfig();
-
-            // 4. 解析參數並執行
-            if(parseParams()) {
-                await checkStatus();
-                setupEvents();
-            } else {
-                showError("參數錯誤", "無效的 QR Code 或連結已過期。");
+        // ==========================================
+        // 核心功能 1: 定時檢查系統狀態 (Polling)
+        // ==========================================
+        async function checkSystemStatus() {
+            try {
+                // 呼叫 IPC
+                const res = await window.electronAPI.getSystemStatus();
+                
+                if (res.success) {
+                    updateStatusUI(res.data);
+                } else {
+                    // 連線失敗或 API 錯誤
+                    setUIState('ERROR', '無法連線至伺服器');
+                }
+            } catch (err) {
+                console.error("Status Check Error", err);
+                setUIState('ERROR', '系統發生錯誤');
             }
+        }
+
+        function updateStatusUI(data) {
+            // 更新右下角時間
+            serverTimeDisplay.innerText = `Server Time: ${data.server_time}`;
+
+            // 根據後端回傳的狀態碼改變介面
+            switch(data.status_code) {
+                case 'OPEN':
+                    setUIState('OPEN', `🟢 報到進行中 (截止時間: ${data.end_time.split(' ')[1]})`);
+                    break;
+                case 'NOT_STARTED':
+                    setUIState('LOCKED', `⏳ 報到尚未開始 (開放時間: ${data.start_time})`);
+                    break;
+                case 'CLOSED':
+                    setUIState('LOCKED', `🛑 報到時間已截止`);
+                    break;
+                default:
+                    setUIState('ERROR', `⚠️ 狀態異常: ${data.status_message}`);
+            }
+        }
+
+        // 控制 UI 鎖定/解鎖與顏色
+        function setUIState(state, message) {
+            statusBar.innerText = message;
+
+            if (state === 'OPEN') {
+                statusBar.className = 'status-bar status-open';
+                
+                // 只有從鎖定變成開啟時，才主動解鎖輸入框
+                if (isSystemLocked) {
+                    isSystemLocked = false;
+                    qrcodeInput.disabled = false;
+                    qrcodeInput.placeholder = "等待掃描...";
+                    btnSubmit.className = "btn btn-primary btn-lg";
+                    btnSubmit.disabled = false;
+                    qrcodeInput.focus();
+                }
+            } else {
+                // 鎖定狀態 (未開始、已結束、錯誤)
+                isSystemLocked = true;
+                statusBar.className = (state === 'ERROR') ? 'status-bar status-closed' : 
+                                      (state === 'LOCKED' && message.includes('截止')) ? 'status-bar status-closed' : 'status-bar status-wait';
+                
+                qrcodeInput.disabled = true;
+                qrcodeInput.placeholder = "⛔ 禁止輸入";
+                btnSubmit.className = "btn btn-secondary btn-lg";
+                btnSubmit.disabled = true;
+            }
+        }
+
+        // ==========================================
+        // 核心功能 2: 處理報到送出
+        // ==========================================
+        async function handleCheckIn() {
+            const code = qrcodeInput.value.trim();
+            if (!code) return;
+
+            // 1. 暫時鎖定介面，防止重複 Enter
+            qrcodeInput.disabled = true;
+            btnSubmit.disabled = true;
+            statusBar.innerText = "⏳ 處理中...";
+
+            try {
+                // 2. 呼叫 IPC 進行報到
+                const res = await window.electronAPI.participantCheckIn(code);
+                
+                // 3. 顯示結果
+                showResult(res);
+
+            } catch (err) {
+                showResult({ success: false, message: "程式發生未知錯誤" });
+            } finally {
+                // 4. 恢復輸入狀態 (如果系統仍是開放的)
+                if (!isSystemLocked) {
+                    qrcodeInput.disabled = false;
+                    btnSubmit.disabled = false;
+                    qrcodeInput.value = ''; // 清空
+                    qrcodeInput.focus();    // 重新聚焦
+                    // 恢復狀態文字
+                    const res = await window.electronAPI.getSystemStatus();
+                    if(res.success && res.data.status_code === 'OPEN') {
+                        statusBar.innerText = `🟢 報到進行中 (截止時間: ${res.data.end_time.split(' ')[1]})`;
+                    }
+                }
+            }
+        }
+
+        function showResult(res) {
+            resultArea.style.display = 'block';
+            
+            // 移除舊的顏色類別
+            resultArea.classList.remove('alert-success', 'alert-warning', 'alert-danger');
+
+            if (res.success) {
+                if (res.is_repeat) {
+                    // 重複報到 (黃色)
+                    resultArea.classList.add('alert-warning');
+                    document.getElementById('res-title').innerText = '⚠️ 重複報到';
+                    document.getElementById('res-msg').innerText = `${res.message}`;
+                    document.getElementById('res-time').innerText = `上次報到: ${res.data.checkin_time}`;
+                } else {
+                    // 成功 (綠色)
+                    resultArea.classList.add('alert-success');
+                    document.getElementById('res-title').innerText = '🎉 報到成功';
+                    document.getElementById('res-msg').innerText = `${res.data.department} - ${res.data.name}`;
+                    document.getElementById('res-time').innerText = `時間: ${res.data.checkin_time}`;
+                }
+            } else {
+                // 失敗 (紅色)
+                resultArea.classList.add('alert-danger');
+                document.getElementById('res-title').innerText = '❌ 失敗';
+                document.getElementById('res-msg').innerText = res.message;
+                document.getElementById('res-time').innerText = '';
+            }
+
+            // 5秒後自動淡出結果框
+            setTimeout(() => {
+                resultArea.style.display = 'none';
+            }, 5000);
+        }
+
+        // ==========================================
+        // 監聽事件
+        // ==========================================
+        btnSubmit.addEventListener('click', handleCheckIn);
+        
+        qrcodeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleCheckIn();
         });
 
-        // ★★★ 關鍵功能：從 IPC 載入設定 ★★★
-        async function loadSystemConfig() {
-            try {
-                els.hint.textContent = "讀取系統設定中...";
-                
-                // 檢查是否在 Electron 環境中
-                if (window.lotteryAPI && window.lotteryAPI.invoke) {
-                    console.log("[Client] Running in Electron, fetching config...");
-                    const config = await window.lotteryAPI.invoke('get-api-config'); // 呼叫 IPC
-                    
-                    if (config && config.api_url) {
-                        API_URL = config.api_url; // 覆蓋預設值
-                        console.log("[Client] API URL updated to:", API_URL);
-                    }
-                } else {
-                    console.log("[Client] Running in Browser, using default URL.");
-                }
-            } catch (e) {
-                console.warn("[Client] Config load failed, using fallback.", e);
-            }
-        }
+        // 頁面載入後立即檢查一次狀態
+        checkSystemStatus();
 
-        // 1. Wake Lock API (螢幕恆亮)
-        async function setupWakeLock() {
-            try {
-                if ('wakeLock' in navigator) {
-                    await navigator.wakeLock.request('screen');
-                }
-            } catch(e) {}
-        }
+        // 之後每 5 秒自動同步一次伺服器狀態
+        setInterval(checkSystemStatus, 5000);
 
-        // 2. Network Check
-        function setupNetworkCheck() {
-            const banner = document.getElementById('offline-banner');
-            const update = () => banner.classList.toggle('show', !navigator.onLine);
-            window.addEventListener('online', update);
-            window.addEventListener('offline', update);
-        }
-
-        // 3. Parse URL Params
-        function parseParams() {
-            const params = new URLSearchParams(window.location.search);
-            const data = params.get('data');
-            try {
-                if(data) {
-                    // Base64 Decode (UTF-8 Safe)
-                    const decoded = new TextDecoder().decode(Uint8Array.from(atob(data), c => c.charCodeAt(0)));
-                    const p = new URLSearchParams(decoded);
-                    state.eid = p.get('eid');
-                    state.uuid = p.get('uuid');
-                } else {
-                    state.eid = params.get('eid');
-                    state.uuid = params.get('uuid');
-                }
-                return state.eid && state.uuid;
-            } catch(e) { return false; }
-        }
-
-        // 4. Check Status API Call
-        async function checkStatus(code = null) {
-            try {
-                els.hint.textContent = "連線伺服器驗證中...";
-                
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s Timeout
-
-                const res = await fetch(`${API_URL}?t=${Date.now()}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ 
-                        employee_id: state.eid, 
-                        uuid: state.uuid, 
-                        checkin_code: code 
-                    }),
-                    signal: controller.signal,
-                    cache: 'no-store'
-                });
-                
-                clearTimeout(timeoutId);
-
-                if(!res.ok) throw new Error(`Server responded with ${res.status}`);
-                const data = await res.json();
-
-                // 渲染資訊
-                if(data.name) {
-                    document.getElementById('disp-name').textContent = data.name;
-                    document.getElementById('disp-eid').textContent = data.employee_id;
-                    document.getElementById('disp-dept').textContent = data.department;
-                    
-                    els.loading.classList.add('hidden');
-                    els.content.classList.remove('hidden');
-
-                    // 邏輯判斷
-                    if(data.success) {
-                        showSuccess(data.is_repeated);
-                    } else if (data.require_code) {
-                        // 需要驗證碼
-                        els.inputSec.classList.remove('hidden');
-                        els.statusBox.style.display = 'none';
-                        if(code) { 
-                             showMsg(data.message, 'error'); 
-                             vibrate(false);
-                             els.input.value = ''; // 清空重打
-                             els.input.focus();
-                        } else {
-                            // 第一次進入，聚焦輸入框
-                            setTimeout(() => els.input.focus(), 500);
-                        }
-                    } else if (data.start_time) {
-                        // 倒數計時
-                        els.inputSec.classList.add('hidden');
-                        startCountdown(data.start_time);
-                    } else {
-                        // 系統關閉或其他錯誤
-                        els.inputSec.classList.add('hidden');
-                        showMsg(data.message, 'error');
-                    }
-                } else {
-                    showError("查無此人", "資料庫無此記錄，請確認是否已匯入名單。");
-                }
-            } catch(e) {
-                console.error(e);
-                if(code) showMsg("連線失敗，請檢查網路", 'error');
-                else showError("連線失敗", "無法連接伺服器 (" + API_URL + ")<br>請檢查系統設定或網路連線。");
-            } finally {
-                state.submitting = false;
-                els.btn.innerHTML = "確認報到";
-                els.btn.disabled = false;
-            }
-        }
-
-        function showSuccess(isRepeated) {
-            els.inputSec.classList.add('hidden');
-            els.successSec.classList.remove('hidden');
-            els.statusBox.style.display = 'none';
-            els.countdownBox.classList.add('hidden');
-            
-            if(!isRepeated) {
-                // 放煙火
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                // 播放音效
-                audioSuccess.play().catch(()=>{});
-                // 震動
-                vibrate(true);
-            } else {
-                // 重複報到顯示不同訊息
-                els.successSec.querySelector('h2').textContent = "您已完成報到";
-                els.successSec.querySelector('p').textContent = "無需重複操作";
-            }
-        }
-
-        function setupEvents() {
-            els.input.addEventListener('input', (e) => {
-                e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // 僅允許英數大寫
-                if(e.target.value.length === 4) submit();
-            });
-            
-            els.input.addEventListener('keypress', (e) => {
-                if(e.key === 'Enter') submit();
-            });
-
-            els.btn.onclick = submit;
-        }
-
-        function submit() {
-            if(state.submitting) return;
-            const code = els.input.value.trim();
-            if(code.length < 4) { 
-                showMsg("請輸入完整 4 碼驗證碼", 'error'); 
-                vibrate(false);
-                return; 
-            }
-            
-            state.submitting = true;
-            els.btn.innerHTML = '<div class="spinner" style="width:15px;height:15px;border-width:2px;margin:0 5px 0 0;display:inline-block;vertical-align:middle;"></div> 驗證中...';
-            els.btn.disabled = true;
-            checkStatus(code);
-        }
-
-        function startCountdown(targetTime) {
-            els.countdownBox.classList.remove('hidden');
-            const target = new Date(targetTime).getTime();
-            
-            const timer = setInterval(() => {
-                const now = new Date().getTime();
-                const dist = target - now;
-                
-                if (dist < 0) {
-                    clearInterval(timer);
-                    location.reload(); // 時間到自動重整
-                    return;
-                }
-                
-                const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((dist % (1000 * 60)) / 1000);
-                els.timerVal.textContent = `${m}分 ${s}秒`;
-            }, 1000);
-        }
-
-        function showMsg(text, type) {
-            els.statusBox.textContent = text;
-            els.statusBox.className = `status-msg status-${type}`;
-            els.statusBox.style.display = 'block';
-            if(type === 'error') {
-                audioError.play().catch(()=>{});
-                els.statusBox.classList.add('shake');
-                setTimeout(()=>els.statusBox.classList.remove('shake'), 500);
-            }
-        }
-
-        function showError(title, desc) {
-            els.loading.classList.add('hidden');
-            els.error.classList.remove('hidden');
-            els.errorTitle.textContent = title;
-            els.errorDesc.innerHTML = desc;
-        }
-
-        function vibrate(success) {
-            if(navigator.vibrate) {
-                navigator.vibrate(success ? [100, 50, 100] : [200, 100, 200]);
-            }
-        }
     </script>
 </body>
 </html>
