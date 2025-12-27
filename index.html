@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>國立嘉義大學 - 2026 新春團拜報到系統</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --ncyu-red: #800000;
+            --ncyu-red: #800000; /* 嘉大紅 */
             --ncyu-bg: #f0f2f5;
         }
+        
         body { 
             background-color: var(--ncyu-bg); 
             font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; 
@@ -19,92 +21,98 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: hidden; /* 防止手機上下滑動 */
         }
+
         .main-card {
-            width: 100%;
+            width: 95%;
             max-width: 800px;
             border: none;
             border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             overflow: hidden;
             background: white;
-            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
+
+        /* 標題區塊 */
         .header-section {
-            background: linear-gradient(135deg, #800000 0%, #a31a1a 100%);
+            background: linear-gradient(135deg, #800000 0%, #b31b1b 100%);
             color: white;
-            padding: 40px 20px;
+            padding: 30px 20px;
             text-align: center;
-            position: relative;
+            border-bottom: 5px solid #d4af37; /* 金邊 */
         }
-        .header-section h1 { font-weight: 800; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .logo-icon { font-size: 50px; margin-bottom: 15px; opacity: 0.9; }
-        
-        /* 狀態列 */
+        .header-section h1 { font-weight: 800; letter-spacing: 2px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .logo-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.95; }
+
+        /* 狀態列 (紅綠燈) */
         .status-bar {
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             transition: all 0.5s ease;
+            border-bottom: 1px solid #eee;
             display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        .status-open { background-color: #d1e7dd; color: #0f5132; border-bottom: 4px solid #0f5132; }
-        .status-closed { background-color: #f8d7da; color: #842029; border-bottom: 4px solid #842029; }
-        .status-wait { background-color: #fff3cd; color: #664d03; border-bottom: 4px solid #664d03; }
-        .status-error { background-color: #343a40; color: #f8d7da; border-bottom: 4px solid red; }
+        .status-open { background-color: #d1e7dd; color: #0f5132; }   /* 綠燈 */
+        .status-closed { background-color: #f8d7da; color: #842029; } /* 紅燈 */
+        .status-wait { background-color: #fff3cd; color: #664d03; }   /* 黃燈 */
+        .status-error { background-color: #343a40; color: #f8d7da; }  /* 黑底紅字 (連線錯誤) */
 
-        .content-section { padding: 50px; }
+        .content-section { padding: 40px; position: relative; }
         
+        /* 超大輸入框 (方便手機點擊與掃碼) */
         .big-input { 
-            height: 80px; 
-            font-size: 32px; 
+            height: 70px; 
+            font-size: 28px; 
             text-align: center; 
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             border: 3px solid #ced4da;
             border-radius: 12px !important;
             font-weight: bold;
-            text-transform: uppercase;
+            text-transform: uppercase; /* 強制大寫 */
             transition: all 0.3s;
         }
         .big-input:focus {
             border-color: var(--ncyu-red);
-            box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
-            transform: scale(1.02);
+            box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.15);
         }
         .big-input:disabled { background-color: #e9ecef; cursor: not-allowed; }
 
-        /* 結果顯示區 */
+        /* 報到結果顯示區 (動畫彈出) */
         .result-box {
             display: none;
-            margin-top: 30px;
-            padding: 25px;
-            border-radius: 15px;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
             animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
-        .res-icon { font-size: 60px; margin-bottom: 15px; display: block; }
-        .res-name { font-size: 2.5rem; font-weight: bold; color: #333; }
-        .res-dept { font-size: 1.5rem; color: #666; margin-top: 5px; }
-        .res-time { font-size: 1rem; color: #999; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px; }
+        .res-icon { font-size: 50px; margin-bottom: 10px; display: block; }
+        .res-name { font-size: 2.2rem; font-weight: bold; color: #333; margin: 10px 0; }
+        .res-dept { font-size: 1.2rem; color: #666; background: #f8f9fa; display: inline-block; padding: 5px 15px; border-radius: 20px; }
+        .res-time { font-size: 0.9rem; color: #999; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 8px; }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* 伺服器時間浮水印 */
         .server-info {
-            position: fixed; bottom: 10px; right: 15px; font-size: 0.8rem; color: #aaa;
-            background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 5px;
+            position: fixed; bottom: 5px; right: 10px; font-size: 0.75rem; color: #aaa;
+            background: rgba(255,255,255,0.9); padding: 2px 8px; border-radius: 4px; pointer-events: none;
         }
-        
-        /* 載入動畫 */
+
+        /* 載入中遮罩 */
         .spinner-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.7);
-            display: none; justify-content: center; align-items: center; z-index: 10;
+            background: rgba(255,255,255,0.8);
+            display: none; justify-content: center; align-items: center; z-index: 10; border-radius: 0 0 20px 20px;
         }
     </style>
 </head>
@@ -112,41 +120,41 @@
 
     <div class="main-card">
         <div class="header-section">
-            <i class="fa-solid fa-school logo-icon"></i>
+            <i class="fa-solid fa-graduation-cap logo-icon"></i>
             <h1 class="mb-0">國立嘉義大學</h1>
-            <p class="mb-0 mt-2 fs-5">2026 新春團拜報到系統</p>
+            <p class="mb-0 mt-2 fs-5" style="opacity: 0.9;">2026 新春團拜報到系統</p>
         </div>
 
         <div id="system-status-bar" class="status-wait">
             <i class="fa-solid fa-circle-notch fa-spin"></i> 正在連線系統...
         </div>
 
-        <div class="content-section position-relative">
+        <div class="content-section">
             <div id="loading-spinner" class="spinner-overlay">
-                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+                <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;"></div>
             </div>
 
-            <label for="qrcode-input" class="form-label h4 mb-4 text-center d-block text-secondary">
-                <i class="fa-solid fa-qrcode me-2"></i>請掃描 QR Code 或輸入識別碼
+            <label for="qrcode-input" class="form-label h4 mb-4 text-center d-block text-secondary fw-bold">
+                <i class="fa-solid fa-qrcode me-2"></i>請掃描或輸入識別碼
             </label>
 
             <div class="input-group mb-4">
                 <input type="text" id="qrcode-input" class="form-control big-input" 
-                       placeholder="系統準備中..." disabled autocomplete="off">
+                       placeholder="系統連線中..." disabled autocomplete="off">
             </div>
             
             <div class="d-grid gap-2">
-                <button class="btn btn-secondary btn-lg py-3 fs-4 fw-bold" id="btn-submit" disabled>
-                    <i class="fa-solid fa-check me-2"></i>報到確認
+                <button class="btn btn-secondary btn-lg py-3 fs-4 fw-bold shadow-sm" id="btn-submit" disabled>
+                    <i class="fa-solid fa-check me-2"></i>確認報到
                 </button>
             </div>
 
             <div id="result-area" class="result-box alert-success">
-                <i id="res-icon" class="fa-regular fa-circle-check res-icon"></i>
-                <div id="res-title" class="h3 fw-bold mb-3">報到成功</div>
-                <div id="res-name" class="res-name">王小明</div>
-                <div id="res-dept" class="res-dept">人事室</div>
-                <div id="res-time" class="res-time">報到時間: 10:00:00</div>
+                <i id="res-icon" class="fa-regular fa-circle-check res-icon text-success"></i>
+                <div id="res-title" class="h4 fw-bold mb-2">報到成功</div>
+                <div id="res-name" class="res-name">--</div>
+                <div id="res-dept" class="res-dept">--</div>
+                <div id="res-time" class="res-time">報到時間: --:--:--</div>
             </div>
         </div>
     </div>
@@ -159,14 +167,13 @@
 
     <script>
         // ==========================================
-        // 設定區 (Config)
+        // 1. 設定區 (Configuration)
         // ==========================================
-        // 若是純 Web 版，請填入後端 API 網址 (如 PHP 檔案位置)
-        // 若是 Electron 版，此變數會自動被忽略
-        const API_BASE_URL = 'https://your-server.com/api.php'; // ★ 請修改此處為真實後端網址
-        
+        // ★ 關鍵修正：這裡必須填寫您正確的後端 PHP 網址
+        const API_BASE_URL = 'https://personnel.kncyu.link/api/checkin/index.php';
+
         // ==========================================
-        // DOM Elements
+        // 2. DOM 元素取得
         // ==========================================
         const qrcodeInput = document.getElementById('qrcode-input');
         const btnSubmit = document.getElementById('btn-submit');
@@ -175,137 +182,176 @@
         const serverTimeDisplay = document.getElementById('server-time-display');
         const loadingSpinner = document.getElementById('loading-spinner');
 
-        let isLocked = true;
-        let lockTimer = null;
-        let lastScannedCode = '';
-        let lastScannedTime = 0;
+        // 狀態變數
+        let isSystemLocked = true;     // 是否被後端鎖定
+        let lockTimer = null;          // 結果顯示的計時器
+        let lastScannedCode = '';      // 上一次掃描的碼 (防連點)
+        let lastScannedTime = 0;       // 上一次掃描時間
+        let isElectronMode = false;    // 是否為 Electron 環境
 
         // ==========================================
-        // 核心通訊層 (Communication Layer)
+        // 3. 通訊核心 (Communication Core)
         // ==========================================
-        // 自動判斷是用 Electron IPC 還是 Web Fetch
+        
+        // 偵測是否為 Electron 環境
+        if (window.electronAPI) {
+            isElectronMode = true;
+            console.log("Running in Electron Mode");
+        } else {
+            console.log("Running in Web Mode (GitHub Pages)");
+        }
+
+        /**
+         * 統一的 API 呼叫介面
+         * 自動判斷要用 Electron IPC 還是 Web Fetch
+         */
         const api = {
-            isElectron: () => window.electronAPI !== undefined,
-
+            // 取得系統狀態 (GET)
             async getStatus() {
-                if (this.isElectron()) {
+                if (isElectronMode) {
                     return await window.electronAPI.invoke('get-checkin-status');
                 } else {
-                    // Web Mode
-                    const res = await fetch(`${API_BASE_URL}?action=get_system_status`);
+                    // Web Fetch: 加入 timestamp 防止瀏覽器快取
+                    const url = `${API_BASE_URL}?action=get_system_status&t=${Date.now()}`;
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     const json = await res.json();
                     return json.success ? json.data : { status: 'ERROR', message: json.message };
                 }
             },
 
+            // 執行報到 (POST)
             async checkIn(code) {
-                if (this.isElectron()) {
+                if (isElectronMode) {
                     return await window.electronAPI.invoke('participant:check-in', code);
                 } else {
-                    // Web Mode
                     const res = await fetch(`${API_BASE_URL}?action=check_in`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ qrcode: code })
                     });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     return await res.json();
                 }
             }
         };
 
         // ==========================================
-        // 邏輯控制 (Controller)
+        // 4. 系統狀態監控 (System Monitor)
         // ==========================================
         
-        // 1. 系統狀態監控 (每 3 秒同步一次)
+        // 每 3 秒執行一次，同步伺服器狀態
         async function syncSystemStatus() {
             try {
                 const data = await api.getStatus();
                 
-                // 更新時間
+                // 更新右下角伺服器時間
                 if (data.server_time) {
                     const t = new Date(data.server_time);
                     serverTimeDisplay.innerText = `Server: ${t.toLocaleTimeString()}`;
                 }
 
-                // 狀態處理
-                if (data.status === 'OPEN') {
-                    updateStatusUI('OPEN', data.message || '🟢 報到進行中');
-                } else if (data.status === 'CLOSED' || data.status === 'ENDED') {
-                    updateStatusUI('CLOSED', data.message || '🔴 系統已關閉');
-                } else if (data.status === 'NOT_STARTED') {
-                    updateStatusUI('WAIT', data.message || '🟡 尚未開始');
-                } else {
-                    updateStatusUI('ERROR', '⚠️ 系統狀態異常');
+                // 根據狀態代碼更新 UI
+                switch (data.status) {
+                    case 'OPEN':
+                        updateStatusUI('OPEN', data.message || '🟢 報到進行中');
+                        break;
+                    case 'CLOSED':
+                    case 'ENDED':
+                        updateStatusUI('CLOSED', data.message || '🔴 系統已關閉');
+                        break;
+                    case 'NOT_STARTED':
+                        updateStatusUI('WAIT', data.message || '🟡 尚未開始');
+                        break;
+                    default:
+                        updateStatusUI('ERROR', '⚠️ 狀態異常');
                 }
             } catch (err) {
-                console.error(err);
-                updateStatusUI('ERROR', '❌ 無法連線至伺服器');
+                console.error("Sync Error:", err);
+                // 網路斷線時顯示重連中，而不是報錯
+                updateStatusUI('ERROR', '🔄 連線中斷，正在重連...');
             }
         }
 
+        // 更新介面狀態 (顏色、鎖定輸入框)
         function updateStatusUI(state, msg) {
             statusBar.innerHTML = msg;
-            statusBar.className = 'status-bar';
+            statusBar.className = 'status-bar'; // 重置 class
 
             if (state === 'OPEN') {
                 statusBar.classList.add('status-open');
-                if (isLocked) { // 只在解鎖瞬間執行
-                    isLocked = false;
+                
+                // 如果是從鎖定變為開放，解鎖輸入框
+                if (isSystemLocked) {
+                    isSystemLocked = false;
                     qrcodeInput.disabled = false;
-                    qrcodeInput.placeholder = "請掃描或輸入...";
+                    qrcodeInput.placeholder = "請掃描或輸入識別碼...";
                     btnSubmit.disabled = false;
-                    btnSubmit.className = "btn btn-primary btn-lg py-3 fs-4 fw-bold";
+                    btnSubmit.className = "btn btn-danger btn-lg py-3 fs-4 fw-bold shadow-sm"; // 嘉大紅按鈕
                     qrcodeInput.focus();
                 }
             } else {
                 // 鎖定狀態
-                isLocked = true;
-                statusBar.classList.add(state === 'CLOSED' ? 'status-closed' : (state === 'WAIT' ? 'status-wait' : 'status-error'));
+                isSystemLocked = true;
+                
+                if (state === 'CLOSED') statusBar.classList.add('status-closed');
+                else if (state === 'WAIT') statusBar.classList.add('status-wait');
+                else statusBar.classList.add('status-error');
+
                 qrcodeInput.disabled = true;
-                qrcodeInput.placeholder = "⛔ 暫停受理";
+                qrcodeInput.placeholder = (state === 'ERROR') ? "連線中斷..." : "⛔ 暫停受理";
                 btnSubmit.disabled = true;
-                btnSubmit.className = "btn btn-secondary btn-lg py-3 fs-4 fw-bold";
+                btnSubmit.className = "btn btn-secondary btn-lg py-3 fs-4 fw-bold shadow-sm";
             }
         }
 
-        // 2. 報到送出處理
+        // ==========================================
+        // 5. 報到送出邏輯 (Submit Logic)
+        // ==========================================
         async function handleSubmit() {
             const code = qrcodeInput.value.trim();
             if (!code) return;
 
-            // 防抖動 (Debounce): 1秒內禁止掃描相同的碼
+            // --- 防連點機制 (Debounce) ---
             const now = Date.now();
+            // 如果 2 秒內掃描同一個碼，忽略它
             if (code === lastScannedCode && (now - lastScannedTime < 2000)) {
+                console.log("Ignored duplicate scan");
+                qrcodeInput.value = ''; // 清空讓下次好掃
                 return;
             }
             lastScannedCode = code;
             lastScannedTime = now;
 
-            // 鎖定 UI
+            // --- 鎖定 UI，顯示轉圈圈 ---
             loadingSpinner.style.display = 'flex';
-            qrcodeInput.blur();
+            qrcodeInput.blur(); // 收起手機鍵盤
 
             try {
+                // 呼叫 API
                 const res = await api.checkIn(code);
                 showResult(res);
             } catch (err) {
                 showResult({ success: false, message: "連線失敗: " + err.message });
             } finally {
+                // --- 恢復 UI ---
                 loadingSpinner.style.display = 'none';
                 qrcodeInput.value = '';
-                if (!isLocked) qrcodeInput.focus();
+                if (!isSystemLocked) {
+                    qrcodeInput.focus(); // 重新聚焦，方便連續掃描
+                }
             }
         }
 
-        // 3. 顯示結果
+        // ==========================================
+        // 6. 結果顯示邏輯 (Result Display)
+        // ==========================================
         function showResult(res) {
             resultArea.style.display = 'block';
-            resultArea.className = 'result-box';
+            resultArea.className = 'result-box'; // 重置 class
             
-            // 重置動畫
-            resultArea.style.animation = 'none';
-            resultArea.offsetHeight; /* trigger reflow */
+            // 重啟動畫 (Hack: trigger reflow)
+            void resultArea.offsetWidth;
             resultArea.style.animation = 'slideUp 0.4s';
 
             const iconEl = document.getElementById('res-icon');
@@ -316,60 +362,78 @@
 
             if (res.success) {
                 if (res.is_repeat) {
-                    // 重複
+                    // --- 重複報到 (黃色) ---
                     resultArea.classList.add('alert-warning');
                     iconEl.className = 'fa-solid fa-triangle-exclamation res-icon text-warning';
                     titleEl.innerText = '⚠️ 重複報到';
+                    nameEl.innerText = res.data.name;
+                    deptEl.innerText = res.data.department;
+                    timeEl.innerText = `上次報到: ${res.data.check_in_time}`;
                     playAudio('repeat');
                 } else {
-                    // 成功
+                    // --- 報到成功 (綠色) ---
                     resultArea.classList.add('alert-success');
                     iconEl.className = 'fa-regular fa-circle-check res-icon text-success';
                     titleEl.innerText = '🎉 報到成功';
+                    nameEl.innerText = res.data.name;
+                    deptEl.innerText = res.data.department;
+                    timeEl.innerText = `報到時間: ${res.data.check_in_time}`;
                     playAudio('success');
                 }
-                nameEl.innerText = res.data.name;
-                deptEl.innerText = res.data.department;
-                timeEl.innerText = `報到時間: ${res.data.check_in_time || '剛剛'}`;
             } else {
-                // 失敗
+                // --- 失敗 (紅色) ---
                 resultArea.classList.add('alert-danger');
                 iconEl.className = 'fa-solid fa-circle-xmark res-icon text-danger';
                 titleEl.innerText = '❌ 報到失敗';
-                nameEl.innerText = '';
-                deptEl.innerText = res.message;
+                nameEl.innerText = '--';
+                deptEl.innerText = res.message; // 顯示錯誤訊息
                 timeEl.innerText = '';
                 playAudio('error');
             }
 
-            // 5秒後自動隱藏
+            // 設定 5 秒後自動隱藏結果
             if (lockTimer) clearTimeout(lockTimer);
             lockTimer = setTimeout(() => {
                 resultArea.style.display = 'none';
             }, 5000);
         }
 
-        function playAudio(type) {
-            // 簡單的音效播放邏輯
-            // 實際需確保 assets/audio/ 下有對應檔案
-            try {
-                // const audio = document.getElementById(`audio-${type}`);
-                // if(audio) { audio.currentTime = 0; audio.play(); }
-            } catch(e) {}
+        // 播放音效輔助函數
+        function playAudio(id) {
+            const audio = document.getElementById(`audio-${id}`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio play blocked by browser policy"));
+            }
         }
 
         // ==========================================
-        // 事件綁定 (Event Listeners)
+        // 7. 事件監聽 (Event Listeners)
         // ==========================================
+        
+        // 按鈕點擊
         btnSubmit.addEventListener('click', handleSubmit);
         
+        // 輸入框 Enter 鍵
         qrcodeInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleSubmit();
         });
 
-        // 初始化
+        // 點擊任意空白處，若是開放狀態則聚焦輸入框 (方便使用掃描槍)
+        document.addEventListener('click', (e) => {
+            if (!isSystemLocked && e.target !== btnSubmit && e.target !== qrcodeInput) {
+                qrcodeInput.focus();
+            }
+        });
+
+        // ==========================================
+        // 8. 啟動程式
+        // ==========================================
+        // 立即檢查一次狀態
         syncSystemStatus();
-        setInterval(syncSystemStatus, 3000); // 3秒輪詢
+        
+        // 之後每 3 秒自動同步
+        setInterval(syncSystemStatus, 3000);
 
     </script>
 </body>
