@@ -11,11 +11,12 @@
     <style>
         :root {
             --ncyu-red: #800000; /* 嘉大紅 */
-            --ncyu-bg: #f0f2f5;
+            --ncyu-gold: #d4af37;
+            --bg-color: #f0f2f5;
         }
         
         body { 
-            background-color: var(--ncyu-bg); 
+            background-color: var(--bg-color); 
             font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; 
             height: 100vh;
             display: flex;
@@ -34,81 +35,100 @@
             background: white;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         /* 標題區塊 */
         .header-section {
-            background: linear-gradient(135deg, #800000 0%, #b31b1b 100%);
+            background: linear-gradient(135deg, var(--ncyu-red) 0%, #b31b1b 100%);
             color: white;
-            padding: 30px 20px;
+            padding: 25px 20px;
             text-align: center;
-            border-bottom: 5px solid #d4af37; /* 金邊 */
+            border-bottom: 5px solid var(--ncyu-gold);
         }
-        .header-section h1 { font-weight: 800; letter-spacing: 2px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .logo-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.95; }
+        .header-section h1 { font-weight: 800; letter-spacing: 2px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-size: 1.8rem; }
+        .logo-icon { font-size: 36px; margin-bottom: 10px; opacity: 0.95; }
 
         /* 狀態列 */
         .status-bar {
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             font-weight: bold;
             font-size: 1.1rem;
             transition: all 0.5s ease;
             border-bottom: 1px solid #eee;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
         }
         .status-open { background-color: #d1e7dd; color: #0f5132; }
         .status-closed { background-color: #f8d7da; color: #842029; }
         .status-wait { background-color: #fff3cd; color: #664d03; }
         .status-error { background-color: #343a40; color: #f8d7da; }
 
-        .content-section { padding: 40px; position: relative; }
+        .content-section { padding: 30px; position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         
+        /* 輸入框 */
         .big-input { 
-            height: 70px; 
-            font-size: 28px; 
+            height: 60px; 
+            font-size: 24px; 
             text-align: center; 
             letter-spacing: 2px;
             border: 3px solid #ced4da;
             border-radius: 12px !important;
             font-weight: bold;
             text-transform: uppercase;
-            transition: all 0.3s;
         }
         .big-input:focus { border-color: var(--ncyu-red); box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.15); }
-        .big-input:disabled { background-color: #e9ecef; cursor: not-allowed; }
+        .big-input:disabled { background-color: #e9ecef; cursor: not-allowed; opacity: 0.7; }
 
-        /* 結果顯示區 */
+        /* 結果顯示區 (重點強化) */
         .result-box {
             display: none;
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 12px;
+            margin-top: 20px;
+            padding: 25px 20px;
+            border-radius: 15px;
             text-align: center;
             animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
         }
-        .res-icon { font-size: 50px; margin-bottom: 10px; display: block; }
-        .res-name { font-size: 2.2rem; font-weight: bold; color: #333; margin: 5px 0; }
-        .res-eid { font-size: 1.2rem; color: #555; font-weight: 600; margin-bottom: 5px; font-family: 'Consolas', monospace; }
-        .res-dept { font-size: 1.2rem; color: #666; background: #f8f9fa; display: inline-block; padding: 5px 15px; border-radius: 20px; }
-        .res-time { font-size: 0.9rem; color: #999; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 8px; }
+        .result-success { background: #f0fff4; border-color: #c6f6d5; }
+        .result-warning { background: #fffaf0; border-color: #feebc8; }
+        .result-error { background: #fff5f5; border-color: #fed7d7; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .res-icon { font-size: 60px; margin-bottom: 15px; display: block; }
+        .res-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 15px; }
+        
+        /* 資料卡片區 */
+        .info-card {
+            background: rgba(255,255,255,0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            display: inline-block;
+            width: 100%;
+            max-width: 400px;
         }
+        .info-row { margin: 8px 0; font-size: 1.3rem; color: #333; display: flex; justify-content: center; align-items: baseline; gap: 10px; }
+        .info-label { font-size: 0.9rem; color: #777; font-weight: normal; min-width: 40px; text-align: right; }
+        .info-val { font-weight: bold; }
+        .info-val.eid { font-family: 'Consolas', monospace; color: #0056b3; letter-spacing: 1px; }
+        .info-val.name { font-size: 1.6rem; color: #000; }
+        .info-val.dept { background: #e2e8f0; padding: 2px 10px; border-radius: 12px; font-size: 1rem; color: #4a5568; }
 
-        .server-info {
-            position: fixed; bottom: 5px; right: 10px; font-size: 0.75rem; color: #aaa;
-            background: rgba(255,255,255,0.9); padding: 2px 8px; border-radius: 4px; pointer-events: none;
-        }
+        .res-time { font-size: 0.85rem; color: #999; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px; }
 
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .server-info { position: fixed; bottom: 5px; right: 10px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.9); padding: 2px 8px; border-radius: 4px; pointer-events: none; z-index: 20; }
+        
         .spinner-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.8);
-            display: none; justify-content: center; align-items: center; z-index: 10; border-radius: 0 0 20px 20px;
+            background: rgba(255,255,255,0.85);
+            display: none; justify-content: center; align-items: center; z-index: 10;
+            flex-direction: column; gap: 15px;
+            backdrop-filter: blur(2px);
         }
+        .loading-text { font-weight: bold; color: var(--ncyu-red); font-size: 1.2rem; }
     </style>
 </head>
 <body>
@@ -126,33 +146,51 @@
 
         <div class="content-section">
             <div id="loading-spinner" class="spinner-overlay">
-                <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;"></div>
+                <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem; border-width: 4px;"></div>
+                <div class="loading-text">資料驗證中...</div>
             </div>
 
-            <label for="qrcode-input" class="form-label h4 mb-4 text-center d-block text-secondary fw-bold">
-                <i class="fa-solid fa-qrcode me-2"></i>請掃描或輸入識別碼
-            </label>
-
-            <div class="input-group mb-4">
-                <input type="text" id="qrcode-input" class="form-control big-input" 
-                       placeholder="連線中..." disabled autocomplete="off">
+            <div id="input-area">
+                <label for="qrcode-input" class="form-label h5 mb-3 text-center d-block text-secondary fw-bold">
+                    <i class="fa-solid fa-qrcode me-2"></i>請掃描或輸入識別碼
+                </label>
+                <div class="input-group mb-3">
+                    <input type="text" id="qrcode-input" class="form-control big-input" 
+                           placeholder="連線中..." disabled autocomplete="off">
+                </div>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-secondary btn-lg py-3 fs-5 fw-bold shadow-sm" id="btn-submit" disabled>
+                        <i class="fa-solid fa-check me-2"></i>確認報到
+                    </button>
+                </div>
             </div>
-            
-            <div class="d-grid gap-2">
-                <button class="btn btn-secondary btn-lg py-3 fs-4 fw-bold shadow-sm" id="btn-submit" disabled>
-                    <i class="fa-solid fa-check me-2"></i>確認報到
-                </button>
-            </div>
 
-            <div id="result-area" class="result-box alert-success">
-                <i id="res-icon" class="fa-regular fa-circle-check res-icon text-success"></i>
-                <div id="res-title" class="h4 fw-bold mb-2">報到成功</div>
+            <div id="result-area" class="result-box">
+                <i id="res-icon" class="res-icon"></i>
+                <div id="res-title" class="res-title">--</div>
                 
-                <div id="res-eid" class="res-eid">員編: --</div>
-                
-                <div id="res-name" class="res-name">--</div>
-                <div id="res-dept" class="res-dept">--</div>
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="info-label">員編</span>
+                        <span id="res-eid" class="info-val eid">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">姓名</span>
+                        <span id="res-name" class="info-val name">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">單位</span>
+                        <span id="res-dept" class="info-val dept">--</span>
+                    </div>
+                </div>
+
                 <div id="res-time" class="res-time">報到時間: --:--:--</div>
+                
+                <div class="mt-3">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="resetUI()">
+                        <i class="fa-solid fa-arrow-left"></i> 返回輸入
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -176,13 +214,13 @@
         const btnSubmit = document.getElementById('btn-submit');
         const statusBar = document.getElementById('system-status-bar');
         const resultArea = document.getElementById('result-area');
+        const inputArea = document.getElementById('input-area');
         const serverTimeDisplay = document.getElementById('server-time-display');
         const loadingSpinner = document.getElementById('loading-spinner');
 
-        // 結果欄位
         const iconEl = document.getElementById('res-icon');
         const titleEl = document.getElementById('res-title');
-        const eidEl = document.getElementById('res-eid');  // ★ 員編 DOM
+        const eidEl = document.getElementById('res-eid');
         const nameEl = document.getElementById('res-name');
         const deptEl = document.getElementById('res-dept');
         const timeEl = document.getElementById('res-time');
@@ -190,32 +228,26 @@
         let isSystemLocked = true;
         let lockTimer = null;
         let isElectronMode = !!window.electronAPI;
+        let hasAutoSubmitted = false; // 防止網址參數重複提交
 
         // ==========================================
         // 3. 通訊 API
         // ==========================================
         const api = {
             async getStatus() {
-                if (isElectronMode) {
-                    return await window.electronAPI.invoke('get-checkin-status');
-                } else {
-                    const url = `${API_BASE_URL}?action=get_system_status&t=${Date.now()}`;
-                    const res = await fetch(url);
-                    const json = await res.json();
-                    return json.success ? json.data : { status: 'ERROR', message: json.message };
-                }
+                if (isElectronMode) return await window.electronAPI.invoke('get-checkin-status');
+                const res = await fetch(`${API_BASE_URL}?action=get_system_status&t=${Date.now()}`);
+                const json = await res.json();
+                return json.success ? json.data : { status: 'ERROR', message: json.message };
             },
             async checkIn(code) {
-                if (isElectronMode) {
-                    return await window.electronAPI.invoke('participant:check-in', code);
-                } else {
-                    const res = await fetch(`${API_BASE_URL}?action=check_in`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ qrcode: code })
-                    });
-                    return await res.json();
-                }
+                if (isElectronMode) return await window.electronAPI.invoke('participant:check-in', code);
+                const res = await fetch(`${API_BASE_URL}?action=check_in`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ qrcode: code })
+                });
+                return await res.json();
             }
         };
 
@@ -225,25 +257,17 @@
         async function syncSystemStatus() {
             try {
                 const data = await api.getStatus();
-                
                 if (data.server_time) {
                     const t = new Date(data.server_time);
                     serverTimeDisplay.innerText = `Server: ${t.toLocaleTimeString()}`;
                 }
 
                 switch (data.status) {
-                    case 'OPEN':
-                        updateStatusUI('OPEN', data.message || '🟢 報到進行中');
-                        break;
+                    case 'OPEN': updateStatusUI('OPEN', data.message || '🟢 報到進行中'); break;
                     case 'CLOSED':
-                    case 'ENDED':
-                        updateStatusUI('CLOSED', data.message || '🔴 系統已關閉');
-                        break;
-                    case 'NOT_STARTED':
-                        updateStatusUI('WAIT', data.message || '🟡 尚未開始');
-                        break;
-                    default:
-                        updateStatusUI('ERROR', '⚠️ 狀態異常');
+                    case 'ENDED': updateStatusUI('CLOSED', data.message || '🔴 系統已關閉'); break;
+                    case 'NOT_STARTED': updateStatusUI('WAIT', data.message || '🟡 尚未開始'); break;
+                    default: updateStatusUI('ERROR', '⚠️ 狀態異常');
                 }
             } catch (err) {
                 console.error("Sync Error:", err);
@@ -262,9 +286,9 @@
                     qrcodeInput.disabled = false;
                     qrcodeInput.placeholder = "請掃描或輸入識別碼...";
                     btnSubmit.disabled = false;
-                    btnSubmit.className = "btn btn-danger btn-lg py-3 fs-4 fw-bold shadow-sm";
+                    btnSubmit.className = "btn btn-danger btn-lg py-3 fs-5 fw-bold shadow-sm";
                     
-                    // ★ 網址自動報到邏輯 (只有在系統解鎖時才觸發)
+                    // ★ 系統一開放，立即檢查網址參數並自動報到
                     checkUrlAutoSubmit();
                 }
             } else {
@@ -276,29 +300,24 @@
                 qrcodeInput.disabled = true;
                 qrcodeInput.placeholder = (state === 'ERROR') ? "連線中斷..." : "⛔ 暫停受理";
                 btnSubmit.disabled = true;
-                btnSubmit.className = "btn btn-secondary btn-lg py-3 fs-4 fw-bold shadow-sm";
+                btnSubmit.className = "btn btn-secondary btn-lg py-3 fs-5 fw-bold shadow-sm";
             }
         }
 
         // ==========================================
         // 5. 網址參數自動報到 (URL Auto Submit)
         // ==========================================
-        let hasAutoSubmitted = false;
-
         function checkUrlAutoSubmit() {
-            if (hasAutoSubmitted) return; // 防止重複執行
+            if (hasAutoSubmitted) return; 
             
             const params = new URLSearchParams(window.location.search);
-            const uuid = params.get('uuid');
-            const eid = params.get('eid');
+            // 支援 uuid 或 eid
+            const code = params.get('uuid') || params.get('eid');
             
-            // 優先使用 UUID，其次 EID
-            const code = uuid || eid;
-
             if (code) {
                 console.log("Auto submitting from URL:", code);
-                qrcodeInput.value = code; // 填入輸入框給使用者看
-                hasAutoSubmitted = true;  // 標記已執行
+                qrcodeInput.value = code; // 填入讓使用者看到
+                hasAutoSubmitted = true;
                 handleSubmit();
             }
         }
@@ -310,6 +329,7 @@
             const code = qrcodeInput.value.trim();
             if (!code) return;
 
+            // 鎖定介面
             loadingSpinner.style.display = 'flex';
             qrcodeInput.blur();
 
@@ -320,58 +340,70 @@
                 showResult({ success: false, message: "連線失敗: " + err.message });
             } finally {
                 loadingSpinner.style.display = 'none';
-                // 網址自動報到後不清除輸入框，保留給使用者看
-                // qrcodeInput.value = ''; 
-                if (!isSystemLocked) qrcodeInput.focus();
             }
         }
 
+        function resetUI() {
+            resultArea.style.display = 'none';
+            inputArea.style.display = 'block';
+            qrcodeInput.value = '';
+            if(!isSystemLocked) qrcodeInput.focus();
+        }
+
         // ==========================================
-        // 7. 結果顯示 (包含員編、單位)
+        // 7. 結果顯示 (詳細資料)
         // ==========================================
         function showResult(res) {
-            resultArea.style.display = 'block';
-            resultArea.className = 'result-box';
+            inputArea.style.display = 'none'; // 隱藏輸入區
+            resultArea.style.display = 'block'; // 顯示結果區
             
-            void resultArea.offsetWidth; // 重置動畫
-            resultArea.style.animation = 'slideUp 0.4s';
+            // 重置樣式
+            resultArea.className = 'result-box'; 
 
             if (res.success) {
                 if (res.is_repeat) {
-                    // 重複
-                    resultArea.classList.add('alert-warning');
+                    // --- 重複報到 ---
+                    resultArea.classList.add('result-warning');
                     iconEl.className = 'fa-solid fa-triangle-exclamation res-icon text-warning';
                     titleEl.innerText = '⚠️ 重複報到';
+                    titleEl.className = 'res-title text-warning';
                     playAudio('repeat');
                 } else {
-                    // 成功
-                    resultArea.classList.add('alert-success');
+                    // --- 成功報到 ---
+                    resultArea.classList.add('result-success');
                     iconEl.className = 'fa-regular fa-circle-check res-icon text-success';
                     titleEl.innerText = '🎉 報到成功';
+                    titleEl.className = 'res-title text-success';
                     playAudio('success');
                 }
-                // ★ 填入資料 (含員編)
-                eidEl.innerText = `員編: ${res.data.employee_id || '--'}`;
+                
+                // ★ 填入人員資料 (視覺重點)
+                eidEl.innerText = res.data.employee_id || '--';
                 nameEl.innerText = res.data.name || '--';
                 deptEl.innerText = res.data.department || '--';
                 timeEl.innerText = `報到時間: ${res.data.check_in_time || '剛剛'}`;
+
             } else {
-                // 失敗
-                resultArea.classList.add('alert-danger');
+                // --- 失敗 ---
+                resultArea.classList.add('result-error');
                 iconEl.className = 'fa-solid fa-circle-xmark res-icon text-danger';
                 titleEl.innerText = '❌ 報到失敗';
-                eidEl.innerText = '';
+                titleEl.className = 'res-title text-danger';
+                
+                eidEl.innerText = '--';
                 nameEl.innerText = '--';
-                deptEl.innerText = res.message;
+                deptEl.innerText = res.message; // 顯示錯誤訊息在單位欄位或另外顯示
                 timeEl.innerText = '';
                 playAudio('error');
             }
 
-            // 10秒後隱藏 (時間加長方便閱讀)
-            if (lockTimer) clearTimeout(lockTimer);
-            lockTimer = setTimeout(() => {
-                resultArea.style.display = 'none';
-            }, 10000);
+            // 若不是網址自動報到的，10秒後自動返回輸入模式
+            // 若是網址自動報到，則停留在結果頁，讓使用者確認
+            const params = new URLSearchParams(window.location.search);
+            if (!params.get('uuid') && !params.get('eid')) {
+                 if (lockTimer) clearTimeout(lockTimer);
+                 lockTimer = setTimeout(resetUI, 10000);
+            }
         }
 
         function playAudio(id) {
@@ -386,10 +418,8 @@
             if (e.key === 'Enter') handleSubmit();
         });
 
-        // 啟動監控
         syncSystemStatus();
         setInterval(syncSystemStatus, 3000);
-
     </script>
 </body>
 </html>
