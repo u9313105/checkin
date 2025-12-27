@@ -20,9 +20,11 @@
                 --bg-gradient: linear-gradient(135deg, #1f1f1f 0%, #000000 100%);
                 --text-main: #f3f4f6;
             }
-            .main-card { background: rgba(30, 30, 30, 0.95) !important; box-shadow: none !important; }
-            .profile-card { background: #2d2d2d !important; border-color: #444 !important; }
+            .main-card { background: rgba(30, 30, 30, 0.95) !important; box-shadow: none !important; border-top-color: #ef4444 !important; }
+            .profile-card { background: #2d2d2d !important; border-color: #444 !important; border-left-color: #ef4444 !important; }
             .code-input { background: #333 !important; color: #fff !important; border-color: #555 !important; }
+            h1 { color: #ef4444 !important; }
+            .subtitle { color: #9ca3af !important; }
         }
 
         body {
@@ -33,14 +35,15 @@
             padding: 20px; color: var(--text-main);
             overflow-x: hidden;
             -webkit-user-select: none; user-select: none;
+            transition: background 0.3s;
         }
 
-        /* Offline Banner */
+        /* 斷線提示條 */
         #offline-banner {
-            position: fixed; top: 0; left: 0; width: 100%;
-            background: #ef4444; color: white; text-align: center;
-            padding: 5px; font-size: 13px; font-weight: bold;
-            transform: translateY(-100%); transition: transform 0.3s; z-index: 9999;
+            position: fixed; top: 0; left: 0; width: 100%; height: 40px;
+            background: #ef4444; color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: bold; z-index: 9999;
+            transform: translateY(-100%); transition: transform 0.3s; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         #offline-banner.show { transform: translateY(0); }
 
@@ -51,10 +54,12 @@
             box-shadow: 0 20px 40px -5px rgba(0,0,0,0.1);
             border-top: 6px solid var(--primary);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            position: relative; overflow: hidden;
         }
 
-        h1 { margin: 0 0 5px 0; font-size: 26px; font-weight: 900; color: var(--primary); }
-        .subtitle { font-size: 14px; color: #6b7280; margin-bottom: 25px; font-weight: 500; }
+        h1 { margin: 0 0 5px 0; font-size: 26px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
+        h1 span { font-size: 0.8em; color: inherit; opacity: 0.8; }
+        .subtitle { font-size: 14px; color: #6b7280; margin-bottom: 25px; font-weight: 500; letter-spacing: 1px; }
 
         .profile-card {
             background: #ffffff; border: 1px solid #e5e7eb; border-left: 5px solid var(--primary);
@@ -62,55 +67,73 @@
             animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .profile-value { font-size: 18px; font-weight: 700; font-family: 'Roboto Mono', monospace; }
-        .profile-value.highlight { color: var(--primary); font-size: 24px; font-family: 'Noto Sans TC'; }
+        .profile-value.highlight { color: var(--primary); font-size: 24px; font-family: 'Noto Sans TC'; margin-bottom: 5px; display: block;}
 
-        /* iOS Input Fix: Font size >= 16px prevents zoom */
+        /* 輸入框優化 (防止 iOS 縮放) */
         .code-input {
             width: 100%; padding: 16px; font-size: 32px; font-weight: 700; text-align: center;
             letter-spacing: 12px; border: 2px solid #e5e7eb; border-radius: 12px;
             background: #f9fafb; color: var(--text-main); outline: none;
-            text-transform: uppercase; /* 自動大寫 */
+            text-transform: uppercase; margin-bottom: 15px;
+            font-family: 'Roboto Mono', monospace;
         }
-        .code-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(185,28,28,0.1); }
+        .code-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(185,28,28,0.1); background: #fff; }
 
         .btn {
             width: 100%; padding: 16px; border: none; border-radius: 12px;
             background: linear-gradient(135deg, var(--primary) 0%, #991b1b 100%);
             color: white; font-size: 18px; font-weight: 700; cursor: pointer;
-            transition: 0.2s; margin-top: 15px;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .btn:active { transform: scale(0.98); }
-        .btn:disabled { background: #d1d5db; cursor: not-allowed; }
+        .btn:disabled { background: #d1d5db; cursor: not-allowed; transform: none; }
 
-        .status-msg { margin: 15px 0; padding: 12px; border-radius: 8px; text-align: left; border-left: 4px solid; display: none; }
+        /* 狀態訊息 */
+        .status-msg { margin: 15px 0; padding: 15px; border-radius: 8px; text-align: left; border-left: 4px solid; display: none; line-height: 1.5; font-size: 14px; }
         .status-error { background: #fef2f2; color: #991b1b; border-color: #ef4444; }
         .status-wait { background: #fff7ed; color: #c2410c; border-color: #f97316; }
 
         .hidden { display: none !important; }
         .shake { animation: shake 0.5s; }
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #ddd;
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 20px auto;
+        }
+
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div id="offline-banner">⚠️ 網路已斷線，請檢查連線</div>
+    <div id="offline-banner">⚠️ 網路連線中斷 (Offline)</div>
 
     <main class="main-card">
         <h1><span>2026</span> 新春團拜</h1>
         <p class="subtitle">國立嘉義大學 人事室 敬邀</p>
 
         <div id="view-loading">
-            <div style="font-size:40px; animation:spin 1s infinite linear">⏳</div>
-            <div style="margin-top:10px;">身分驗證中...</div>
+            <div class="spinner"></div>
+            <div style="font-weight:bold; color:#666;">系統連線中...</div>
+            <div id="loading-hint" style="font-size:12px; color:#999; margin-top:5px;"></div>
         </div>
 
         <div id="view-content" class="hidden">
             <div class="profile-card">
-                <div style="font-size:12px; color:#999;">參與者資訊</div>
+                <div style="font-size:12px; color:#999; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Participant Info</div>
                 <div class="profile-value highlight" id="disp-name"></div>
-                <div style="display:flex; justify-content:space-between; margin-top:8px;">
-                    <span class="profile-value" id="disp-eid" style="font-size:16px; color:#666;"></span>
-                    <span class="profile-value" id="disp-dept" style="font-size:16px; color:#666;"></span>
+                <div style="display:flex; justify-content:space-between; border-top:1px dashed #ddd; padding-top:10px; margin-top:5px;">
+                    <div>
+                        <div style="font-size:11px; color:#999;">員工編號</div>
+                        <div class="profile-value" id="disp-eid" style="font-size:16px; color:#555;"></div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:11px; color:#999;">單位</div>
+                        <div class="profile-value" id="disp-dept" style="font-size:16px; color:#555;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -118,43 +141,50 @@
 
             <div id="countdown-box" class="status-msg status-wait hidden">
                 <strong>⏳ 報到尚未開始</strong><br>
-                距離開始還有：<span id="timer-val">--:--</span>
+                距離開放還有：<span id="timer-val" style="font-family:'Roboto Mono'; font-weight:bold;">--:--</span>
             </div>
 
             <div id="section-input" class="hidden">
-                <label style="display:block; margin-bottom:10px; font-weight:bold;">輸入現場驗證碼</label>
+                <label style="display:block; margin-bottom:8px; font-weight:bold; color:var(--text-main);">請輸入現場驗證碼</label>
                 <input type="text" id="code-input" maxlength="4" placeholder="CODE" class="code-input" inputmode="text" autocomplete="off">
                 <button id="btn-submit" class="btn">確認報到</button>
             </div>
 
-            <div id="section-success" class="hidden" style="text-align:center; padding:20px;">
-                <div style="font-size:60px; color:#10b981; margin-bottom:10px;">🎉</div>
-                <h2 style="color:#10b981; margin:0;">報到成功</h2>
-                <p style="color:#666;">祝您幸運中大獎！</p>
-                <button onclick="location.reload()" class="btn" style="background:#f3f4f6; color:#4b5563;">重新整理</button>
+            <div id="section-success" class="hidden" style="text-align:center; padding:10px;">
+                <div style="font-size:70px; color:#10b981; margin-bottom:10px; animation: slideDown 0.5s;">🎉</div>
+                <h2 style="color:#10b981; margin:0 0 10px 0;">報到成功</h2>
+                <p style="color:#666; margin-bottom:20px;">祝您幸運中大獎！</p>
+                <button onclick="location.reload()" class="btn" style="background:#f3f4f6; color:#4b5563; box-shadow:none;">
+                    <i class="fa fa-refresh"></i> 重新整理
+                </button>
             </div>
         </div>
 
         <div id="view-error" class="hidden" style="color:#ef4444; padding:20px;">
-            <div style="font-size:50px;">❌</div>
-            <h3 id="error-msg">連結無效</h3>
+            <div style="font-size:60px; margin-bottom:15px;">❌</div>
+            <h3 id="error-title" style="margin:0;">連結無效</h3>
+            <p id="error-desc" style="color:#666; font-size:14px; margin-top:10px;"></p>
+            <button onclick="location.reload()" class="btn" style="background:#f3f4f6; color:#4b5563; margin-top:20px;">重試</button>
         </div>
     </main>
 
-    <footer style="margin-top:30px; font-size:12px; color:#999; text-align:center;">
-        © 2026 NCYU Personnel Office<br>System Version: 2.0.0 (Enhanced)
+    <footer style="margin-top:30px; font-size:12px; color:#999; text-align:center; opacity:0.6;">
+        © 2026 NCYU Personnel Office<br>System Version: 3.1.0 (Enterprise)
     </footer>
 
     <script>
-        // API Configuration
-        const API_URL = "https://personnel.kncyu.link/api/checkin/index.php";
-
+        // === 核心設定 ===
+        let API_URL = "https://personnel.kncyu.link/api/checkin/index.php"; // 預設值 (Fallback)
+        
         // State
         const state = { eid: null, uuid: null, submitting: false };
         const els = {
             loading: document.getElementById('view-loading'),
+            hint: document.getElementById('loading-hint'),
             content: document.getElementById('view-content'),
             error: document.getElementById('view-error'),
+            errorTitle: document.getElementById('error-title'),
+            errorDesc: document.getElementById('error-desc'),
             inputSec: document.getElementById('section-input'),
             successSec: document.getElementById('section-success'),
             statusBox: document.getElementById('status-box'),
@@ -164,47 +194,74 @@
             btn: document.getElementById('btn-submit')
         };
 
-        // Audio Assets (Base64 for inline simplicity, or verify path)
-        const audioSuccess = new Audio('assets/sounds/success.mp3'); // 需準備檔案
+        // 音效 (使用 Base64 避免找不到檔案)
+        // 這裡僅示範邏輯，實際請確認路徑或使用 Base64
+        const audioSuccess = new Audio('assets/sounds/success.mp3'); 
         const audioError = new Audio('assets/sounds/error.mp3');
 
-        // Init
+        // === 初始化流程 ===
         document.addEventListener("DOMContentLoaded", async () => {
-            setupWakeLock();
-            setupNetworkListener();
+            setupWakeLock();      // 1. 螢幕恆亮
+            setupNetworkCheck();  // 2. 斷線偵測
             
+            // 3. ★★★ 關鍵：動態載入系統設定 ★★★
+            await loadSystemConfig();
+
+            // 4. 解析參數並執行
             if(parseParams()) {
                 await checkStatus();
                 setupEvents();
             } else {
-                showError("參數錯誤", "無效的 QR Code");
+                showError("參數錯誤", "無效的 QR Code 或連結已過期。");
             }
         });
+
+        // ★★★ 關鍵功能：從 IPC 載入設定 ★★★
+        async function loadSystemConfig() {
+            try {
+                els.hint.textContent = "讀取系統設定中...";
+                
+                // 檢查是否在 Electron 環境中
+                if (window.lotteryAPI && window.lotteryAPI.invoke) {
+                    console.log("[Client] Running in Electron, fetching config...");
+                    const config = await window.lotteryAPI.invoke('get-api-config'); // 呼叫 IPC
+                    
+                    if (config && config.api_url) {
+                        API_URL = config.api_url; // 覆蓋預設值
+                        console.log("[Client] API URL updated to:", API_URL);
+                    }
+                } else {
+                    console.log("[Client] Running in Browser, using default URL.");
+                }
+            } catch (e) {
+                console.warn("[Client] Config load failed, using fallback.", e);
+            }
+        }
 
         // 1. Wake Lock API (螢幕恆亮)
         async function setupWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     await navigator.wakeLock.request('screen');
-                    console.log("Wake Lock active");
                 }
-            } catch(e) { console.log("Wake Lock failed", e); }
+            } catch(e) {}
         }
 
-        // 2. Offline Detection
-        function setupNetworkListener() {
+        // 2. Network Check
+        function setupNetworkCheck() {
             const banner = document.getElementById('offline-banner');
             const update = () => banner.classList.toggle('show', !navigator.onLine);
             window.addEventListener('online', update);
             window.addEventListener('offline', update);
         }
 
+        // 3. Parse URL Params
         function parseParams() {
             const params = new URLSearchParams(window.location.search);
             const data = params.get('data');
             try {
                 if(data) {
-                    // Robust Decoding
+                    // Base64 Decode (UTF-8 Safe)
                     const decoded = new TextDecoder().decode(Uint8Array.from(atob(data), c => c.charCodeAt(0)));
                     const p = new URLSearchParams(decoded);
                     state.eid = p.get('eid');
@@ -217,22 +274,32 @@
             } catch(e) { return false; }
         }
 
+        // 4. Check Status API Call
         async function checkStatus(code = null) {
             try {
+                els.hint.textContent = "連線伺服器驗證中...";
+                
                 const controller = new AbortController();
-                setTimeout(() => controller.abort(), 8000);
+                const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s Timeout
 
                 const res = await fetch(`${API_URL}?t=${Date.now()}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ ...state, checkin_code: code }),
-                    signal: controller.signal
+                    body: JSON.stringify({ 
+                        employee_id: state.eid, 
+                        uuid: state.uuid, 
+                        checkin_code: code 
+                    }),
+                    signal: controller.signal,
+                    cache: 'no-store'
                 });
+                
+                clearTimeout(timeoutId);
 
-                if(!res.ok) throw new Error("Server Error");
+                if(!res.ok) throw new Error(`Server responded with ${res.status}`);
                 const data = await res.json();
 
-                // Render Info
+                // 渲染資訊
                 if(data.name) {
                     document.getElementById('disp-name').textContent = data.name;
                     document.getElementById('disp-eid').textContent = data.employee_id;
@@ -241,35 +308,41 @@
                     els.loading.classList.add('hidden');
                     els.content.classList.remove('hidden');
 
+                    // 邏輯判斷
                     if(data.success) {
                         showSuccess(data.is_repeated);
                     } else if (data.require_code) {
-                        // 驗證碼輸入模式
+                        // 需要驗證碼
                         els.inputSec.classList.remove('hidden');
                         els.statusBox.style.display = 'none';
-                        if(code) { // 這是重試
+                        if(code) { 
                              showMsg(data.message, 'error'); 
                              vibrate(false);
-                             els.input.value = '';
+                             els.input.value = ''; // 清空重打
+                             els.input.focus();
+                        } else {
+                            // 第一次進入，聚焦輸入框
+                            setTimeout(() => els.input.focus(), 500);
                         }
                     } else if (data.start_time) {
-                        // 倒數計時模式
+                        // 倒數計時
                         els.inputSec.classList.add('hidden');
                         startCountdown(data.start_time);
                     } else {
-                        // 系統關閉
+                        // 系統關閉或其他錯誤
                         els.inputSec.classList.add('hidden');
                         showMsg(data.message, 'error');
                     }
                 } else {
-                    showError("查無此人", "資料庫無此記錄");
+                    showError("查無此人", "資料庫無此記錄，請確認是否已匯入名單。");
                 }
             } catch(e) {
-                if(code) showMsg("連線失敗，請重試", 'error');
-                else showError("連線失敗", "無法連接伺服器");
+                console.error(e);
+                if(code) showMsg("連線失敗，請檢查網路", 'error');
+                else showError("連線失敗", "無法連接伺服器 (" + API_URL + ")<br>請檢查系統設定或網路連線。");
             } finally {
                 state.submitting = false;
-                els.btn.textContent = "確認報到";
+                els.btn.innerHTML = "確認報到";
                 els.btn.disabled = false;
             }
         }
@@ -281,27 +354,43 @@
             els.countdownBox.classList.add('hidden');
             
             if(!isRepeated) {
+                // 放煙火
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                // 播放音效
                 audioSuccess.play().catch(()=>{});
+                // 震動
                 vibrate(true);
+            } else {
+                // 重複報到顯示不同訊息
+                els.successSec.querySelector('h2').textContent = "您已完成報到";
+                els.successSec.querySelector('p').textContent = "無需重複操作";
             }
         }
 
         function setupEvents() {
             els.input.addEventListener('input', (e) => {
-                e.target.value = e.target.value.toUpperCase(); // 自動轉大寫
+                e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // 僅允許英數大寫
                 if(e.target.value.length === 4) submit();
             });
+            
+            els.input.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') submit();
+            });
+
             els.btn.onclick = submit;
         }
 
         function submit() {
             if(state.submitting) return;
             const code = els.input.value.trim();
-            if(code.length < 4) { showMsg("請輸入4碼", 'error'); return; }
+            if(code.length < 4) { 
+                showMsg("請輸入完整 4 碼驗證碼", 'error'); 
+                vibrate(false);
+                return; 
+            }
             
             state.submitting = true;
-            els.btn.textContent = "驗證中...";
+            els.btn.innerHTML = '<div class="spinner" style="width:15px;height:15px;border-width:2px;margin:0 5px 0 0;display:inline-block;vertical-align:middle;"></div> 驗證中...';
             els.btn.disabled = true;
             checkStatus(code);
         }
@@ -330,22 +419,23 @@
             els.statusBox.textContent = text;
             els.statusBox.className = `status-msg status-${type}`;
             els.statusBox.style.display = 'block';
-            if(type === 'error') audioError.play().catch(()=>{});
+            if(type === 'error') {
+                audioError.play().catch(()=>{});
+                els.statusBox.classList.add('shake');
+                setTimeout(()=>els.statusBox.classList.remove('shake'), 500);
+            }
         }
 
         function showError(title, desc) {
             els.loading.classList.add('hidden');
             els.error.classList.remove('hidden');
-            document.getElementById('error-msg').textContent = title + ": " + desc;
+            els.errorTitle.textContent = title;
+            els.errorDesc.innerHTML = desc;
         }
 
         function vibrate(success) {
             if(navigator.vibrate) {
                 navigator.vibrate(success ? [100, 50, 100] : [200, 100, 200]);
-            }
-            if(!success) {
-                els.input.classList.add('shake');
-                setTimeout(()=>els.input.classList.remove('shake'), 500);
             }
         }
     </script>
