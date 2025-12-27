@@ -162,70 +162,79 @@
 </div>
 
 <script>
-// ★ API 設定 (請確保此網址正確)
+// ★ 請再次確認您的 API 網址 (必須是 https)
 const API_BASE = 'https://personnel.kncyu.link/api/checkin/index.php'; 
 
 const app = {
     state: {
-        mode: 'AUTO',     // 報到模式
+        mode: 'AUTO',
         currentUser: null,
-        locked: false,    // 是否鎖定 (非開放時間)
+        locked: false,
         timer: null,
-        lastWinnerHash: '' // 用於檢查中獎名單是否有更新
+        lastWinnerHash: ''
     },
 
     init() {
+        console.log("App Initializing...");
         this.checkUrlParams();
-        this.startStatusSync();
-        this.startWinnerSync(); // 啟動中獎名單同步
+        this.startStatusSync(); // 這是關鍵，它會去連線 API
+        this.startWinnerSync();
 
-        // 事件綁定
         document.getElementById('input-id').addEventListener('keypress', e => { if(e.key==='Enter') this.lookupUser(); });
         document.getElementById('btn-lookup').onclick = () => this.lookupUser();
         document.getElementById('btn-submit').onclick = () => this.submitCheckIn();
         document.getElementById('input-verify-code').addEventListener('keypress', e => { if(e.key==='Enter') this.submitCheckIn(); });
     },
 
-    // --- Tab 切換 ---
+    // ... (switchTab, checkUrlParams 保持不變) ...
     switchTab(tabName, el) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         if(el) el.classList.add('active');
-        
         document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
         document.getElementById('tab-' + tabName).classList.add('active');
-        
         window.scrollTo(0, 0);
-    }
+    },
 
-    // --- 報到邏輯 ---
     checkUrlParams() {
         const p = new URLSearchParams(location.search);
         const code = p.get('uuid') || p.get('eid');
         if(code) {
             document.getElementById('input-id').value = code;
-            setTimeout(() => this.lookupUser(), 500);
+            // 等待一下再查詢，確保 API 狀態已更新
+            setTimeout(() => this.lookupUser(), 1000);
         }
     },
 
-    // 系統狀態同步 (每 5 秒)
+    // ★★★ 重點修正：加強連線錯誤的顯示 ★★★
     startStatusSync() {
         const update = async () => {
             try {
+                // 加一個 timestamp 防止快取
                 const res = await fetch(`${API_BASE}?action=get_system_status&t=${Date.now()}`);
+                
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                
                 const json = await res.json();
+                
                 if(json.success) {
                     const d = json.data;
                     this.updateStatusUI(d.status, d.message);
                     this.state.mode = d.checkin_mode_type || 'AUTO';
                     
-                    // 若在確認頁但系統關閉，踢回首頁
+                    // 若在確認頁但系統關閉
                     const confirmView = document.getElementById('view-confirm');
                     if (d.status !== 'OPEN' && confirmView.style.display !== 'none') {
                         alert("系統已關閉");
                         this.reset();
                     }
+                } else {
+                    this.updateStatusUI('ERROR', json.message || 'API Error');
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error("Status Sync Error:", e);
+                // 在狀態列顯示具體錯誤
+                this.updateStatusUI('ERROR', '連線失敗 (請檢查 API)');
+            }
         };
         update();
         setInterval(update, 5000);
@@ -234,11 +243,29 @@ const app = {
     updateStatusUI(status, msg) {
         const bar = document.getElementById('status-bar');
         bar.innerText = msg;
-        bar.className = 'status-bar ' + (status==='OPEN'?'status-open':(status==='CLOSED'?'status-closed':'status-wait'));
+        
+        let cls = 'status-wait';
+        if (status === 'OPEN') cls = 'status-open';
+        else if (status === 'CLOSED') cls = 'status-closed';
+        else if (status === 'ERROR') cls = 'status-closed'; // 用紅色顯示錯誤
+        
+        bar.className = `status-bar ${cls}`;
+        
+        // 鎖定邏輯
         this.state.locked = (status !== 'OPEN');
         document.getElementById('btn-lookup').disabled = this.state.locked;
+        
+        // 如果是連線錯誤，輸入框也要鎖
+        if (status === 'ERROR') {
+            document.getElementById('input-id').disabled = true;
+            document.getElementById('input-id').placeholder = "無法連線到伺服器";
+        } else {
+            document.getElementById('input-id').disabled = this.state.locked;
+            document.getElementById('input-id').placeholder = "員工編號 / UUID";
+        }
     },
 
+    // ... (其餘 lookupUser, showConfirm, submitCheckIn, showSuccess, reset, setLoading, startWinnerSync, renderWinners 保持不變) ...
     async lookupUser() {
         if(this.state.locked) return alert("系統目前未開放");
         const code = document.getElementById('input-id').value.trim();
@@ -251,7 +278,7 @@ const app = {
             
             if(json.success) {
                 if(json.data.has_checked_in) {
-                    this.showSuccess(json.data.check_in_time, true); // 已報到
+                    this.showSuccess(json.data.check_in_time, true);
                 } else {
                     this.state.currentUser = { ...json.data, qrcode: code };
                     this.showConfirm();
@@ -260,7 +287,7 @@ const app = {
                 alert(json.message);
                 document.getElementById('input-id').value = '';
             }
-        } catch(e) { alert("連線錯誤"); }
+        } catch(e) { alert("連線錯誤: " + e.message); }
         finally { this.setLoading(false); }
     },
 
@@ -276,7 +303,7 @@ const app = {
         if(this.state.mode === 'AUTO') {
             document.getElementById('mode-auto').style.display = 'block';
             document.getElementById('mode-code').style.display = 'none';
-            setTimeout(() => this.submitCheckIn(), 1500); // 1.5秒後自動送出
+            setTimeout(() => this.submitCheckIn(), 1500);
         } else {
             document.getElementById('mode-auto').style.display = 'none';
             document.getElementById('mode-code').style.display = 'block';
@@ -321,8 +348,6 @@ const app = {
             document.querySelector('.icon-success').className = 'fa-solid fa-circle-check icon-success';
             document.querySelector('#view-success h2').innerText = '報到成功';
         }
-        
-        // 成功後不自動返回，停留在成功頁面
     },
 
     reset() {
@@ -337,15 +362,11 @@ const app = {
 
     setLoading(bool) { document.getElementById('loader').style.display = bool ? 'flex' : 'none'; },
 
-    // --- 中獎名單同步 ---
-    // 為了節省流量，這裡使用簡單的 JSON 內容比對，如果內容沒變就不重繪 DOM
     startWinnerSync() {
         const fetchWinners = async () => {
             try {
-                // 新增 API action: get_winners
                 const res = await fetch(`${API_BASE}?action=get_winners&t=${Date.now()}`);
                 const json = await res.json();
-                
                 if(json.success) {
                     const newHash = JSON.stringify(json.data);
                     if(newHash !== this.state.lastWinnerHash) {
@@ -357,7 +378,7 @@ const app = {
             } catch(e) { console.error("Winner sync failed"); }
         };
         fetchWinners();
-        setInterval(fetchWinners, 15000); // 15秒更新一次
+        setInterval(fetchWinners, 15000);
     },
 
     renderWinners(data) {
@@ -366,24 +387,19 @@ const app = {
             container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-gift"></i><p>尚未開獎</p></div>`;
             return;
         }
-
         let html = '';
         data.forEach(prize => {
             let winnersHtml = '';
             prize.winners.forEach(w => {
-                // 顯示：王小明 (112233)
                 winnersHtml += `<div class="winner-tag">${w.name} <small>(${w.employee_id})</small></div>`;
             });
-
             html += `
                 <div class="winner-card">
                     <div class="prize-title">
                         <span>${prize.prize_name}</span>
                         <span class="prize-count">${prize.winners.length} 人</span>
                     </div>
-                    <div class="winner-list">
-                        ${winnersHtml}
-                    </div>
+                    <div class="winner-list">${winnersHtml}</div>
                 </div>
             `;
         });
