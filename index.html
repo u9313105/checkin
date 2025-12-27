@@ -4,284 +4,481 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>國立嘉義大學 - 2026 新春團拜報到系統</title>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
+        :root {
+            --ncyu-red: #800000;
+            --ncyu-red-dark: #5a0000;
+            --bg-color: #f0f2f5;
+        }
         body { 
-            background-color: #f0f2f5; 
+            background-color: var(--bg-color); 
             font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; 
             height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .main-card {
-            width: 100%;
-            max-width: 900px;
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            flex-direction: column;
             overflow: hidden;
         }
-        .header-section {
-            background: linear-gradient(135deg, #800000 0%, #a31a1a 100%); /* 嘉大紅 */
-            color: white;
-            padding: 30px;
-            text-align: center;
+        
+        /* 背景裝飾 */
+        .bg-decoration {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 35vh;
+            background: linear-gradient(135deg, var(--ncyu-red) 0%, var(--ncyu-red-dark) 100%);
+            z-index: -1;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .checkin-card {
+            width: 100%;
+            max-width: 850px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            border: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .card-header-custom {
+            background: white;
+            padding: 40px 30px 20px 30px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .ncyu-logo-text {
+            color: var(--ncyu-red);
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
         .status-bar {
-            padding: 12px;
+            padding: 15px;
             text-align: center;
             font-weight: bold;
-            font-size: 1.1rem;
-            border-bottom: 1px solid #eee;
-            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        /* 狀態顏色 */
         .status-open { background-color: #d1e7dd; color: #0f5132; }   /* 綠色: 進行中 */
-        .status-closed { background-color: #f8d7da; color: #842029; } /* 紅色: 已結束/錯誤 */
-        .status-wait { background-color: #fff3cd; color: #664d03; }   /* 黃色: 未開始 */
+        .status-closed { background-color: #f8d7da; color: #842029; } /* 紅色: 關閉 */
+        .status-wait { background-color: #fff3cd; color: #664d03; }   /* 黃色: 等待 */
+        .status-loading { background-color: #e2e3e5; color: #41464b; } /* 灰色: 連線中 */
 
-        .content-section { padding: 40px; background: white; }
+        .content-section { padding: 50px; }
         
         .big-input { 
-            height: 70px; 
-            font-size: 28px; 
+            height: 80px; 
+            font-size: 36px; 
             text-align: center; 
-            letter-spacing: 2px;
-            border: 2px solid #ced4da;
-            border-radius: 10px !important;
+            letter-spacing: 4px;
+            border: 3px solid #ced4da;
+            border-radius: 12px !important;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.2s;
+            text-transform: uppercase; /* 強制大寫 */
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         }
         .big-input:focus {
-            border-color: #800000;
+            border-color: var(--ncyu-red);
             box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
+            outline: none;
+        }
+        .big-input:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+            border-color: #adb5bd;
         }
 
+        /* 結果顯示區 */
         .result-box {
-            display: none; /* 預設隱藏 */
+            display: none; 
             margin-top: 30px;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             text-align: center;
-            animation: slideDown 0.4s ease;
+            animation: slideDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
         }
+        
+        /* 左側狀態條裝飾 */
+        .result-box::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 8px;
+        }
+        .res-success { background-color: #d1e7dd; color: #0f5132; }
+        .res-success::before { background-color: #198754; }
+        
+        .res-repeat { background-color: #fff3cd; color: #664d03; }
+        .res-repeat::before { background-color: #ffc107; }
+        
+        .res-error { background-color: #f8d7da; color: #842029; }
+        .res-error::before { background-color: #dc3545; }
+
+        .btn-submit {
+            background-color: var(--ncyu-red);
+            border-color: var(--ncyu-red);
+            font-size: 1.2rem;
+            padding: 15px;
+            font-weight: bold;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background-color: #a31a1a;
+            border-color: #a31a1a;
+        }
+
+        .server-info {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 15px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .server-time {
-            position: fixed;
-            bottom: 10px;
-            right: 15px;
-            font-size: 0.9rem;
-            color: #6c757d;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <div class="main-card">
-        <div class="header-section">
-            <h1 class="mb-0 fw-bold">國立嘉義大學</h1>
-            <p class="mb-0 mt-2 fs-5">2026 新春團拜報到系統</p>
-        </div>
+    <div class="bg-decoration"></div>
 
-        <div id="system-status-bar" class="status-wait">
-            正在連線伺服器...
-        </div>
-
-        <div class="content-section">
+    <div class="main-container">
+        <div class="checkin-card">
             
-            <label for="qrcode-input" class="form-label h4 mb-4 text-center d-block">
-                請掃描 QR Code 或輸入識別碼
-            </label>
-
-            <div class="input-group mb-3">
-                <input type="text" id="qrcode-input" class="form-control big-input" 
-                       placeholder="系統準備中..." disabled autocomplete="off">
-            </div>
-            
-            <div class="d-grid gap-2">
-                <button class="btn btn-secondary btn-lg" id="btn-submit" disabled>報到確認</button>
+            <div class="card-header-custom">
+                <h1 class="ncyu-logo-text display-5">國立嘉義大學</h1>
+                <p class="text-muted fs-4 mb-0">2026 新春團拜報到系統</p>
             </div>
 
-            <div id="result-area" class="result-box alert-success">
-                <h2 id="res-title" class="fw-bold">報到成功</h2>
-                <div class="fs-4 mt-2" id="res-msg">王小明 (人事室)</div>
-                <div class="text-muted mt-2" id="res-time">時間: 10:00:00</div>
+            <div id="system-status-bar" class="status-loading">
+                <i class="fas fa-circle-notch fa-spin"></i> 正在連線伺服器...
             </div>
 
+            <div class="content-section">
+                
+                <label for="qrcode-input" class="form-label h4 mb-4 text-center d-block text-secondary">
+                    <i class="fas fa-qrcode me-2"></i>請掃描 QR Code 或輸入識別碼
+                </label>
+
+                <div class="input-group mb-4">
+                    <input type="text" id="qrcode-input" class="form-control big-input" 
+                           placeholder="系統連線中..." disabled autocomplete="off" autofocus>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary btn-submit" id="btn-submit" disabled>
+                        <i class="fas fa-check-circle me-2"></i>確認報到 (Enter)
+                    </button>
+                </div>
+
+                <div id="result-area" class="result-box">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i id="res-icon" class="fas fa-check-circle fa-2x me-3"></i>
+                        <h2 id="res-title" class="fw-bold mb-0">報到成功</h2>
+                    </div>
+                    <div class="fs-3 fw-bold mt-2" id="res-name">王小明</div>
+                    <div class="fs-5 text-muted" id="res-dept">人事室</div>
+                    <hr>
+                    <div class="text-muted small mt-2" id="res-time">報到時間: 10:00:00</div>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <div class="server-time" id="server-time-display">Server Time: --:--:--</div>
+    <div class="server-info">
+        <i class="fas fa-server me-2"></i>
+        <span id="server-status-text">連線中...</span>
+        <span class="mx-2">|</span>
+        <i class="far fa-clock me-1"></i>
+        <span id="server-time-display">--:--:--</span>
+        <span class="mx-2">|</span>
+        <span id="total-count-badge" class="badge bg-secondary">已報到: 0</span>
+    </div>
+
+    <audio id="audio-player" style="display:none;"></audio>
 
     <script>
-        // 取得 DOM 元素
-        const qrcodeInput = document.getElementById('qrcode-input');
-        const btnSubmit = document.getElementById('btn-submit');
-        const statusBar = document.getElementById('system-status-bar');
-        const resultArea = document.getElementById('result-area');
-        const serverTimeDisplay = document.getElementById('server-time-display');
-
-        let isSystemLocked = true; // 全域鎖定標記
-
         // ==========================================
-        // 核心功能 1: 定時檢查系統狀態 (Polling)
+        // 前端邏輯核心 (Check-in Logic)
         // ==========================================
+        
+        // DOM 元素
+        const els = {
+            input: document.getElementById('qrcode-input'),
+            btn: document.getElementById('btn-submit'),
+            statusBar: document.getElementById('system-status-bar'),
+            resultBox: document.getElementById('result-area'),
+            resIcon: document.getElementById('res-icon'),
+            resTitle: document.getElementById('res-title'),
+            resName: document.getElementById('res-name'),
+            resDept: document.getElementById('res-dept'),
+            resTime: document.getElementById('res-time'),
+            serverTime: document.getElementById('server-time-display'),
+            serverStatus: document.getElementById('server-status-text'),
+            countBadge: document.getElementById('total-count-badge'),
+            audio: document.getElementById('audio-player')
+        };
+
+        // 狀態變數
+        let isSystemLocked = true;
+        let isProcessing = false;
+        let resultTimer = null;
+        let soundSettings = {}; // 儲存從後端取得的音效路徑
+
+        // 1. 初始化
+        async function init() {
+            els.input.focus();
+            
+            // 載入音效設定
+            try {
+                const res = await window.lotteryAPI.invoke('get-settings');
+                if (res.success && res.data) {
+                    // 根據 settings-ipc.js 的結構
+                    soundSettings = {
+                        success: res.data.audio_celebrate || res.data.audio_pop, 
+                        repeat: res.data.audio_exciting, // 或其他音效
+                        vip: res.data.audio_opening // 假設 VIP 用開場音效
+                    };
+                }
+            } catch(e) { console.error("無法載入音效設定", e); }
+
+            // 綁定事件
+            els.btn.addEventListener('click', handleCheckIn);
+            els.input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleCheckIn();
+            });
+
+            // 啟動狀態輪詢
+            checkSystemStatus();
+            setInterval(checkSystemStatus, 3000); // 每3秒同步一次
+        }
+
+        // 2. 核心：檢查系統狀態 (Polling)
         async function checkSystemStatus() {
             try {
-                // 呼叫 IPC
-                const res = await window.electronAPI.getSystemStatus();
+                // 呼叫後端 (這是我們剛剛在 settings-ipc.js 寫好的權威邏輯)
+                const res = await window.lotteryAPI.invoke('get-checkin-status');
                 
-                if (res.success) {
-                    updateStatusUI(res.data);
-                } else {
-                    // 連線失敗或 API 錯誤
-                    setUIState('ERROR', '無法連線至伺服器');
+                // 更新右下角時間 (Server Time)
+                if (res.server_time) {
+                    els.serverTime.innerText = new Date(res.server_time).toLocaleTimeString();
                 }
+
+                updateUIState(res);
+
             } catch (err) {
                 console.error("Status Check Error", err);
-                setUIState('ERROR', '系統發生錯誤');
+                setUIError("無法連線至後端伺服器");
             }
         }
 
-        function updateStatusUI(data) {
-            // 更新右下角時間
-            serverTimeDisplay.innerText = `Server Time: ${data.server_time}`;
+        // 3. 更新介面狀態 (Lock/Unlock)
+        function updateUIState(data) {
+            // 如果正在處理報到中，暫時不更新 UI 鎖定狀態，以免打斷流程
+            if (isProcessing) return;
 
-            // 根據後端回傳的狀態碼改變介面
-            switch(data.status_code) {
-                case 'OPEN':
-                    setUIState('OPEN', `🟢 報到進行中 (截止時間: ${data.end_time.split(' ')[1]})`);
-                    break;
-                case 'NOT_STARTED':
-                    setUIState('LOCKED', `⏳ 報到尚未開始 (開放時間: ${data.start_time})`);
-                    break;
-                case 'CLOSED':
-                    setUIState('LOCKED', `🛑 報到時間已截止`);
-                    break;
-                default:
-                    setUIState('ERROR', `⚠️ 狀態異常: ${data.status_message}`);
-            }
-        }
-
-        // 控制 UI 鎖定/解鎖與顏色
-        function setUIState(state, message) {
-            statusBar.innerText = message;
-
-            if (state === 'OPEN') {
-                statusBar.className = 'status-bar status-open';
-                
-                // 只有從鎖定變成開啟時，才主動解鎖輸入框
+            if (data.status === 'OPEN') {
+                // --- 系統開放 ---
                 if (isSystemLocked) {
                     isSystemLocked = false;
-                    qrcodeInput.disabled = false;
-                    qrcodeInput.placeholder = "等待掃描...";
-                    btnSubmit.className = "btn btn-primary btn-lg";
-                    btnSubmit.disabled = false;
-                    qrcodeInput.focus();
+                    els.statusBar.className = 'status-bar status-open';
+                    els.statusBar.innerHTML = `<i class="fas fa-door-open me-2"></i> ${data.message}`;
+                    
+                    els.input.disabled = false;
+                    els.input.placeholder = "請輸入員編或掃描 QR Code";
+                    els.input.focus();
+                    
+                    els.btn.disabled = false;
+                    els.btn.className = "btn btn-primary btn-submit";
+                    
+                    els.serverStatus.innerText = "連線正常";
+                    els.serverStatus.className = "text-success fw-bold";
                 }
             } else {
-                // 鎖定狀態 (未開始、已結束、錯誤)
+                // --- 系統關閉 / 未開始 / 已截止 ---
                 isSystemLocked = true;
-                statusBar.className = (state === 'ERROR') ? 'status-bar status-closed' : 
-                                      (state === 'LOCKED' && message.includes('截止')) ? 'status-bar status-closed' : 'status-bar status-wait';
                 
-                qrcodeInput.disabled = true;
-                qrcodeInput.placeholder = "⛔ 禁止輸入";
-                btnSubmit.className = "btn btn-secondary btn-lg";
-                btnSubmit.disabled = true;
+                let statusClass = 'status-closed';
+                let icon = 'fa-ban';
+                
+                if (data.status === 'NOT_STARTED') {
+                    statusClass = 'status-wait';
+                    icon = 'fa-hourglass-start';
+                } else if (data.status === 'ENDED') {
+                    statusClass = 'status-closed';
+                    icon = 'fa-stop-circle';
+                }
+
+                els.statusBar.className = `status-bar ${statusClass}`;
+                els.statusBar.innerHTML = `<i class="fas ${icon} me-2"></i> ${data.message}`;
+
+                els.input.disabled = true;
+                els.input.placeholder = "⛔ 系統目前禁止報到";
+                els.input.value = ""; // 清空輸入
+                
+                els.btn.disabled = true;
+                els.btn.className = "btn btn-secondary btn-submit";
+                
+                els.serverStatus.innerText = "暫停服務";
+                els.serverStatus.className = "text-danger";
             }
         }
 
-        // ==========================================
-        // 核心功能 2: 處理報到送出
-        // ==========================================
+        function setUIError(msg) {
+            isSystemLocked = true;
+            els.statusBar.className = 'status-bar status-closed';
+            els.statusBar.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> ${msg}`;
+            els.input.disabled = true;
+            els.input.placeholder = "連線錯誤";
+            els.btn.disabled = true;
+        }
+
+        // 4. 處理報到動作
         async function handleCheckIn() {
-            const code = qrcodeInput.value.trim();
+            const code = els.input.value.trim();
             if (!code) return;
 
-            // 1. 暫時鎖定介面，防止重複 Enter
-            qrcodeInput.disabled = true;
-            btnSubmit.disabled = true;
-            statusBar.innerText = "⏳ 處理中...";
+            // 鎖定介面防止連點
+            isProcessing = true;
+            els.input.disabled = true;
+            els.btn.disabled = true;
+            els.statusBar.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i> 資料驗證中...`;
 
             try {
-                // 2. 呼叫 IPC 進行報到
-                const res = await window.electronAPI.participantCheckIn(code);
+                // 呼叫後端 API (participants-ipc.js)
+                const res = await window.lotteryAPI.invoke('participant:check-in', code);
                 
-                // 3. 顯示結果
+                // 顯示結果
                 showResult(res);
 
-            } catch (err) {
-                showResult({ success: false, message: "程式發生未知錯誤" });
-            } finally {
-                // 4. 恢復輸入狀態 (如果系統仍是開放的)
-                if (!isSystemLocked) {
-                    qrcodeInput.disabled = false;
-                    btnSubmit.disabled = false;
-                    qrcodeInput.value = ''; // 清空
-                    qrcodeInput.focus();    // 重新聚焦
-                    // 恢復狀態文字
-                    const res = await window.electronAPI.getSystemStatus();
-                    if(res.success && res.data.status_code === 'OPEN') {
-                        statusBar.innerText = `🟢 報到進行中 (截止時間: ${res.data.end_time.split(' ')[1]})`;
-                    }
+                // 更新報到總數
+                if (res.meta && res.meta.total_checked_in) {
+                    els.countBadge.innerText = `已報到: ${res.meta.total_checked_in}`;
                 }
+
+            } catch (err) {
+                showResult({ success: false, message: "程式執行錯誤: " + err.message });
+            } finally {
+                // 恢復狀態
+                isProcessing = false;
+                
+                // 如果系統還是開放的，恢復輸入框
+                // 我們延遲一點點恢復，讓使用者看清楚結果
+                setTimeout(() => {
+                    if (!isSystemLocked) {
+                        els.input.disabled = false;
+                        els.btn.disabled = false;
+                        els.input.value = ''; // 清空
+                        els.input.focus();    // 重新聚焦
+                        // 恢復狀態文字
+                        els.statusBar.innerHTML = `<i class="fas fa-door-open me-2"></i> 系統開放報到中`;
+                    }
+                }, 1500); // 1.5秒後可刷下一筆
             }
         }
 
+        // 5. 顯示結果與播放音效
         function showResult(res) {
-            resultArea.style.display = 'block';
+            // 清除舊的 timer
+            if (resultTimer) clearTimeout(resultTimer);
             
-            // 移除舊的顏色類別
-            resultArea.classList.remove('alert-success', 'alert-warning', 'alert-danger');
+            els.resultBox.style.display = 'block';
+            els.resultBox.className = 'result-box'; // 重置 class
 
             if (res.success) {
                 if (res.is_repeat) {
-                    // 重複報到 (黃色)
-                    resultArea.classList.add('alert-warning');
-                    document.getElementById('res-title').innerText = '⚠️ 重複報到';
-                    document.getElementById('res-msg').innerText = `${res.message}`;
-                    document.getElementById('res-time').innerText = `上次報到: ${res.data.checkin_time}`;
+                    // --- 重複報到 (黃色) ---
+                    els.resultBox.classList.add('res-repeat');
+                    els.resIcon.className = "fas fa-exclamation-circle fa-2x me-3 text-warning";
+                    els.resTitle.innerText = "⚠️ 重複報到";
+                    els.resName.innerText = res.data.name;
+                    els.resDept.innerText = res.data.department || '';
+                    
+                    const lastTime = res.meta && res.meta.last_checkin ? new Date(res.meta.last_checkin).toLocaleString() : '未知';
+                    els.resTime.innerText = `您已於 [${lastTime}] 完成報到`;
+                    
+                    playSound('repeat');
+
                 } else {
-                    // 成功 (綠色)
-                    resultArea.classList.add('alert-success');
-                    document.getElementById('res-title').innerText = '🎉 報到成功';
-                    document.getElementById('res-msg').innerText = `${res.data.department} - ${res.data.name}`;
-                    document.getElementById('res-time').innerText = `時間: ${res.data.checkin_time}`;
+                    // --- 報到成功 (綠色) ---
+                    els.resultBox.classList.add('res-success');
+                    els.resIcon.className = "fas fa-check-circle fa-2x me-3 text-success";
+                    els.resTitle.innerText = "🎉 報到成功";
+                    els.resName.innerText = res.data.name;
+                    els.resDept.innerText = res.data.department || '';
+                    els.resTime.innerText = `報到時間: ${new Date(res.meta.server_time).toLocaleTimeString()}`;
+                    
+                    // 根據後端判斷播放音效 (VIP 或 普通)
+                    playSound(res.meta.sound || 'success');
                 }
             } else {
-                // 失敗 (紅色)
-                resultArea.classList.add('alert-danger');
-                document.getElementById('res-title').innerText = '❌ 失敗';
-                document.getElementById('res-msg').innerText = res.message;
-                document.getElementById('res-time').innerText = '';
+                // --- 失敗 (紅色) ---
+                els.resultBox.classList.add('res-error');
+                els.resIcon.className = "fas fa-times-circle fa-2x me-3 text-danger";
+                els.resTitle.innerText = "❌ 報到失敗";
+                els.resName.innerText = "";
+                els.resDept.innerText = res.message; // 顯示錯誤訊息
+                els.resTime.innerText = "";
+                
+                playSound('error'); // 可以加一個錯誤音效
             }
 
-            // 5秒後自動淡出結果框
-            setTimeout(() => {
-                resultArea.style.display = 'none';
+            // 5秒後自動隱藏結果框
+            resultTimer = setTimeout(() => {
+                els.resultBox.style.display = 'none';
             }, 5000);
         }
 
-        // ==========================================
-        // 監聽事件
-        // ==========================================
-        btnSubmit.addEventListener('click', handleCheckIn);
-        
-        qrcodeInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleCheckIn();
-        });
+        // 6. 音效播放邏輯
+        function playSound(type) {
+            let src = '';
+            // 優先使用後端回傳的設定 (如果有的話)
+            // 這裡簡單映射：success -> celebrate, vip -> opening, repeat -> exciting
+            if (type === 'vip') src = soundSettings.vip;
+            else if (type === 'repeat') src = soundSettings.repeat;
+            else src = soundSettings.success; // default success
 
-        // 頁面載入後立即檢查一次狀態
-        checkSystemStatus();
+            if (src) {
+                els.audio.src = src;
+                els.audio.play().catch(e => console.log("音效播放失敗(需互動):", e));
+            }
+        }
 
-        // 之後每 5 秒自動同步一次伺服器狀態
-        setInterval(checkSystemStatus, 5000);
+        // 啟動
+        init();
 
     </script>
 </body>
