@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#800000">
-    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
     <title>國立嘉義大學 - 2026 新春團拜</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,7 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === Microsoft Fluent / Windows Server Design Language === */
         :root { 
             --primary-color: #A80000;
             --primary-hover: #800000;
@@ -41,19 +38,14 @@
         
         input, button { user-select: text !important; -webkit-user-select: text !important; }
 
-        /* Header */
         .header { 
-            background: var(--primary-color); 
-            color: white; 
-            padding: 12px 20px; 
+            background: var(--primary-color); color: white; padding: 12px 20px; 
             display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); height: 55px;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); height: 55px;
         }
         .header-title { font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
         .header-title i { font-size: 1.2rem; }
 
-        /* Status Strip */
         .system-status-container { 
             position: fixed; top: 55px; left: 0; width: 100%; z-index: 95; pointer-events: none; 
             display: flex; justify-content: center; padding-top: 10px;
@@ -70,7 +62,6 @@
         .status-pill.open { background: #DFF6DD; color: #107C10; border-color: #107C10; }   
         .status-pill.connecting { background: #EFF6FC; color: #0078D4; border-color: #0078D4; } 
         
-        /* Containers */
         .container-box { max-width: 800px; margin: 0 auto; padding: 25px 15px; }
         .view-section { display: none; animation: fadeIn 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); }
         .view-section.active { display: block; }
@@ -85,7 +76,6 @@
             border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
         }
         
-        /* Inputs & Buttons */
         .fluent-input {
             width: 100%; padding: 10px 12px; font-size: 1.1rem;
             border: 1px solid #8A8886; border-radius: 2px;
@@ -103,11 +93,9 @@
         }
         .btn-win:active:not(:disabled) { transform: translateY(2px); background-color: #6a0000; }
         .btn-win:disabled { background-color: #C8C6C4; color: #F3F2F1; cursor: not-allowed; }
-        
         .btn-win-outline { background: white; color: var(--text-primary); border: 1px solid #8A8886; }
         .btn-win-outline:active { background: #E1DFDD; transform: translateY(2px); }
 
-        /* 1. Checkin Specifics */
         .avatar-box {
             width: 100px; height: 100px; background: #E1DFDD; 
             display: flex; align-items: center; justify-content: center;
@@ -117,7 +105,6 @@
         .profile-info { text-align: center; }
         .user-name { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
         .user-meta { color: var(--text-secondary); font-size: 1rem; margin-top: 5px; }
-        
         .code-input-group { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
         .code-input { width: 100%; max-width: 200px; text-align: center; letter-spacing: 10px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 1.5rem; }
 
@@ -125,94 +112,44 @@
         .result-box { background: #DFF6DD; border: 1px solid #107C10; color: #107C10; padding: 15px; margin-top: 20px; text-align: center; font-weight: 600; }
         .confetti-bg { position: absolute; inset:0; pointer-events: none; z-index: 0; opacity: 0.1; background-image: radial-gradient(#A80000 2px, transparent 2px); background-size: 20px 20px; }
 
-        /* 2. Ticket Specifics */
-        .digital-ticket {
-            background: white; border: 1px solid #8A8886;
-            margin-top: 20px; position: relative;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .digital-ticket::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
-            background: var(--primary-color);
-        }
+        .digital-ticket { background: white; border: 1px solid #8A8886; margin-top: 20px; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .digital-ticket::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--primary-color); }
         .ticket-content { padding: 20px 20px 20px 30px; }
-        .ticket-header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            border-bottom: 1px solid #E1DFDD; padding-bottom: 15px; margin-bottom: 15px;
-        }
+        .ticket-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #E1DFDD; padding-bottom: 15px; margin-bottom: 15px; }
         .ticket-title { font-size: 0.8rem; text-transform: uppercase; color: #605E5C; letter-spacing: 1px; font-weight: 700; }
         .ticket-id { font-family: 'Consolas', monospace; font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
-        
         .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .ticket-field label { display: block; font-size: 0.75rem; color: #605E5C; margin-bottom: 2px; }
         .ticket-field div { font-size: 1rem; font-weight: 600; color: #201F1E; }
-
+        
         .digital-ticket.winner { border-color: #C19C00; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
         .digital-ticket.winner::before { background: #C19C00; }
-        
-        .stamp-box {
-            position: absolute; right: 20px; bottom: 20px;
-            border: 3px solid #E1DFDD; color: #E1DFDD;
-            padding: 5px 15px; font-weight: 900; text-transform: uppercase;
-            transform: rotate(-15deg); font-size: 1.5rem;
-            pointer-events: none;
-        }
+        .stamp-box { position: absolute; right: 20px; bottom: 20px; border: 3px solid #E1DFDD; color: #E1DFDD; padding: 5px 15px; font-weight: 900; text-transform: uppercase; transform: rotate(-15deg); font-size: 1.5rem; pointer-events: none; }
         .stamp-box.won { border-color: #D13438; color: #D13438; background: rgba(209, 52, 56, 0.05); }
-
-        .prize-banner {
-            background: #FFF4CE; border: 1px solid #FDE7E9; 
-            padding: 15px; margin-top: 15px; text-align: center;
-            display: none; animation: fadeIn 0.5s;
-        }
+        .prize-banner { background: #FFF4CE; border: 1px solid #FDE7E9; padding: 15px; margin-top: 15px; text-align: center; display: none; animation: fadeIn 0.5s; }
         .digital-ticket.winner .prize-banner { display: block; }
         .prize-name { font-size: 1.4rem; font-weight: 800; color: #A80000; }
 
-        /* 3. Winner List Specifics */
         .search-bar { position: relative; margin-bottom: 15px; }
         .search-bar input { padding-left: 35px; }
         .search-bar i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #605E5C; }
-
         .accordion-item { border: 1px solid #E1DFDD; margin-bottom: -1px; border-radius: 0 !important; }
         .accordion-button { background: white; color: var(--text-primary); font-weight: 600; }
         .accordion-button:not(.collapsed) { background: #EFF6FC; color: var(--primary-color); box-shadow: none; }
-        
         .winner-grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 15px; background: #FAFAFA; }
-        .winner-cell { 
-            background: white; border: 1px solid #E1DFDD; padding: 8px; 
-            text-align: center; font-size: 0.9rem; 
-            display: flex; flex-direction: column; align-items: center;
-        }
+        .winner-cell { background: white; border: 1px solid #E1DFDD; padding: 8px; text-align: center; font-size: 0.9rem; display: flex; flex-direction: column; align-items: center; }
         .winner-cell small { color: #605E5C; font-family: 'Consolas', monospace; }
         .winner-cell.highlight { border: 2px solid #C19C00; background: #FFF4CE; }
 
-        /* Bottom Nav */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background: #201F1E; height: 60px; z-index: 1000; display: flex; 
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
-        .nav-item { 
-            flex: 1; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; 
-            color: #A19F9D; text-decoration: none; font-size: 0.75rem; 
-            transition: 0.2s; cursor: pointer; border-bottom: 3px solid transparent;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #201F1E; height: 60px; z-index: 1000; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #A19F9D; text-decoration: none; font-size: 0.75rem; transition: 0.2s; cursor: pointer; border-bottom: 3px solid transparent; }
         .nav-item i { font-size: 1.2rem; margin-bottom: 3px; }
         .nav-item.active { color: white; background-color: #3B3A39; border-bottom-color: var(--primary-color); }
 
-        /* Toast */
         #toast-container { position: fixed; bottom: 70px; right: 10px; z-index: 2000; width: 320px; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .win-toast { 
-            background: #201F1E; color: white; padding: 15px; 
-            border-left: 4px solid var(--primary-color);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            font-size: 0.9rem; display: flex; align-items: center; gap: 12px;
-            opacity: 0; transform: translateX(50px); transition: 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-            pointer-events: auto;
-        }
+        .win-toast { background: #201F1E; color: white; padding: 15px; border-left: 4px solid var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 0.9rem; display: flex; align-items: center; gap: 12px; opacity: 0; transform: translateX(50px); transition: 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); pointer-events: auto; }
         .win-toast.show { opacity: 1; transform: translateX(0); }
-
-        /* Loader & Empty */
+        
         .loader-overlay { position: fixed; inset:0; background: rgba(255,255,255,0.8); z-index:3000; display:none; justify-content:center; align-items:center; }
         .empty-state { text-align: center; padding: 60px 0; color: #A19F9D; }
         .empty-state i { font-size: 3rem; margin-bottom: 15px; }
@@ -286,18 +223,12 @@
                 <i class="fa-solid fa-circle-check result-icon"></i>
                 <h3 style="font-weight:700;">報到成功</h3>
                 <p style="color:var(--text-secondary);">歡迎參加新春團拜</p>
-                
                 <div class="result-box">
                     報到時間: <span id="success-time">--:--:--</span>
                 </div>
-                
                 <div style="margin-top:30px;">
-                    <button onclick="app.switchTab('ticket', document.querySelectorAll('.nav-item')[1])" class="btn-win">
-                        查看我的摸彩券
-                    </button>
-                    <button onclick="app.reset()" class="btn-win btn-win-outline" style="margin-top:10px;">
-                        返回首頁
-                    </button>
+                    <button onclick="app.switchTab('ticket', document.querySelectorAll('.nav-item')[1])" class="btn-win">查看我的摸彩券</button>
+                    <button onclick="app.reset()" class="btn-win btn-win-outline" style="margin-top:10px;">返回首頁</button>
                 </div>
             </div>
         </div>
@@ -326,29 +257,15 @@
                 </div>
                 <div class="ticket-content">
                     <div class="ticket-grid">
-                        <div class="ticket-field">
-                            <label>姓名</label>
-                            <div id="ticket-user-name">--</div>
-                        </div>
-                        <div class="ticket-field">
-                            <label>單位</label>
-                            <div id="ticket-user-dept">--</div>
-                        </div>
-                        <div class="ticket-field">
-                            <label>教職員編號</label>
-                            <div id="ticket-user-eid" style="font-family:consolas;">--</div>
-                        </div>
-                        <div class="ticket-field">
-                            <label>報到序號</label>
-                            <div id="ticket-seq">--</div>
-                        </div>
+                        <div class="ticket-field"><label>姓名</label><div id="ticket-user-name">--</div></div>
+                        <div class="ticket-field"><label>單位</label><div id="ticket-user-dept">--</div></div>
+                        <div class="ticket-field"><label>教職員編號</label><div id="ticket-user-eid" style="font-family:consolas;">--</div></div>
+                        <div class="ticket-field"><label>報到序號</label><div id="ticket-seq">--</div></div>
                     </div>
-
                     <div class="prize-banner">
                         <div style="font-size:0.8rem; color:#605E5C;">恭喜您獲得</div>
                         <div class="prize-name" id="ticket-prize-name">--</div>
                     </div>
-
                     <div id="ticket-status-stamp" class="stamp-box waiting">待開獎</div>
                 </div>
             </div>
@@ -362,19 +279,16 @@
                 <i id="refresh-icon" class="fa-solid fa-rotate"></i> 刷新
             </button>
         </div>
-        
         <div class="search-bar">
             <i class="fa-solid fa-search"></i>
             <input type="text" id="winner-search" class="fluent-input" placeholder="搜尋姓名或編號..." oninput="app.filterWinners()">
         </div>
-        
         <div id="winner-list-container" class="accordion">
             <div class="empty-state">
                 <div class="spinner-border text-secondary mb-3" role="status"></div>
                 <p>正在載入資料...</p>
             </div>
         </div>
-        
         <div style="text-align:right; margin-top:10px; font-size:0.8rem; color:#605E5C;">
             <span id="last-update-time">--</span>
         </div>
@@ -383,16 +297,13 @@
 
 <div class="bottom-nav">
     <div class="nav-item active" onclick="app.switchTab('checkin', this)">
-        <i class="fa-solid fa-user-check"></i>
-        <span>報到</span>
+        <i class="fa-solid fa-user-check"></i> <span>報到</span>
     </div>
     <div class="nav-item" onclick="app.switchTab('ticket', this)">
-        <i class="fa-solid fa-ticket"></i>
-        <span>摸彩券</span>
+        <i class="fa-solid fa-ticket"></i> <span>摸彩券</span>
     </div>
     <div class="nav-item" onclick="app.switchTab('winners', this)">
-        <i class="fa-solid fa-list-ol"></i>
-        <span>即時開獎</span>
+        <i class="fa-solid fa-list-ol"></i> <span>即時開獎</span>
     </div>
 </div>
 
@@ -401,7 +312,7 @@
 </div>
 
 <script>
-// ★ API 設定
+// ★ API 設定 (請確保網址正確)
 const API_BASE = 'https://personnel.kncyu.link/api/checkin/index.php'; 
 
 const app = {
@@ -505,7 +416,6 @@ const app = {
         finally { if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500); }
     },
 
-    // ★★★ 修復：確保此函式存在 ★★★
     updateTicketUI() {
         const user = this.state.currentUser;
         if (!user) {
@@ -588,11 +498,6 @@ const app = {
         toast.innerHTML = `${icon}<span>${msg}</span>`;
         container.appendChild(toast);
         
-        // 修正震動報錯
-        try {
-            if(navigator.vibrate) navigator.vibrate(type === 'error' ? [50, 50] : 50);
-        } catch(e){}
-
         requestAnimationFrame(() => toast.classList.add('show'));
         setTimeout(() => {
             toast.classList.remove('show');
@@ -616,7 +521,12 @@ const app = {
         if(!code) return this.showToast("請輸入教職員編號", "error");
         this.setBtnLoading('btn-lookup', true);
         try {
+            console.log(`正在連線至: ${API_BASE}?action=get_participant_info&code=${code}`);
             const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(code)}&t=${Date.now()}`);
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`伺服器錯誤 (${res.status})`);
+            }
             const json = await res.json();
             if(json.success) {
                 this.saveUserSession({ ...json.data, qrcode: code });
@@ -631,11 +541,15 @@ const app = {
                     }
                 }
             } else {
-                this.showToast(json.message, 'error');
+                this.showToast(json.message || "查無資料", 'error');
                 document.getElementById('input-id').value = '';
                 document.getElementById('input-id').focus();
             }
-        } catch(e) { this.showToast("連線錯誤，請檢查網路", 'error'); } 
+        } catch(e) { 
+            console.error("Fetch Error:", e);
+            if (e.message.includes('Failed to fetch')) this.showToast("無法連線至伺服器", 'error');
+            else this.showToast(`連線錯誤`, 'error'); 
+        } 
         finally { this.setBtnLoading('btn-lookup', false); }
     },
 
@@ -683,7 +597,6 @@ const app = {
                 const updatedUser = { ...this.state.currentUser, has_checked_in: true, check_in_time: json.data.check_in_time };
                 this.saveUserSession(updatedUser);
                 this.showSuccess(json.data.check_in_time);
-                try{ if(navigator.vibrate) navigator.vibrate([100, 50, 100]); }catch(e){}
             } else {
                 this.showToast(json.message, 'error');
                 if(this.state.mode === 'AUTO') setTimeout(() => this.reset(), 2000);
