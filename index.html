@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#800000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>NCYU 2026 Admin Center</title>
+    <title>國立嘉義大學 - 2026 新春團拜</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -15,11 +15,11 @@
     <style>
         /* === Microsoft Fluent / Windows Server Design Language === */
         :root { 
-            --primary-color: #A80000; /* 較深的企業紅 */
+            --primary-color: #A80000; /* 企業紅 */
             --primary-hover: #800000;
-            --bg-color: #F3F2F1;      /* Windows 視窗背景灰 */
+            --bg-color: #F3F2F1;      /* Windows 背景灰 */
             --card-bg: #FFFFFF;
-            --border-color: #E1DFDD;  /* 微軟標準邊框色 */
+            --border-color: #E1DFDD;  /* 微軟標準邊框 */
             --text-primary: #201F1E;
             --text-secondary: #605E5C;
             --safe-bottom: env(safe-area-inset-bottom);
@@ -50,28 +50,28 @@
             top: 0; 
             z-index: 100; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            height: 50px;
+            height: 55px;
         }
         .header-title { font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
-        .header-title i { font-size: 1.1rem; }
+        .header-title i { font-size: 1.2rem; }
         .header small { font-size: 0.75rem; opacity: 0.8; font-weight: 400; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 10px; margin-left: 10px; }
 
         /* 系統狀態列 (Alert Strip Style) */
         .system-status-container { 
-            position: fixed; top: 50px; left: 0; width: 100%; z-index: 95; pointer-events: none; 
+            position: fixed; top: 55px; left: 0; width: 100%; z-index: 95; pointer-events: none; 
             display: flex; justify-content: center; padding-top: 10px;
         }
         .status-pill { 
             background: #FFF4CE; color: #3B3A39; border: 1px solid #FDE7E9;
-            padding: 8px 16px; font-size: 0.85rem; font-weight: 600; 
+            padding: 6px 16px; font-size: 0.85rem; font-weight: 600; 
             box-shadow: var(--windows-shadow);
             display: flex; align-items: center; gap: 8px; transition: all 0.3s;
             transform: translateY(-50px); opacity: 0; pointer-events: auto;
         }
         .status-pill.show { transform: translateY(0); opacity: 1; }
-        .status-pill.closed { background: #FDE7E9; color: #A80000; border-color: #A80000; } /* Error Red */
-        .status-pill.open { background: #DFF6DD; color: #107C10; border-color: #107C10; }   /* Success Green */
-        .status-pill.connecting { background: #EFF6FC; color: #0078D4; border-color: #0078D4; } /* Info Blue */
+        .status-pill.closed { background: #FDE7E9; color: #A80000; border-color: #A80000; } 
+        .status-pill.open { background: #DFF6DD; color: #107C10; border-color: #107C10; }   
+        .status-pill.connecting { background: #EFF6FC; color: #0078D4; border-color: #0078D4; } 
         
         /* 容器與卡片 (Flat, Rectangular) */
         .container-box { max-width: 800px; margin: 0 auto; padding: 25px 15px; }
@@ -92,17 +92,17 @@
             border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
         }
         
-        /* 輸入框 (Fluent Style - Underlined or Box) */
+        /* 輸入框 (Fluent Style) */
         .fluent-input {
             width: 100%; padding: 10px 12px; font-size: 1.1rem;
-            border: 1px solid #8A8886; border-radius: 2px; /* 幾乎直角 */
+            border: 1px solid #8A8886; border-radius: 2px;
             outline: none; background: white; transition: 0.2s;
-            color: var(--text-primary);
+            color: var(--text-primary); font-weight: 600;
         }
         .fluent-input:focus { border-color: var(--primary-color); border-bottom-width: 2px; }
-        .fluent-input::placeholder { color: #605E5C; font-style: italic; }
+        .fluent-input::placeholder { color: #605E5C; font-style: normal; font-weight: 400; }
 
-        /* 按鈕 (Windows Style - Rectangular, Depress effect) */
+        /* 按鈕 (Windows Style) */
         .btn-win {
             background-color: var(--primary-color); color: white;
             border: 1px solid transparent; border-radius: 2px;
@@ -111,14 +111,10 @@
             cursor: pointer; min-width: 120px;
         }
         .btn-win:hover { background-color: var(--primary-hover); }
-        .btn-win:active:not(:disabled) { 
-            transform: translateY(2px); /* 下沉效果 */
-            background-color: #6a0000;
-        }
+        .btn-win:active:not(:disabled) { transform: translateY(2px); background-color: #6a0000; }
         .btn-win:disabled { background-color: #C8C6C4; color: #F3F2F1; cursor: not-allowed; }
-        .btn-win-outline {
-            background: white; color: var(--text-primary); border: 1px solid #8A8886;
-        }
+        
+        .btn-win-outline { background: white; color: var(--text-primary); border: 1px solid #8A8886; }
         .btn-win-outline:hover { background: #F3F2F1; }
         .btn-win-outline:active { background: #E1DFDD; transform: translateY(2px); }
 
@@ -133,12 +129,8 @@
         .user-name { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
         .user-meta { color: var(--text-secondary); font-size: 1rem; margin-top: 5px; }
         
-        /* 驗證碼輸入 */
         .code-input-group { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .code-input {
-            width: 100%; max-width: 200px; text-align: center; letter-spacing: 10px; 
-            font-family: 'Consolas', monospace; font-weight: bold; font-size: 1.5rem;
-        }
+        .code-input { width: 100%; max-width: 200px; text-align: center; letter-spacing: 10px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 1.5rem; }
 
         /* 結果頁 */
         .result-icon { font-size: 4rem; color: #107C10; margin-bottom: 20px; }
@@ -160,7 +152,7 @@
             display: flex; justify-content: space-between; align-items: flex-start;
             border-bottom: 1px solid #E1DFDD; padding-bottom: 15px; margin-bottom: 15px;
         }
-        .ticket-title { font-size: 0.8rem; text-transform: uppercase; color: #605E5C; letter-spacing: 1px; }
+        .ticket-title { font-size: 0.8rem; text-transform: uppercase; color: #605E5C; letter-spacing: 1px; font-weight: 700; }
         .ticket-id { font-family: 'Consolas', monospace; font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
         
         .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -168,10 +160,7 @@
         .ticket-field div { font-size: 1rem; font-weight: 600; color: #201F1E; }
 
         /* 中獎狀態樣式 */
-        .digital-ticket.winner {
-            border-color: #C19C00; /* Goldish */
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-        }
+        .digital-ticket.winner { border-color: #C19C00; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
         .digital-ticket.winner::before { background: #C19C00; }
         
         .stamp-box {
@@ -181,12 +170,12 @@
             transform: rotate(-15deg); font-size: 1.5rem;
             pointer-events: none;
         }
-        .stamp-box.won { border-color: #D13438; color: #D13438; } /* Error Red used for stamps usually */
+        .stamp-box.won { border-color: #D13438; color: #D13438; background: rgba(209, 52, 56, 0.05); }
 
         .prize-banner {
             background: #FFF4CE; border: 1px solid #FDE7E9; 
             padding: 15px; margin-top: 15px; text-align: center;
-            display: none;
+            display: none; animation: fadeIn 0.5s;
         }
         .digital-ticket.winner .prize-banner { display: block; }
         .prize-name { font-size: 1.4rem; font-weight: 800; color: #A80000; }
@@ -228,7 +217,7 @@
         .nav-item.active { 
             color: white; 
             background-color: #3B3A39;
-            border-bottom-color: var(--primary-color); /* Active indicator */
+            border-bottom-color: var(--primary-color);
         }
         .nav-item:active { background-color: #484644; }
 
@@ -257,11 +246,11 @@
 
 <div class="header">
     <div class="header-title">
-        <i class="fa-brands fa-microsoft"></i> 
-        <span>NCYU 2026 Admin Center</span>
+        <i class="fa-solid fa-building-columns"></i> 
+        <span>NCYU 2026</span>
         <small>新春團拜活動系統</small>
     </div>
-    </div>
+</div>
 
 <div class="system-status-container">
     <div id="status-pill" class="status-pill connecting">
@@ -277,15 +266,15 @@
     <div id="tab-checkin" class="view-section active">
         <div class="windows-card">
             <div class="windows-card-header">
-                <i class="fa-solid fa-user-check"></i> 員工報到 (Check-in)
+                <i class="fa-solid fa-user-check"></i> 教職員報到 (Check-in)
             </div>
 
             <div id="view-scan">
-                <p style="color:var(--text-secondary); margin-bottom: 20px;">請輸入員工編號或使用掃描槍。</p>
-                <input type="text" id="input-id" class="fluent-input" placeholder="Employee ID / UUID" autocomplete="off" inputmode="text">
+                <p style="color:var(--text-secondary); margin-bottom: 20px;">請輸入教職員編號或使用掃描槍進行報到。</p>
+                <input type="text" id="input-id" class="fluent-input" placeholder="請輸入教職員編號" autocomplete="off" inputmode="text">
                 <div style="margin-top: 25px; text-align: right;">
                     <button id="btn-lookup" class="btn-win">
-                        <i class="fa-solid fa-magnifying-glass"></i> 查詢 (Search)
+                        <i class="fa-solid fa-magnifying-glass"></i> 查詢資料
                         <span class="spinner-border spinner-border-sm d-none" role="status"></span>
                     </button>
                 </div>
@@ -301,7 +290,7 @@
 
                 <div id="mode-auto" style="margin-top: 30px; text-align: center;">
                     <div class="spinner-border text-danger" role="status"></div>
-                    <p style="margin-top:10px; color:var(--text-secondary);">Verifying...</p>
+                    <p style="margin-top:10px; color:var(--text-secondary);">資料確認中...</p>
                 </div>
 
                 <div id="mode-code" class="code-input-group" style="display:none;">
@@ -309,8 +298,8 @@
                 </div>
                 
                 <div style="margin-top: 30px; display:flex; gap:10px;">
-                    <button onclick="app.reset()" class="btn-win btn-win-outline" style="flex:1;">Cancel</button>
-                    <button id="btn-submit" class="btn-win" style="flex:1;">Check In</button>
+                    <button onclick="app.reset()" class="btn-win btn-win-outline" style="flex:1;">取消</button>
+                    <button id="btn-submit" class="btn-win" style="flex:1;">確認報到</button>
                 </div>
             </div>
 
@@ -318,7 +307,7 @@
                 <div class="confetti-bg"></div>
                 <i class="fa-solid fa-circle-check result-icon"></i>
                 <h3 style="font-weight:700;">報到成功</h3>
-                <p style="color:var(--text-secondary);">Check-in Completed</p>
+                <p style="color:var(--text-secondary);">歡迎參加新春團拜</p>
                 
                 <div class="result-box">
                     報到時間: <span id="success-time">--:--:--</span>
@@ -326,10 +315,10 @@
                 
                 <div style="margin-top:30px;">
                     <button onclick="app.switchTab('ticket', document.querySelectorAll('.nav-item')[1])" class="btn-win">
-                        查看我的憑證 (Ticket)
+                        查看我的摸彩券
                     </button>
                     <button onclick="app.reset()" class="btn-win btn-win-outline" style="margin-top:10px;">
-                        返回 (Back)
+                        返回首頁
                     </button>
                 </div>
             </div>
@@ -338,51 +327,51 @@
 
     <div id="tab-ticket" class="view-section">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 style="font-weight:700; color:var(--text-primary); margin:0;">My Ticket</h5>
+            <h5 style="font-weight:700; color:var(--text-primary); margin:0;">我的摸彩券</h5>
             <button onclick="app.refreshTicket(true)" class="btn-win btn-win-outline" style="padding: 5px 15px; font-size: 0.85rem;">
-                <i id="icon-refresh-ticket" class="fa-solid fa-sync"></i> Reload
+                <i id="icon-refresh-ticket" class="fa-solid fa-rotate"></i> 更新狀態
             </button>
         </div>
 
         <div id="ticket-container">
             <div id="ticket-login-prompt" class="empty-state">
                 <i class="fa-solid fa-lock"></i>
-                <h5>Access Denied</h5>
-                <p>請先完成報到以取得憑證</p>
-                <button onclick="app.switchTab('checkin', document.querySelector('.nav-item:first-child'))" class="btn-win mt-3">Go to Check-in</button>
+                <h5>尚未取得憑證</h5>
+                <p>請先完成報到手續以取得摸彩資格</p>
+                <button onclick="app.switchTab('checkin', document.querySelector('.nav-item:first-child'))" class="btn-win mt-3">前往報到</button>
             </div>
 
             <div id="my-ticket" class="digital-ticket" style="display:none;">
                 <div class="ticket-header">
-                    <div class="ticket-title">NCYU EVENT 2026</div>
-                    <div style="font-size:0.8rem; opacity:0.7;">VALID ENTRY</div>
+                    <div class="ticket-title">NCYU 2026 新春團拜</div>
+                    <div style="font-size:0.8rem; opacity:0.8;">數位摸彩憑證</div>
                 </div>
                 <div class="ticket-content">
                     <div class="ticket-grid">
                         <div class="ticket-field">
-                            <label>Name</label>
+                            <label>姓名</label>
                             <div id="ticket-user-name">--</div>
                         </div>
                         <div class="ticket-field">
-                            <label>Department</label>
+                            <label>單位</label>
                             <div id="ticket-user-dept">--</div>
                         </div>
                         <div class="ticket-field">
-                            <label>Employee ID</label>
+                            <label>教職員編號</label>
                             <div id="ticket-user-eid" style="font-family:consolas;">--</div>
                         </div>
                         <div class="ticket-field">
-                            <label>Sequence</label>
+                            <label>報到序號</label>
                             <div id="ticket-seq">--</div>
                         </div>
                     </div>
 
                     <div class="prize-banner">
-                        <div style="font-size:0.8rem; color:#605E5C;">WINNER PRIZE</div>
+                        <div style="font-size:0.8rem; color:#605E5C;">恭喜您獲得</div>
                         <div class="prize-name" id="ticket-prize-name">--</div>
                     </div>
 
-                    <div id="ticket-status-stamp" class="stamp-box waiting">PENDING</div>
+                    <div id="ticket-status-stamp" class="stamp-box waiting">待開獎</div>
                 </div>
             </div>
         </div>
@@ -390,21 +379,21 @@
 
     <div id="tab-winners" class="view-section">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 style="font-weight:700; color:var(--text-primary); margin:0;">Winner List</h5>
+            <h5 style="font-weight:700; color:var(--text-primary); margin:0;">中獎名單</h5>
             <button onclick="app.syncWinners(true)" class="btn-win btn-win-outline" style="padding: 5px 15px; font-size: 0.85rem;">
-                <i id="refresh-icon" class="fa-solid fa-sync"></i> Refresh
+                <i id="refresh-icon" class="fa-solid fa-rotate"></i> 刷新
             </button>
         </div>
         
         <div class="search-bar">
             <i class="fa-solid fa-search"></i>
-            <input type="text" id="winner-search" class="fluent-input" placeholder="Filter by Name or ID..." oninput="app.filterWinners()">
+            <input type="text" id="winner-search" class="fluent-input" placeholder="搜尋姓名或編號..." oninput="app.filterWinners()">
         </div>
         
         <div id="winner-list-container" class="accordion">
             <div class="empty-state">
                 <div class="spinner-border text-secondary mb-3" role="status"></div>
-                <p>Loading Data...</p>
+                <p>正在載入資料...</p>
             </div>
         </div>
         
@@ -417,15 +406,15 @@
 <div class="bottom-nav">
     <div class="nav-item active" onclick="app.switchTab('checkin', this)">
         <i class="fa-solid fa-user-check"></i>
-        <span>Check-in</span>
+        <span>報到</span>
     </div>
     <div class="nav-item" onclick="app.switchTab('ticket', this)">
         <i class="fa-solid fa-ticket"></i>
-        <span>My Ticket</span>
+        <span>摸彩券</span>
     </div>
     <div class="nav-item" onclick="app.switchTab('winners', this)">
         <i class="fa-solid fa-list-ol"></i>
-        <span>Winners</span>
+        <span>即時開獎</span>
     </div>
 </div>
 
@@ -460,7 +449,7 @@ const app = {
         document.getElementById('btn-submit').onclick = () => this.submitCheckIn();
         document.getElementById('input-verify-code').addEventListener('keypress', e => { if(e.key==='Enter') this.submitCheckIn(); });
         
-        this.updateStatusPill('Connecting to Server...', 'connecting');
+        this.updateStatusPill('伺服器連線中...', 'connecting');
         this.updateTicketUI();
     },
 
@@ -505,7 +494,7 @@ const app = {
         document.getElementById('ticket-user-name').textContent = user.name;
         document.getElementById('ticket-user-dept').textContent = user.department;
         document.getElementById('ticket-user-eid').textContent = user.employee_id;
-        document.getElementById('ticket-seq').textContent = user.check_in_time ? user.check_in_time.split(' ')[1] : 'Checked';
+        document.getElementById('ticket-seq').textContent = user.check_in_time ? user.check_in_time.split(' ')[1] : '已報到';
 
         const icon = document.getElementById('icon-refresh-ticket');
         if(isManual && icon) icon.classList.add('fa-spin');
@@ -520,12 +509,11 @@ const app = {
                 const stampEl = document.getElementById('ticket-status-stamp');
                 const prizeNameEl = document.getElementById('ticket-prize-name');
 
-                // 這裡模擬：如果 API 有回傳 prize_name 或是透過 get_winners 比對
-                // 為了保險，這裡也執行一次 client-side check
+                // 客戶端再次確認中獎狀態
                 this.checkMyWinningStatus();
-
                 this.saveUserSession({...user, ...data});
-                if(isManual) this.showToast("Ticket Updated", "success");
+                
+                if(isManual) this.showToast("票券狀態已更新", "success");
             }
         } catch(e) { console.error(e); } 
         finally { if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500); }
@@ -550,19 +538,19 @@ const app = {
                 const d = json.data;
                 this.state.mode = d.checkin_mode_type || 'AUTO';
                 if (d.status === 'OPEN') {
-                    this.updateStatusPill('System Online', 'open');
+                    this.updateStatusPill('系統開放中', 'open');
                     this.state.locked = false;
                 } else {
-                    const msg = d.status === 'CLOSED' ? 'System Closed' : 'Scheduled';
+                    const msg = d.status === 'CLOSED' ? '系統已關閉' : '尚未開始';
                     this.updateStatusPill(msg, 'closed');
                     this.state.locked = true;
                     if(document.getElementById('view-confirm').style.display !== 'none' && !this.state.currentUser) {
-                        this.showToast('System is closed.', 'error');
+                        this.showToast('系統已關閉', 'error');
                         this.reset();
                     }
                 }
             }
-        } catch(e) { this.updateStatusPill('Connection Unstable', 'connecting'); } 
+        } catch(e) { this.updateStatusPill('連線不穩', 'connecting'); } 
         finally {
             if (this.state.statusTimeoutId) clearTimeout(this.state.statusTimeoutId);
             this.state.statusTimeoutId = setTimeout(() => this.statusSyncLoop(), 3000);
@@ -615,7 +603,7 @@ const app = {
 
     async lookupUser() {
         const code = document.getElementById('input-id').value.trim();
-        if(!code) return this.showToast("Please enter ID", "error");
+        if(!code) return this.showToast("請輸入教職員編號", "error");
         this.setBtnLoading('btn-lookup', true);
         try {
             const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(code)}&t=${Date.now()}`);
@@ -626,7 +614,7 @@ const app = {
                     this.showSuccess(json.data.check_in_time, true);
                 } else {
                     if(this.state.locked) {
-                        this.showToast("Registration not open yet.", "error");
+                        this.showToast("系統目前尚未開放報到", "error");
                         this.statusSyncLoop();
                     } else {
                         this.showConfirm();
@@ -637,7 +625,7 @@ const app = {
                 document.getElementById('input-id').value = '';
                 document.getElementById('input-id').focus();
             }
-        } catch(e) { this.showToast("Network Error", 'error'); } 
+        } catch(e) { this.showToast("連線錯誤，請檢查網路", 'error'); } 
         finally { this.setBtnLoading('btn-lookup', false); }
     },
 
@@ -657,7 +645,7 @@ const app = {
                 if(!this.state.locked && document.getElementById('view-confirm').style.display !== 'none') {
                     this.submitCheckIn();
                 } else if(this.state.locked) {
-                    this.showToast("System Closed", "error");
+                    this.showToast("報到時間已結束", "error");
                     this.reset();
                 }
             }, 1500);
@@ -669,9 +657,9 @@ const app = {
     },
 
     async submitCheckIn() {
-        if(this.state.locked) return this.showToast("System Closed", "error");
+        if(this.state.locked) return this.showToast("系統已關閉，無法報到", "error");
         const verifyCode = document.getElementById('input-verify-code').value.trim();
-        if(this.state.mode === 'CODE' && !verifyCode) return this.showToast("Enter Code", "error");
+        if(this.state.mode === 'CODE' && !verifyCode) return this.showToast("請輸入驗證碼", "error");
         if(this.state.mode === 'CODE') this.setBtnLoading('btn-submit', true);
 
         try {
@@ -690,7 +678,7 @@ const app = {
                 this.showToast(json.message, 'error');
                 if(this.state.mode === 'AUTO') setTimeout(() => this.reset(), 2000);
             }
-        } catch(e) { this.showToast("Connection Error", 'error'); }
+        } catch(e) { this.showToast("報到連線失敗", 'error'); }
         finally { if(this.state.mode === 'CODE') this.setBtnLoading('btn-submit', false); }
     },
 
@@ -698,7 +686,7 @@ const app = {
         document.getElementById('view-scan').style.display = 'none';
         document.getElementById('view-confirm').style.display = 'none';
         document.getElementById('view-success').style.display = 'block';
-        document.getElementById('success-time').textContent = time || 'Just now';
+        document.getElementById('success-time').textContent = time || '剛剛';
     },
 
     reset() {
@@ -726,12 +714,12 @@ const app = {
         if (myPrize) {
             ticketEl.classList.add('winner');
             stampEl.className = 'stamp-box won';
-            stampEl.textContent = 'WON';
+            stampEl.textContent = '恭喜中獎';
             prizeNameEl.textContent = myPrize;
         } else {
             ticketEl.classList.remove('winner');
             stampEl.className = 'stamp-box waiting';
-            stampEl.textContent = 'PENDING';
+            stampEl.textContent = '等待開獎';
         }
     },
 
@@ -765,8 +753,8 @@ const app = {
                 }
                 const timeStr = new Date().toLocaleTimeString('en-US', {hour12:false, hour:'2-digit', minute:'2-digit'});
                 const timeEl = document.getElementById('last-update-time');
-                if(timeEl) timeEl.textContent = `Updated: ${timeStr}`;
-                if(isManual) this.showToast("Data Synced", "success");
+                if(timeEl) timeEl.textContent = `更新於: ${timeStr}`;
+                if(isManual) this.showToast("資料已更新", "success");
             }
         } catch(e) { console.error(e); }
         finally {
@@ -782,7 +770,7 @@ const app = {
     renderWinners(data) {
         const container = document.getElementById('winner-list-container');
         if(!data || data.length === 0) {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-gift"></i><p>Waiting for Draw...</p></div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-gift"></i><p>尚未開獎</p></div>`;
             return;
         }
         let html = '';
