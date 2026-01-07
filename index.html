@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#800000">
+    
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <title>國立嘉義大學 - 2026 新春團拜</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,11 +18,11 @@
     <style>
         /* === Microsoft Fluent / Windows Server Design Language === */
         :root { 
-            --primary-color: #A80000; /* 企業紅 */
+            --primary-color: #A80000;
             --primary-hover: #800000;
-            --bg-color: #F3F2F1;      /* Windows 背景灰 */
+            --bg-color: #F3F2F1;
             --card-bg: #FFFFFF;
-            --border-color: #E1DFDD;  /* 微軟標準邊框 */
+            --border-color: #E1DFDD;
             --text-primary: #201F1E;
             --text-secondary: #605E5C;
             --safe-bottom: env(safe-area-inset-bottom);
@@ -38,25 +41,20 @@
         
         input, button { user-select: text !important; -webkit-user-select: text !important; }
 
-        /* 頂部標題 (App Bar Style) */
+        /* Header */
         .header { 
             background: var(--primary-color); 
             color: white; 
             padding: 12px 20px; 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            height: 55px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); height: 55px;
         }
         .header-title { font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
         .header-title i { font-size: 1.2rem; }
         .header small { font-size: 0.75rem; opacity: 0.8; font-weight: 400; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 10px; margin-left: 10px; }
 
-        /* 系統狀態列 (Alert Strip Style) */
+        /* Status Strip */
         .system-status-container { 
             position: fixed; top: 55px; left: 0; width: 100%; z-index: 95; pointer-events: none; 
             display: flex; justify-content: center; padding-top: 10px;
@@ -73,18 +71,14 @@
         .status-pill.open { background: #DFF6DD; color: #107C10; border-color: #107C10; }   
         .status-pill.connecting { background: #EFF6FC; color: #0078D4; border-color: #0078D4; } 
         
-        /* 容器與卡片 (Flat, Rectangular) */
+        /* Containers */
         .container-box { max-width: 800px; margin: 0 auto; padding: 25px 15px; }
         .view-section { display: none; animation: fadeIn 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); }
         .view-section.active { display: block; }
         
         .windows-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--windows-shadow);
-            padding: 24px;
-            margin-bottom: 15px;
-            position: relative;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            box-shadow: var(--windows-shadow); padding: 24px; margin-bottom: 15px; position: relative;
         }
         .windows-card-header {
             font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; 
@@ -92,7 +86,7 @@
             border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
         }
         
-        /* 輸入框 (Fluent Style) */
+        /* Inputs & Buttons */
         .fluent-input {
             width: 100%; padding: 10px 12px; font-size: 1.1rem;
             border: 1px solid #8A8886; border-radius: 2px;
@@ -100,9 +94,7 @@
             color: var(--text-primary); font-weight: 600;
         }
         .fluent-input:focus { border-color: var(--primary-color); border-bottom-width: 2px; }
-        .fluent-input::placeholder { color: #605E5C; font-style: normal; font-weight: 400; }
-
-        /* 按鈕 (Windows Style) */
+        
         .btn-win {
             background-color: var(--primary-color); color: white;
             border: 1px solid transparent; border-radius: 2px;
@@ -110,15 +102,13 @@
             transition: all 0.1s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             cursor: pointer; min-width: 120px;
         }
-        .btn-win:hover { background-color: var(--primary-hover); }
         .btn-win:active:not(:disabled) { transform: translateY(2px); background-color: #6a0000; }
         .btn-win:disabled { background-color: #C8C6C4; color: #F3F2F1; cursor: not-allowed; }
         
         .btn-win-outline { background: white; color: var(--text-primary); border: 1px solid #8A8886; }
-        .btn-win-outline:hover { background: #F3F2F1; }
         .btn-win-outline:active { background: #E1DFDD; transform: translateY(2px); }
 
-        /* === 1. 報到專區 === */
+        /* 1. Checkin Specifics */
         .avatar-box {
             width: 100px; height: 100px; background: #E1DFDD; 
             display: flex; align-items: center; justify-content: center;
@@ -132,12 +122,11 @@
         .code-input-group { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
         .code-input { width: 100%; max-width: 200px; text-align: center; letter-spacing: 10px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 1.5rem; }
 
-        /* 結果頁 */
         .result-icon { font-size: 4rem; color: #107C10; margin-bottom: 20px; }
         .result-box { background: #DFF6DD; border: 1px solid #107C10; color: #107C10; padding: 15px; margin-top: 20px; text-align: center; font-weight: 600; }
         .confetti-bg { position: absolute; inset:0; pointer-events: none; z-index: 0; opacity: 0.1; background-image: radial-gradient(#A80000 2px, transparent 2px); background-size: 20px 20px; }
 
-        /* === 2. 我的摸彩券 (Digital Certificate Style) === */
+        /* 2. Ticket Specifics */
         .digital-ticket {
             background: white; border: 1px solid #8A8886;
             margin-top: 20px; position: relative;
@@ -159,7 +148,6 @@
         .ticket-field label { display: block; font-size: 0.75rem; color: #605E5C; margin-bottom: 2px; }
         .ticket-field div { font-size: 1rem; font-weight: 600; color: #201F1E; }
 
-        /* 中獎狀態樣式 */
         .digital-ticket.winner { border-color: #C19C00; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
         .digital-ticket.winner::before { background: #C19C00; }
         
@@ -180,7 +168,7 @@
         .digital-ticket.winner .prize-banner { display: block; }
         .prize-name { font-size: 1.4rem; font-weight: 800; color: #A80000; }
 
-        /* === 3. 中獎名單 (DataGrid Style) === */
+        /* 3. Winner List Specifics */
         .search-bar { position: relative; margin-bottom: 15px; }
         .search-bar input { padding-left: 35px; }
         .search-bar i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #605E5C; }
@@ -188,7 +176,6 @@
         .accordion-item { border: 1px solid #E1DFDD; margin-bottom: -1px; border-radius: 0 !important; }
         .accordion-button { background: white; color: var(--text-primary); font-weight: 600; }
         .accordion-button:not(.collapsed) { background: #EFF6FC; color: var(--primary-color); box-shadow: none; }
-        .accordion-button:focus { box-shadow: none; border-color: #E1DFDD; }
         
         .winner-grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 15px; background: #FAFAFA; }
         .winner-cell { 
@@ -199,11 +186,10 @@
         .winner-cell small { color: #605E5C; font-family: 'Consolas', monospace; }
         .winner-cell.highlight { border: 2px solid #C19C00; background: #FFF4CE; }
 
-        /* === 底部導航 (Taskbar Style) === */
+        /* Bottom Nav */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
-            background: #201F1E; /* Dark Taskbar */
-            height: 60px; z-index: 1000; display: flex; 
+            background: #201F1E; height: 60px; z-index: 1000; display: flex; 
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
         }
         .nav-item { 
@@ -213,15 +199,9 @@
             transition: 0.2s; cursor: pointer; border-bottom: 3px solid transparent;
         }
         .nav-item i { font-size: 1.2rem; margin-bottom: 3px; }
-        .nav-item:hover { background-color: #323130; color: #F3F2F1; }
-        .nav-item.active { 
-            color: white; 
-            background-color: #3B3A39;
-            border-bottom-color: var(--primary-color);
-        }
-        .nav-item:active { background-color: #484644; }
+        .nav-item.active { color: white; background-color: #3B3A39; border-bottom-color: var(--primary-color); }
 
-        /* Toast 通知 (Windows Action Center Style) */
+        /* Toast */
         #toast-container { position: fixed; bottom: 70px; right: 10px; z-index: 2000; width: 320px; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .win-toast { 
             background: #201F1E; color: white; padding: 15px; 
@@ -232,9 +212,8 @@
             pointer-events: auto;
         }
         .win-toast.show { opacity: 1; transform: translateX(0); }
-        .win-toast i { font-size: 1.2rem; }
 
-        /* Loader */
+        /* Loader & Empty */
         .loader-overlay { position: fixed; inset:0; background: rgba(255,255,255,0.8); z-index:3000; display:none; justify-content:center; align-items:center; }
         .empty-state { text-align: center; padding: 60px 0; color: #A19F9D; }
         .empty-state i { font-size: 3rem; margin-bottom: 15px; }
@@ -509,7 +488,6 @@ const app = {
                 const stampEl = document.getElementById('ticket-status-stamp');
                 const prizeNameEl = document.getElementById('ticket-prize-name');
 
-                // 客戶端再次確認中獎狀態
                 this.checkMyWinningStatus();
                 this.saveUserSession({...user, ...data});
                 
@@ -517,6 +495,28 @@ const app = {
             }
         } catch(e) { console.error(e); } 
         finally { if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500); }
+    },
+
+    // ★★★ 關鍵修正：確保此函式存在於 app 物件中 ★★★
+    updateTicketUI() {
+        const user = this.state.currentUser;
+        if (!user) {
+            document.getElementById('ticket-login-prompt').style.display = 'block';
+            document.getElementById('my-ticket').style.display = 'none';
+        } else {
+            document.getElementById('ticket-login-prompt').style.display = 'none';
+            document.getElementById('my-ticket').style.display = 'block';
+            
+            // 確保元素存在再賦值
+            const nameEl = document.getElementById('ticket-user-name');
+            if(nameEl) nameEl.textContent = user.name;
+            
+            document.getElementById('ticket-user-dept').textContent = user.department;
+            document.getElementById('ticket-user-eid').textContent = user.employee_id;
+            document.getElementById('ticket-seq').textContent = user.check_in_time ? user.check_in_time.split(' ')[1] : '已報到';
+            
+            if(this.state.allWinners.length > 0) this.checkMyWinningStatus();
+        }
     },
 
     checkUrlParams() {
@@ -581,7 +581,10 @@ const app = {
         toast.innerHTML = `${icon}<span>${msg}</span>`;
         container.appendChild(toast);
         
-        if(navigator.vibrate) navigator.vibrate(type === 'error' ? [50, 50] : 50);
+        // 修正：檢查 user gesture 狀態再震動，避免 console 報錯
+        try {
+            if(navigator.vibrate) navigator.vibrate(type === 'error' ? [50, 50] : 50);
+        } catch(e){}
 
         requestAnimationFrame(() => toast.classList.add('show'));
         setTimeout(() => {
