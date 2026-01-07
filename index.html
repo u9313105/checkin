@@ -3,295 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#800000">
+    <meta name="theme-color" content="#212121">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>國立嘉義大學 - 2026 新春團拜</title>
+    <title>Server Manager - NCYU 2026</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* === Windows Server / Admin Center Theme === */
         :root { 
-            --primary-color: #800000; 
-            --bg-color: #f4f7f6; 
-            --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --win-bg: #F3F2F1;
+            --win-header: #212121; /* Command Prompt Black */
+            --win-primary: #A80000; /* NCYU Red */
+            --win-accent: #0078D4; /* Windows Blue */
+            --win-text: #201F1E;
+            --win-border: #8A8886;
+            --win-gray: #E1DFDD;
+            --win-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
             --safe-bottom: env(safe-area-inset-bottom);
-            --gold-gradient: linear-gradient(135deg, #fff3b0 0%, #ca9e5b 100%);
         }
-        body { background-color: var(--bg-color); font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif; padding-bottom: calc(80px + var(--safe-bottom)); user-select: none; -webkit-tap-highlight-color: transparent; }
-        
-        /* Enable text selection for inputs */
+
+        body { 
+            background-color: var(--win-bg); 
+            color: var(--win-text);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; 
+            padding-bottom: calc(70px + var(--safe-bottom)); 
+            user-select: none;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
         input, button { user-select: text !important; -webkit-user-select: text !important; }
 
-        /* Header */
-        .header { background: linear-gradient(180deg, #900000 0%, #800000 100%); color: white; padding: 15px 15px 35px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.15); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-        .header h1 { font-size: 1.3rem; font-weight: 800; margin: 0; letter-spacing: 1.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .header small { opacity: 0.9; font-size: 0.85rem; font-weight: 400; letter-spacing: 1px; }
-
-        /* System Status Bar (Floating) */
-        .system-status-container { position: fixed; top: 80px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 95; pointer-events: none; }
-        .status-pill { 
-            background: rgba(255, 255, 255, 0.95); color: #333; padding: 6px 16px; border-radius: 30px; 
-            font-size: 0.8rem; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            display: flex; align-items: center; gap: 6px; transition: all 0.3s;
-            transform: translateY(0); border: 2px solid white;
+        /* --- 1. Server Header (頂部命令列) --- */
+        .header { 
+            background-color: var(--win-header); 
+            color: white; 
+            padding: 12px 20px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        .status-pill.closed { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
-        .status-pill.open { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
-        .status-pill.connecting { background: #fff7ed; color: #9a3412; border-color: #ffedd5; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-        .status-pill.open .status-dot { background: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3); animation: pulse-green 2s infinite; }
-        .status-pill.closed .status-dot { background: #ef4444; }
-        .status-pill.connecting .status-dot { background: #f97316; animation: blink 1s infinite; }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
+        .header-icon { font-size: 1.2rem; color: #0078D4; } /* Azure Blue Icon */
+        .header h1 { font-size: 1rem; font-weight: 600; margin: 0; letter-spacing: 0.5px; }
+        .header small { opacity: 0.7; font-size: 0.75rem; font-weight: 400; border-left: 1px solid #666; padding-left: 10px; margin-left: 10px; }
+        
+        .status-indicator {
+            font-size: 0.7rem;
+            font-family: 'Consolas', monospace;
+            padding: 2px 8px;
+            background: #333;
+            border: 1px solid #555;
+            color: #0f0;
+        }
 
-        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
-        @keyframes blink { 50% { opacity: 0.5; } }
-
-        /* Toast Container */
-        .toast-container { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); z-index: 2050; width: 90%; max-width: 350px; pointer-events: none; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        .custom-toast { background: rgba(30, 30, 30, 0.9); color: white; padding: 12px 20px; border-radius: 50px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(-20px); transition: 0.3s; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-weight: 500; pointer-events: auto; }
-        .custom-toast.show { opacity: 1; transform: translateY(0); }
-        .custom-toast.error { background: rgba(220, 38, 38, 0.9); }
-        .custom-toast.success { background: rgba(22, 163, 74, 0.9); }
-
-        .container-box { max-width: 600px; margin: 0 auto; padding: 35px 15px 20px; }
-        .view-section { display: none; animation: fadeIn 0.4s ease-out; }
+        /* --- 2. Container & Cards (方塊風格) --- */
+        .container-box { max-width: 800px; margin: 0 auto; padding: 20px 15px; }
+        .view-section { display: none; animation: fadeIn 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); }
         .view-section.active { display: block; }
-        
-        /* Check-in Cards */
-        .scan-card, .profile-card, .result-card { background: white; border-radius: 24px; padding: 40px 25px; text-align: center; box-shadow: var(--card-shadow); border: 1px solid #fff; position: relative; overflow: hidden; }
-        .big-input { width: 100%; height: 65px; text-align: center; font-size: 1.6rem; border: 2px solid #e9ecef; border-radius: 18px; margin: 30px 0; outline: none; background: #f8f9fa; transition: 0.3s; color: #333; font-weight: 800; letter-spacing: 2px; }
-        .big-input:focus { border-color: var(--primary-color); background: white; box-shadow: 0 0 0 4px rgba(128,0,0,0.08); transform: translateY(-2px); }
-        .avatar { width: 100px; height: 100px; background: #f0f0f0; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #ccc; border: 5px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-        
-        /* My Ticket Styles */
-        .raffle-ticket { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; margin-top: 10px; transition: 0.3s; }
-        .raffle-ticket.is-winner { box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4); border: 2px solid #e6c07b; }
-        .ticket-header { background: var(--primary-color); color: white; padding: 20px; text-align: center; position: relative; 
-            mask-image: radial-gradient(circle at bottom left, transparent 10px, black 11px), radial-gradient(circle at bottom right, transparent 10px, black 11px); 
-            -webkit-mask-image: radial-gradient(circle at bottom left, transparent 10px, black 11px), radial-gradient(circle at bottom right, transparent 10px, black 11px); 
-            mask-size: 51% 100%; mask-repeat: no-repeat; -webkit-mask-size: 51% 100%; -webkit-mask-repeat: no-repeat; mask-position: bottom left, bottom right; -webkit-mask-position: bottom left, bottom right; 
+
+        .win-card {
+            background: white;
+            border: 1px solid #D2D0CE;
+            box-shadow: var(--win-shadow);
+            margin-bottom: 20px;
+            position: relative;
         }
-        .raffle-ticket.is-winner .ticket-header { background: var(--gold-gradient); color: #5a4005; }
-        .ticket-body { padding: 30px 20px; text-align: center; position: relative; background: radial-gradient(circle at top left, transparent 10px, white 11px), radial-gradient(circle at top right, transparent 10px, white 11px); }
-        .ticket-info { margin: 20px 0; border-top: 2px dashed #eee; border-bottom: 2px dashed #eee; padding: 15px 0; }
-        .ticket-value { font-size: 1.2rem; font-weight: 700; color: #333; }
-        .status-stamp { border: 3px solid #ccc; color: #ccc; font-weight: 900; padding: 10px 30px; font-size: 1.5rem; display: inline-block; border-radius: 10px; transform: rotate(-10deg); opacity: 0.8; margin-top: 10px; }
-        .status-stamp.waiting { border-color: #0d6efd; color: #0d6efd; }
-        .status-stamp.won { border-color: #d63384; color: #d63384; background: rgba(214, 51, 132, 0.05); animation: stampBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .prize-display { background: #fff9e6; padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid #ffeeba; display: none; }
-        .raffle-ticket.is-winner .prize-display { display: block; }
+        .win-card-header {
+            background: #FAFAFA;
+            padding: 10px 15px;
+            border-bottom: 1px solid #EDEBE9;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #605E5C;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .win-card-body { padding: 20px; }
 
-        /* Accordion Winner List */
-        .search-box { position: relative; margin-bottom: 15px; }
-        .search-input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 30px; border: 1px solid #eee; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.03); outline: none; transition: 0.2s; }
-        .search-input:focus { border-color: var(--primary-color); box-shadow: 0 4px 15px rgba(128,0,0,0.1); }
-        .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #999; }
+        /* --- 3. Inputs & Buttons (Windows Controls) --- */
+        .win-input {
+            border: 1px solid #8A8886;
+            border-radius: 0; /* 直角 */
+            padding: 10px;
+            width: 100%;
+            font-size: 1.2rem;
+            font-family: 'Consolas', monospace;
+            background: white;
+            transition: 0.2s;
+        }
+        .win-input:focus {
+            outline: 2px solid var(--win-accent);
+            border-color: var(--win-accent);
+        }
+        .win-input::placeholder { color: #A19F9D; }
 
-        .accordion-item { border: none; margin-bottom: 10px; border-radius: 12px !important; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .accordion-button { font-weight: 700; color: #333; background: white; padding: 15px 20px; box-shadow: none !important; }
-        .accordion-button:not(.collapsed) { color: var(--primary-color); background: #fff5f5; }
-        /* Custom Accordion Icon Color */
-        .accordion-button::after { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23333'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e"); }
-        .accordion-button:not(.collapsed)::after { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23800000'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e"); }
+        .win-btn {
+            background: var(--win-primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 120px;
+        }
+        .win-btn:active:not(:disabled) { transform: translateY(2px); opacity: 0.9; }
+        .win-btn:disabled { background: #C8C6C4; color: #605E5C; cursor: not-allowed; }
+        .win-btn.secondary { background: white; border: 1px solid #8A8886; color: #201F1E; }
+        .win-btn.secondary:hover { background: #EDEBE9; }
+
+        /* --- 4. Ticket Style: "System License" --- */
+        .license-cert {
+            border: 1px solid #C8C6C4;
+            background: #FFF;
+            padding: 0;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .license-header {
+            background: #F3F2F1;
+            padding: 15px;
+            border-bottom: 1px solid #C8C6C4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .license-title { font-weight: 700; color: #323130; font-size: 1rem; }
+        .license-logo { width: 30px; height: 30px; background: var(--win-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
         
-        .prize-badge { background: var(--primary-color); color: white; font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; margin-left: auto; margin-right: 10px; }
+        .license-body { padding: 25px; font-family: 'Segoe UI', sans-serif; position: relative; }
+        .prop-grid { display: grid; grid-template-columns: 100px 1fr; gap: 10px; margin-bottom: 15px; font-size: 0.9rem; }
+        .prop-label { color: #605E5C; text-align: right; padding-right: 10px; }
+        .prop-value { font-weight: 600; color: #201F1E; font-family: 'Consolas', monospace; }
         
-        .winner-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; background: #fafafa; }
-        .winner-pill { background: white; border: 1px solid #eee; padding: 8px; border-radius: 8px; text-align: center; font-size: 0.95rem; font-weight: 600; color: #333; display: flex; flex-direction: column; align-items: center; }
-        .winner-pill small { font-size: 0.75rem; color: #999; font-family: monospace; }
-        .winner-pill.highlight { border: 2px solid #ffc107; background: #fffbeb; }
+        /* 浮水印 */
+        .watermark {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 4rem;
+            font-weight: 900;
+            color: rgba(0,0,0,0.03);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 450px; background: rgba(255,255,255,0.9); box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; height: 65px; border-radius: 40px; z-index: 1000; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.5); padding: 0 5px; align-items: center; justify-content: space-between; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #adb5bd; text-decoration: none; font-size: 0.7rem; transition: 0.3s; cursor: pointer; height: 100%; border-radius: 30px; }
-        .nav-item i { font-size: 1.3rem; margin-bottom: 3px; transition: 0.3s; }
-        .nav-item span { font-weight: 600; letter-spacing: 0.5px; transform: scale(0.9); transition: 0.3s; white-space: nowrap; }
-        .nav-item.active { color: var(--primary-color); background: rgba(128,0,0,0.03); }
-        .nav-item.active i { transform: translateY(-2px); }
-        .nav-item.active span { transform: scale(1); }
-        .nav-item:active { transform: scale(0.95); }
+        /* 中獎特效 */
+        .license-cert.is-winner {
+            border: 2px solid #D13438; /* Error Red / Highlight Red */
+            animation: pulse-border 2s infinite;
+        }
+        .license-cert.is-winner .license-header {
+            background: #FDE7E9;
+            color: #A4262C;
+            border-bottom-color: #D13438;
+        }
+        .winner-stamp {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            border: 4px double #D13438;
+            color: #D13438;
+            font-weight: 900;
+            font-size: 1.5rem;
+            padding: 5px 15px;
+            transform: rotate(-15deg);
+            opacity: 0;
+            animation: stampIn 0.5s forwards 0.5s;
+            z-index: 2;
+            background: rgba(255,255,255,0.8);
+        }
+        
+        /* --- 5. Data Grid (Winners) --- */
+        .data-grid { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .data-grid th { text-align: left; padding: 10px; border-bottom: 2px solid #8A8886; color: #605E5C; font-weight: 600; }
+        .data-grid td { padding: 10px; border-bottom: 1px solid #EDEBE9; color: #323130; }
+        .data-grid tr:hover { background-color: #F3F2F1; }
+        .grid-prize { font-weight: 700; color: var(--win-primary); }
 
-        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); display:none; justify-content:center; align-items:center; z-index:3000; backdrop-filter: blur(5px); transition: opacity 0.3s; }
-        .btn-ncyu { background-color: var(--primary-color); color: white; border: none; box-shadow: 0 8px 20px rgba(128,0,0,0.25); transition: all 0.2s; position: relative; overflow: hidden; }
-        .btn-ncyu:active:not(:disabled) { transform: scale(0.97); box-shadow: 0 4px 10px rgba(128,0,0,0.15); }
-        .btn:disabled { opacity: 0.7; cursor: not-allowed; filter: grayscale(0.5); }
-        .empty-state { text-align: center; padding: 60px 0; color: #adb5bd; }
+        /* --- 6. Taskbar (Bottom Nav) --- */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: calc(60px + var(--safe-bottom));
+            background: #2B2B2B; /* Dark Taskbar */
+            display: flex;
+            align-items: flex-start;
+            padding-bottom: var(--safe-bottom);
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+        }
+        .start-btn {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .start-btn:hover { background: #3C3C3C; color: #0078D4; }
+        
+        .task-item {
+            flex: 1;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #A6A6A6;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+        }
+        .task-item:hover { background: #3C3C3C; color: white; }
+        .task-item.active { 
+            background: #333; 
+            color: white; 
+            border-bottom-color: var(--win-accent); 
+        }
+        .task-icon { font-size: 1.4rem; margin-bottom: 3px; }
+        .task-label { font-size: 0.7rem; }
 
+        /* Toast */
+        .win-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .win-toast {
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            min-width: 250px;
+            border-left: 4px solid var(--win-accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            pointer-events: auto;
+        }
+        .win-toast.show { opacity: 1; transform: translateX(0); }
+        .win-toast.success { border-left-color: #107C10; }
+        .win-toast.error { border-left-color: #D13438; }
+
+        /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes bounceIn { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
-        @keyframes stampBounce { 0%{transform: scale(2) rotate(-10deg); opacity:0;} 100%{transform: scale(1) rotate(-10deg); opacity:0.8;} }
-        @keyframes confettiMove { from { background-position: 0 0, 15px 15px, 7px 7px; } to { background-position: 0 100%, 15px calc(100% + 15px), 7px calc(100% + 7px); } }
+        @keyframes stampIn { 0%{transform: scale(2) rotate(-15deg); opacity:0;} 100%{transform: scale(1) rotate(-15deg); opacity:1;} }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(209, 52, 56, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(209, 52, 56, 0); } 100% { box-shadow: 0 0 0 0 rgba(209, 52, 56, 0); } }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>國立嘉義大學</h1>
-    <small>2026 新春團拜活動</small>
-</div>
-
-<div class="system-status-container">
-    <div id="status-pill" class="status-pill connecting">
-        <span class="status-dot"></span>
-        <span id="status-text">連線中...</span>
+    <div class="header-brand">
+        <i class="fa-brands fa-windows header-icon"></i>
+        <div>
+            <h1>Server Manager</h1>
+            <div style="font-size: 0.7rem; opacity: 0.7; line-height: 1;">NCYU.LOCAL \ 2026.EVENT</div>
+        </div>
     </div>
+    <div id="status-pill" class="status-indicator">CONNECTING...</div>
 </div>
 
-<div id="toast-container" class="toast-container"></div>
+<div id="toast-container" class="win-toast-container"></div>
 
 <div class="container-box">
     
     <div id="tab-checkin" class="view-section active">
-        <div id="view-scan" class="scan-card">
-            <div style="width:80px; height:80px; background:#f8f9fa; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);">
-                <i class="fa-solid fa-qrcode fa-3x text-secondary" style="opacity: 0.5;"></i>
+        
+        <div id="view-scan" class="win-card">
+            <div class="win-card-header">
+                <span><i class="fa-solid fa-terminal me-2"></i> User Authentication</span>
+                <i class="fa-solid fa-minus"></i>
             </div>
-            <h4 class="fw-bold text-dark mb-1">報到專區</h4>
-            <p class="text-muted small">請輸入員工編號或掃描 QR Code</p>
-            <input type="text" id="input-id" class="big-input" placeholder="輸入編號" autocomplete="off" inputmode="text">
-            <button id="btn-lookup" class="btn btn-ncyu w-100 py-3 fw-bold rounded-4 fs-5">
-                <span class="normal-content"><i class="fa-solid fa-magnifying-glass me-2"></i> 查詢資料</span>
-                <span class="loading-content d-none"><span class="spinner-border spinner-border-sm" role="status"></span> 查詢中...</span>
-            </button>
-        </div>
-
-        <div id="view-confirm" style="display:none;">
-            <div class="profile-card">
-                <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                <div id="conf-name" class="user-name"></div>
-                <div id="conf-dept" class="user-dept"></div>
-                <span id="conf-eid" class="user-eid"></span>
-            </div>
-            <div id="mode-auto" style="display:none; text-align:center; margin-top: 30px;">
-                <div class="spinner-border text-danger mb-3" style="width: 2.5rem; height: 2.5rem;" role="status"></div>
-                <p class="text-secondary fw-bold">資料確認無誤，正在報到...</p>
-            </div>
-            <div id="mode-code" class="verify-box" style="display:none;">
-                <label class="fw-bold text-dark mb-2 d-block text-center"><i class="fa-solid fa-lock me-2"></i>請輸入現場驗證碼</label>
-                <input type="tel" id="input-verify-code" class="form-control code-input" maxlength="4" placeholder="••••">
-                <button id="btn-submit" class="btn btn-ncyu w-100 fw-bold mt-3 py-3 rounded-4 fs-5">
-                    <span class="normal-content">確認報到</span>
-                    <span class="loading-content d-none"><span class="spinner-border spinner-border-sm" role="status"></span> 處理中...</span>
+            <div class="win-card-body text-center">
+                <i class="fa-solid fa-qrcode fa-3x mb-3" style="color: #605E5C;"></i>
+                <p class="text-secondary mb-4">Please enter Employee ID or Scan QR to authenticate.</p>
+                
+                <input type="text" id="input-id" class="win-input mb-3" placeholder="Input ID..." autocomplete="off" inputmode="text">
+                
+                <button id="btn-lookup" class="win-btn w-100">
+                    <span class="normal-content"><i class="fa-solid fa-search"></i> Authenticate</span>
+                    <span class="loading-content d-none"><span class="spinner-border spinner-border-sm" role="status"></span> verifying...</span>
                 </button>
             </div>
-            <button onclick="app.reset()" class="btn btn-light w-100 mt-4 py-2 text-secondary rounded-3 fw-bold shadow-sm">取消 / 重新查詢</button>
         </div>
 
-        <div id="view-success" class="result-card" style="display:none;">
-            <div class="confetti-bg"></div>
-            <i class="fa-solid fa-circle-check icon-success"></i>
-            <h2 class="fw-bold mb-2 text-dark">報到成功</h2>
-            <p class="text-muted">歡迎參加 2026 新春團拜</p>
-            <div class="result-time">
-                <span class="text-muted small">報到時間</span><br>
-                <strong id="success-time" class="text-dark fs-4">--:--:--</strong>
+        <div id="view-confirm" style="display:none;" class="win-card">
+            <div class="win-card-header">
+                <span><i class="fa-solid fa-user-check me-2"></i> Identity Verification</span>
             </div>
-            <div class="result-info">
-                <div class="d-flex align-items-start mb-3">
-                    <i class="fa-solid fa-circle-info text-primary mt-1 me-2"></i>
-                    <small class="text-secondary fw-bold">您已完成報到手續，請直接入場就座。</small>
+            <div class="win-card-body">
+                <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                    <div style="width: 60px; height: 60px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #888; margin-right: 15px;">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <div id="conf-name" class="fs-4 fw-bold text-dark">--</div>
+                        <div id="conf-dept" class="text-secondary small">--</div>
+                        <div id="conf-eid" class="text-primary font-monospace fw-bold">--</div>
+                    </div>
                 </div>
-                <div class="d-flex align-items-start">
-                    <i class="fa-solid fa-ticket text-danger mt-1 me-2"></i>
-                    <small class="text-secondary">請點選下方 <b>「我的摸彩券」</b> 查看您的抽獎資格。</small>
+
+                <div id="mode-auto" class="text-center py-3" style="display:none;">
+                    <div class="spinner-border text-primary mb-2" role="status"></div>
+                    <div class="small text-muted">Auto-registering...</div>
                 </div>
+
+                <div id="mode-code" style="display:none;">
+                    <label class="small text-secondary mb-1">SECURITY CODE</label>
+                    <input type="tel" id="input-verify-code" class="win-input text-center mb-3" maxlength="4" placeholder="****" style="letter-spacing: 5px;">
+                    <button id="btn-submit" class="win-btn w-100">
+                        <span class="normal-content">Confirm Registration</span>
+                        <span class="loading-content d-none">Processing...</span>
+                    </button>
+                </div>
+                
+                <button onclick="app.reset()" class="win-btn secondary w-100 mt-3">Cancel</button>
             </div>
-            <button onclick="app.switchTab('ticket', document.querySelectorAll('.nav-item')[1])" class="btn btn-outline-secondary w-100 mt-4 py-2 rounded-4 fw-bold">查看我的摸彩券</button>
+        </div>
+
+        <div id="view-success" class="win-card" style="display:none; border-color: #107C10;">
+            <div class="win-card-header" style="background: #DFF6DD; color: #107C10;">
+                <span><i class="fa-solid fa-check-circle me-2"></i> Registration Complete</span>
+            </div>
+            <div class="win-card-body text-center">
+                <i class="fa-solid fa-circle-check text-success fa-4x mb-3"></i>
+                <h4 class="fw-bold">Access Granted</h4>
+                <p class="text-muted small">You are now registered for the event.</p>
+                
+                <div class="bg-light p-2 border mb-3 font-monospace small" id="success-time">--</div>
+                
+                <div class="alert alert-info small text-start border-0 bg-light text-secondary">
+                    <i class="fa-solid fa-info-circle me-1"></i> System Note:<br>
+                    Please navigate to <b>"My License"</b> tab to view your raffle entry status.
+                </div>
+
+                <button onclick="app.switchTab('ticket', document.querySelectorAll('.task-item')[1])" class="win-btn w-100">View License</button>
+            </div>
         </div>
     </div>
 
     <div id="tab-ticket" class="view-section">
-        <div class="d-flex justify-content-between align-items-center mb-3 px-2 mt-2">
-            <h5 class="fw-bold m-0 ps-2 text-dark" style="border-left: 5px solid var(--primary-color); padding-left: 10px;">🎟️ 我的摸彩券</h5>
-            <button onclick="app.syncWinners(true)" class="btn btn-sm btn-white border shadow-sm text-secondary rounded-pill px-3">
-                <i id="icon-refresh-ticket" class="fa-solid fa-rotate me-1"></i> 刷新狀態
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold m-0"><i class="fa-solid fa-id-badge me-2"></i>My License</h5>
+            <button onclick="app.refreshTicket(true)" class="win-btn secondary py-1 px-3" style="min-width: auto; font-size: 0.8rem;">
+                <i id="icon-refresh-ticket" class="fa-solid fa-sync"></i> Sync
             </button>
         </div>
 
         <div id="ticket-container">
-            <div id="ticket-login-prompt" class="empty-state">
-                <i class="fa-solid fa-id-card-clip"></i>
-                <h5 class="fw-bold text-dark">尚未報到</h5>
-                <p>請先完成線上報到手續<br>才能取得您的專屬摸彩券</p>
-                <button onclick="app.switchTab('checkin', document.querySelector('.nav-item:first-child'))" class="btn btn-ncyu px-4 rounded-pill fw-bold mt-2">立即報到</button>
+            <div id="ticket-login-prompt" class="win-card text-center p-5 text-muted">
+                <i class="fa-solid fa-ban fa-3x mb-3 opacity-25"></i>
+                <h5>No Active Session</h5>
+                <p class="small">Please authenticate via Console first.</p>
+                <button onclick="app.switchTab('checkin', document.querySelector('.task-item:first-child'))" class="win-btn">Go to Console</button>
             </div>
 
-            <div id="my-ticket" class="raffle-ticket" style="display:none;">
-                <div class="ticket-header">
-                    <div class="ticket-title">RAFFLE TICKET</div>
-                    <div class="ticket-year">2026</div>
-                    <small style="letter-spacing: 2px;">新春團拜活動</small>
+            <div id="my-ticket" class="license-cert" style="display:none;">
+                <div class="license-header">
+                    <span class="license-title">NCYU.USER.CAL - 2026</span>
+                    <div class="license-logo">26</div>
                 </div>
-                <div class="ticket-body">
-                    <div class="user-name mb-1" id="ticket-user-name">--</div>
-                    <div class="user-dept" id="ticket-user-dept">--</div>
-                    <div class="ticket-info">
-                        <div class="row">
-                            <div class="col-6 border-end">
-                                <div class="ticket-label">員工編號</div>
-                                <div class="ticket-value text-primary" id="ticket-user-eid">--</div>
-                            </div>
-                            <div class="col-6">
-                                <div class="ticket-label">報到序號</div>
-                                <div class="ticket-value" id="ticket-seq">--</div>
-                            </div>
+                <div class="license-body">
+                    <div class="watermark">OFFICIAL</div>
+                    
+                    <div class="prop-grid">
+                        <div class="prop-label">User Principal:</div>
+                        <div class="prop-value" id="ticket-user-name">--</div>
+                        
+                        <div class="prop-label">Department:</div>
+                        <div class="prop-value" id="ticket-user-dept">--</div>
+                        
+                        <div class="prop-label">Object ID:</div>
+                        <div class="prop-value" id="ticket-user-eid">--</div>
+                        
+                        <div class="prop-label">Reg. Time:</div>
+                        <div class="prop-value" id="ticket-seq">--</div>
+                    </div>
+
+                    <hr style="border-top: 1px solid #ddd;">
+                    
+                    <div class="mt-3">
+                        <div class="small text-secondary mb-1">Raffle Status:</div>
+                        <div id="ticket-status-text" class="fs-5 fw-bold text-primary">
+                            <i class="fa-solid fa-hourglass-half me-2"></i>PENDING DRAW
                         </div>
                     </div>
-                    <div class="prize-display animate__animated animate__zoomIn">
-                        <i class="fa-solid fa-trophy text-warning fs-3 mb-2"></i>
-                        <div style="font-size:0.9rem; color:#888;">恭喜獲得</div>
-                        <div class="prize-name" id="ticket-prize-name">--</div>
+
+                    <div id="ticket-winner-stamp" class="winner-stamp" style="display:none;">
+                        AWARDED<br><span style="font-size:0.8rem" id="ticket-prize-name">--</span>
                     </div>
-                    <div id="ticket-status-stamp" class="status-stamp waiting">祈福中</div>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="tab-winners" class="view-section">
-        <div class="d-flex flex-column px-2 mt-2">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold m-0 ps-2 text-dark" style="border-left: 5px solid var(--primary-color); padding-left: 10px;">🏆 即時開獎資訊</h5>
-                <button onclick="app.syncWinners(true)" class="btn btn-sm btn-white border shadow-sm text-secondary rounded-pill px-3">
-                    <i id="refresh-icon" class="fa-solid fa-rotate me-1"></i> <span id="last-update-time">刷新</span>
-                </button>
-            </div>
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="winner-search" class="search-input" placeholder="搜尋姓名或編號..." oninput="app.filterWinners()">
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold m-0"><i class="fa-solid fa-list me-2"></i>Event Logs</h5>
+            <button onclick="app.syncWinners(true)" class="win-btn secondary py-1 px-3" style="min-width: auto; font-size: 0.8rem;">
+                <i id="refresh-icon" class="fa-solid fa-sync"></i> Refresh
+            </button>
         </div>
         
-        <div id="winner-list-container" class="accordion" style="padding-bottom: 20px;">
-            <div class="empty-state">
-                <div class="spinner-border text-secondary mb-3" role="status"></div>
-                <p>正在載入最新名單...</p>
+        <input type="text" id="winner-search" class="win-input mb-3" placeholder="Filter logs (Name/ID)..." oninput="app.filterWinners()" style="font-size: 0.9rem;">
+        
+        <div class="win-card" style="min-height: 300px;">
+            <div id="winner-list-container">
+                <div class="text-center p-5 text-muted">
+                    <span class="spinner-border spinner-border-sm" role="status"></span> Loading Data...
+                </div>
             </div>
         </div>
     </div>
+
 </div>
 
-<div class="bottom-nav">
-    <div class="nav-item active" onclick="app.switchTab('checkin', this)">
-        <i class="fa-solid fa-user-check"></i> <span>線上報到</span>
+<div class="taskbar">
+    <div class="start-btn" onclick="location.reload()" title="Restart System">
+        <i class="fa-brands fa-windows"></i>
     </div>
-    <div class="nav-item" onclick="app.switchTab('ticket', this)">
-        <i class="fa-solid fa-ticket"></i> <span>我的摸彩券</span>
+    <div class="task-item active" onclick="app.switchTab('checkin', this)">
+        <i class="fa-solid fa-terminal task-icon"></i>
+        <span class="task-label">Console</span>
     </div>
-    <div class="nav-item" onclick="app.switchTab('winners', this)">
-        <i class="fa-solid fa-gift"></i> <span>中獎名單</span>
+    <div class="task-item" onclick="app.switchTab('ticket', this)">
+        <i class="fa-solid fa-id-card task-icon"></i>
+        <span class="task-label">My License</span>
     </div>
-</div>
-
-<div id="loader" class="loader-overlay">
-    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status"></div>
+    <div class="task-item" onclick="app.switchTab('winners', this)">
+        <i class="fa-solid fa-table-list task-icon"></i>
+        <span class="task-label">Logs</span>
+    </div>
 </div>
 
 <script>
-// ★ API Endpoint (Ensure this is correct)
 const API_BASE = 'https://personnel.kncyu.link/api/checkin/index.php'; 
 
 const app = {
@@ -303,7 +472,7 @@ const app = {
         lastWinnerHash: '',
         statusTimeoutId: null,
         winnerTimeoutId: null,
-        allWinners: [] // Store full winner list locally for search and ticket status
+        allWinners: [] 
     },
 
     init() {
@@ -312,22 +481,20 @@ const app = {
         this.statusSyncLoop(); 
         this.winnerSyncLoop(); 
 
-        // Event Bindings
+        // 綁定 DOM 事件
         document.getElementById('input-id').addEventListener('keypress', e => { if(e.key==='Enter') this.lookupUser(); });
         document.getElementById('btn-lookup').onclick = () => this.lookupUser();
         document.getElementById('btn-submit').onclick = () => this.submitCheckIn();
         document.getElementById('input-verify-code').addEventListener('keypress', e => { if(e.key==='Enter') this.submitCheckIn(); });
         
-        this.updateStatusPill('連線中...', 'connecting');
-        this.updateTicketUI(); // Init Ticket UI
+        this.updateStatusPill('CONNECTING...');
+        this.updateTicketUI();
     },
 
     restoreUserSession() {
         try {
             const saved = localStorage.getItem('ncyu_user');
-            if (saved) {
-                this.state.currentUser = JSON.parse(saved);
-            }
+            if (saved) this.state.currentUser = JSON.parse(saved);
         } catch(e) {}
     },
 
@@ -337,9 +504,8 @@ const app = {
         this.updateTicketUI();
     },
 
-    // --- Tab Switching ---
     switchTab(tabName, el) {
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.task-item').forEach(n => n.classList.remove('active'));
         if(el) el.classList.add('active');
         
         document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
@@ -347,188 +513,124 @@ const app = {
         window.scrollTo(0, 0);
         
         if(tabName === 'winners' || tabName === 'ticket') this.syncWinners(true);
+        if(tabName === 'ticket') this.refreshTicket(true);
     },
 
-    // --- Check My Winning Status (Client-Side) ---
-    // Runs after every syncWinners call
-    checkMyWinningStatus() {
-        const user = this.state.currentUser;
-        if (!user) return;
-
-        let myPrize = null;
-        
-        // Loop through all prizes in memory to find current user
-        for (const prize of this.state.allWinners) {
-            const found = prize.winners.find(w => w.employee_id === user.employee_id);
-            if (found) {
-                myPrize = prize.prize_name;
-                break;
-            }
-        }
-
-        const ticketEl = document.getElementById('my-ticket');
-        const stampEl = document.getElementById('ticket-status-stamp');
-        const prizeNameEl = document.getElementById('ticket-prize-name');
-
-        if (myPrize) {
-            ticketEl.classList.add('is-winner');
-            stampEl.className = 'status-stamp won';
-            stampEl.textContent = '恭喜中獎';
-            prizeNameEl.textContent = myPrize;
-        } else {
-            ticketEl.classList.remove('is-winner');
-            stampEl.className = 'status-stamp waiting';
-            stampEl.textContent = '祈福中';
-        }
-    },
-
-    updateTicketUI() {
+    // --- My License Logic ---
+    async refreshTicket(isManual = false) {
         const user = this.state.currentUser;
         if (!user) {
             document.getElementById('ticket-login-prompt').style.display = 'block';
             document.getElementById('my-ticket').style.display = 'none';
-        } else {
-            document.getElementById('ticket-login-prompt').style.display = 'none';
-            document.getElementById('my-ticket').style.display = 'block';
-            document.getElementById('ticket-user-name').textContent = user.name;
-            document.getElementById('ticket-user-dept').textContent = user.department;
-            document.getElementById('ticket-user-eid').textContent = user.employee_id;
-            document.getElementById('ticket-seq').textContent = user.check_in_time ? user.check_in_time.split(' ')[1] : '已報到';
-            
-            // Check winning status against loaded list
-            if(this.state.allWinners.length > 0) this.checkMyWinningStatus();
-        }
-    },
-
-    // --- Winner List (Accordion Render) ---
-    async winnerSyncLoop() {
-        await this.syncWinners();
-        if(this.state.winnerTimeoutId) clearTimeout(this.state.winnerTimeoutId);
-        // Poll every 15s (Static JSON is light)
-        this.state.winnerTimeoutId = setTimeout(() => this.winnerSyncLoop(), 15000);
-    },
-
-    async syncWinners(isManual = false) {
-        const icon = document.getElementById('refresh-icon');
-        const ticketIcon = document.getElementById('icon-refresh-ticket');
-        if(isManual) {
-            if(icon) icon.classList.add('fa-spin');
-            if(ticketIcon) ticketIcon.classList.add('fa-spin');
-        }
-
-        try {
-            const url = isManual ? `${API_BASE}?action=get_winners&t=${Date.now()}` : `${API_BASE}?action=get_winners`;
-            const res = await fetch(url);
-            const json = await res.json();
-            
-            if(json.success) {
-                const newHash = JSON.stringify(json.data);
-                this.state.allWinners = json.data; // Update global list
-                
-                // Check if user won based on new data
-                this.checkMyWinningStatus();
-
-                if(newHash !== this.state.lastWinnerHash) {
-                    this.state.lastWinnerHash = newHash;
-                    this.renderWinners(json.data);
-                }
-                
-                const timeStr = new Date().toLocaleTimeString('en-US', {hour12:false, hour:'2-digit', minute:'2-digit'});
-                const timeEl = document.getElementById('last-update-time');
-                if(timeEl) timeEl.textContent = `更新於 ${timeStr}`;
-                
-                if(isManual) this.showToast("資料已更新", "success");
-            }
-        } catch(e) { console.error("Winner sync failed"); }
-        finally {
-            if(isManual) {
-                setTimeout(() => {
-                    if(icon) icon.classList.remove('fa-spin');
-                    if(ticketIcon) ticketIcon.classList.remove('fa-spin');
-                }, 500);
-            }
-        }
-    },
-
-    renderWinners(data) {
-        const container = document.getElementById('winner-list-container');
-        if(!data || data.length === 0) {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-gift"></i><p>尚未開獎，敬請期待</p></div>`;
             return;
         }
 
-        let html = '';
-        data.forEach((prize, index) => {
-            const collapseId = `collapsePrize${index}`;
-            // Expand first 2 prizes by default
-            const showClass = index < 2 ? 'show' : '';
-            const btnCollapsed = index < 2 ? '' : 'collapsed';
+        document.getElementById('ticket-login-prompt').style.display = 'none';
+        document.getElementById('my-ticket').style.display = 'block';
 
-            let winnersHtml = '';
-            prize.winners.forEach(w => {
-                // Highlight if it's current user
-                const highlight = (this.state.currentUser && w.employee_id === this.state.currentUser.employee_id) ? 'highlight' : '';
-                winnersHtml += `
-                    <div class="winner-pill ${highlight}" data-search="${w.name} ${w.employee_id}">
-                        ${w.name} <small>${w.employee_id}</small>
-                    </div>`;
-            });
+        // 填入資料
+        document.getElementById('ticket-user-name').textContent = user.name;
+        document.getElementById('ticket-user-dept').textContent = user.department;
+        document.getElementById('ticket-user-eid').textContent = user.employee_id;
+        document.getElementById('ticket-seq').textContent = user.check_in_time || 'N/A';
 
-            html += `
-                <div class="accordion-item search-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button ${btnCollapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}">
-                            ${prize.prize_name}
-                            <span class="prize-badge">${prize.winners.length}</span>
-                        </button>
-                    </h2>
-                    <div id="${collapseId}" class="accordion-collapse collapse ${showClass}" data-bs-parent="#winner-list-container">
-                        <div class="accordion-body winner-grid">
-                            ${winnersHtml}
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-        this.filterWinners(); // Apply filter if search box has text
-    },
+        const icon = document.getElementById('icon-refresh-ticket');
+        if(isManual && icon) icon.classList.add('fa-spin');
 
-    filterWinners() {
-        const term = document.getElementById('winner-search').value.toLowerCase();
-        const items = document.querySelectorAll('.search-item');
-        
-        items.forEach(item => {
-            const pills = item.querySelectorAll('.winner-pill');
-            let hasMatch = false;
-            
-            pills.forEach(pill => {
-                const text = pill.getAttribute('data-search').toLowerCase();
-                if (text.includes(term)) {
-                    pill.style.display = 'flex';
-                    hasMatch = true;
+        try {
+            const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(user.employee_id)}&t=${Date.now()}`);
+            const json = await res.json();
+
+            if (json.success) {
+                const data = json.data;
+                const ticketEl = document.getElementById('my-ticket');
+                const stampEl = document.getElementById('ticket-winner-stamp');
+                const statusText = document.getElementById('ticket-status-text');
+                const prizeNameEl = document.getElementById('ticket-prize-name');
+
+                if (data.prize_name) {
+                    // 中獎
+                    ticketEl.classList.add('is-winner');
+                    stampEl.style.display = 'block';
+                    prizeNameEl.textContent = data.prize_name;
+                    statusText.innerHTML = '<i class="fa-solid fa-award me-2"></i>AWARD GRANTED';
+                    statusText.className = 'fs-5 fw-bold text-danger';
                 } else {
-                    pill.style.display = 'none';
+                    // 待開獎
+                    ticketEl.classList.remove('is-winner');
+                    stampEl.style.display = 'none';
+                    statusText.innerHTML = '<i class="fa-solid fa-hourglass-half me-2"></i>PENDING DRAW';
+                    statusText.className = 'fs-5 fw-bold text-primary';
                 }
-            });
-
-            // Show accordion item if matches found inside or if title matches
-            const title = item.querySelector('.accordion-button').textContent.toLowerCase();
-            if (hasMatch || title.includes(term)) {
-                item.style.display = 'block';
-                if(term !== '') {
-                    const collapse = item.querySelector('.accordion-collapse');
-                    if(collapse && !collapse.classList.contains('show')) {
-                        new bootstrap.Collapse(collapse, { toggle: true });
-                    }
-                }
-            } else {
-                item.style.display = 'none';
+                
+                this.saveUserSession({...user, ...data}); // 更新本地緩存
+                if(isManual) this.showToast("License Synced.", "success");
             }
-        });
+        } catch(e) { console.error(e); } 
+        finally { if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500); }
     },
 
-    // --- Original Logic Preserved ---
+    // 檢查全域中獎名單更新票券 (被動檢查)
+    checkMyWinningStatus() {
+        const user = this.state.currentUser;
+        if (!user) return;
+        let myPrize = null;
+        
+        for (const prize of this.state.allWinners) {
+            const found = prize.winners.find(w => w.employee_id === user.employee_id);
+            if (found) { myPrize = prize.prize_name; break; }
+        }
+
+        const ticketEl = document.getElementById('my-ticket');
+        const stampEl = document.getElementById('ticket-winner-stamp');
+        const statusText = document.getElementById('ticket-status-text');
+        const prizeNameEl = document.getElementById('ticket-prize-name');
+
+        if (myPrize) {
+            ticketEl.classList.add('is-winner');
+            stampEl.style.display = 'block';
+            prizeNameEl.textContent = myPrize;
+            statusText.innerHTML = '<i class="fa-solid fa-award me-2"></i>AWARD GRANTED';
+            statusText.className = 'fs-5 fw-bold text-danger';
+        }
+    },
+
+    // --- System Status ---
+    async statusSyncLoop() {
+        try {
+            const res = await fetch(`${API_BASE}?action=get_system_status&t=${Date.now()}`);
+            if(!res.ok) throw new Error("Network");
+            const json = await res.json();
+            
+            if(json.success) {
+                const d = json.data;
+                this.state.mode = d.checkin_mode_type || 'AUTO';
+                if (d.status === 'OPEN') {
+                    this.updateStatusPill('SYSTEM ONLINE', '#107C10');
+                    this.state.locked = false;
+                } else {
+                    const msg = d.status === 'CLOSED' ? 'SYSTEM OFFLINE' : 'SCHEDULED WAIT';
+                    this.updateStatusPill(msg, '#D13438');
+                    this.state.locked = true;
+                }
+            }
+        } catch(e) { this.updateStatusPill('NET_ERR_REFUSED', '#A4262C'); } 
+        finally {
+            if (this.state.statusTimeoutId) clearTimeout(this.state.statusTimeoutId);
+            this.state.statusTimeoutId = setTimeout(() => this.statusSyncLoop(), 5000); // 5秒輪詢
+        }
+    },
+
+    updateStatusPill(msg, color) {
+        const el = document.getElementById('status-pill');
+        el.textContent = msg;
+        if(color) {
+            el.style.color = color;
+            el.style.borderColor = color;
+        }
+    },
+
+    // --- Check-in Logic ---
     checkUrlParams() {
         const p = new URLSearchParams(location.search);
         const code = p.get('uuid') || p.get('eid');
@@ -537,71 +639,10 @@ const app = {
             setTimeout(() => this.lookupUser(), 500);
         }
     },
-    
-    async statusSyncLoop() {
-        try {
-            const res = await fetch(`${API_BASE}?action=get_system_status&t=${Date.now()}`);
-            if(!res.ok) throw new Error("Network");
-            const json = await res.json();
-            if(json.success) {
-                const d = json.data;
-                this.state.mode = d.checkin_mode_type || 'AUTO';
-                if (d.status === 'OPEN') {
-                    this.updateStatusPill('🟢 系統開放中', 'open');
-                    this.state.locked = false;
-                } else {
-                    const msg = d.status === 'CLOSED' ? '🔴 系統已關閉' : '🟡 尚未開始';
-                    this.updateStatusPill(msg, 'closed');
-                    this.state.locked = true;
-                    // Force kick to home if system closes while confirming (UX Protection)
-                    if(document.getElementById('view-confirm').style.display !== 'none' && !this.state.currentUser) {
-                        this.showToast('系統已關閉', 'error'); this.reset();
-                    }
-                }
-            }
-        } catch(e) { this.updateStatusPill('⚠️ 連線不穩', 'connecting'); } 
-        finally {
-            if (this.state.statusTimeoutId) clearTimeout(this.state.statusTimeoutId);
-            this.state.statusTimeoutId = setTimeout(() => this.statusSyncLoop(), 5000);
-        }
-    },
-
-    updateStatusPill(msg, type) {
-        const el = document.getElementById('status-pill');
-        const text = document.getElementById('status-text');
-        text.textContent = msg;
-        el.className = `status-pill ${type} show`;
-    },
-
-    showToast(msg, type = 'normal') {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = `custom-toast ${type}`;
-        let icon = '<i class="fa-solid fa-circle-info"></i>';
-        if(type === 'success') icon = '<i class="fa-solid fa-check"></i>';
-        if(type === 'error') icon = '<i class="fa-solid fa-xmark"></i>';
-        toast.innerHTML = `${icon}<span>${msg}</span>`;
-        container.appendChild(toast);
-        if(navigator.vibrate) navigator.vibrate(type === 'error' ? 50 : 0);
-        requestAnimationFrame(() => toast.classList.add('show'));
-        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
-    },
-
-    setBtnLoading(btnId, isLoading) {
-        const btn = document.getElementById(btnId);
-        if(!btn) return;
-        btn.disabled = isLoading;
-        const normalSpan = btn.querySelector('.normal-content');
-        const loadingSpan = btn.querySelector('.loading-content');
-        if(normalSpan && loadingSpan) {
-            normalSpan.className = isLoading ? 'normal-content d-none' : 'normal-content';
-            loadingSpan.className = isLoading ? 'loading-content' : 'loading-content d-none';
-        }
-    },
 
     async lookupUser() {
         const code = document.getElementById('input-id').value.trim();
-        if(!code) return this.showToast("請輸入編號", "error");
+        if(!code) return this.showToast("Input is empty.", "error");
         this.setBtnLoading('btn-lookup', true);
         try {
             const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(code)}&t=${Date.now()}`);
@@ -611,53 +652,26 @@ const app = {
                 if(json.data.has_checked_in) {
                     this.showSuccess(json.data.check_in_time, true);
                 } else {
+                    // 若系統鎖定，但後端其實開了(快取延遲)，這裡後端會回傳正確資料，所以這邊不特別擋，由使用者發起請求
                     if(this.state.locked) {
-                        this.showToast("系統目前尚未開放報到", "error");
-                        this.statusSyncLoop();
-                    } else {
-                        this.showConfirm();
+                        // 但給個提示
+                        this.showToast("Warning: System might be closed.", "error");
                     }
+                    this.showConfirm();
                 }
             } else {
                 this.showToast(json.message, 'error');
                 document.getElementById('input-id').value = '';
                 document.getElementById('input-id').focus();
             }
-        } catch(e) { this.showToast("連線錯誤，請檢查網路", 'error'); } 
+        } catch(e) { this.showToast("Connection Failed.", "error"); } 
         finally { this.setBtnLoading('btn-lookup', false); }
     },
 
-    showConfirm() {
-        const u = this.state.currentUser;
-        document.getElementById('conf-name').textContent = u.name;
-        document.getElementById('conf-dept').textContent = u.department;
-        document.getElementById('conf-eid').textContent = u.employee_id;
-        document.getElementById('view-scan').style.display = 'none';
-        document.getElementById('view-confirm').style.display = 'block';
-
-        if(this.state.mode === 'AUTO') {
-            document.getElementById('mode-auto').style.display = 'block';
-            document.getElementById('mode-code').style.display = 'none';
-            if(this.state.timer) clearTimeout(this.state.timer);
-            this.state.timer = setTimeout(() => {
-                if(!this.state.locked && document.getElementById('view-confirm').style.display !== 'none') {
-                    this.submitCheckIn();
-                } else if(this.state.locked) {
-                    this.showToast("報到時間已結束", "error");
-                    this.reset();
-                }
-            }, 1500);
-        } else {
-            document.getElementById('mode-auto').style.display = 'none';
-            document.getElementById('mode-code').style.display = 'block';
-            setTimeout(() => document.getElementById('input-verify-code').focus(), 100);
-        }
-    },
-
     async submitCheckIn() {
-        if(this.state.locked) return this.showToast("系統已關閉，無法報到", "error");
+        if(this.state.locked) return this.showToast("System Locked.", "error");
         const verifyCode = document.getElementById('input-verify-code').value.trim();
-        if(this.state.mode === 'CODE' && !verifyCode) return this.showToast("請輸入驗證碼", "error");
+        if(this.state.mode === 'CODE' && !verifyCode) return this.showToast("Enter Security Code.", "error");
         if(this.state.mode === 'CODE') this.setBtnLoading('btn-submit', true);
 
         try {
@@ -676,17 +690,108 @@ const app = {
                 this.showToast(json.message, 'error');
                 if(this.state.mode === 'AUTO') setTimeout(() => this.reset(), 2000);
             }
-        } catch(e) { this.showToast("報到連線失敗", 'error'); }
+        } catch(e) { this.showToast("Submission Failed.", 'error'); }
         finally { if(this.state.mode === 'CODE') this.setBtnLoading('btn-submit', false); }
+    },
+
+    showConfirm() {
+        const u = this.state.currentUser;
+        document.getElementById('conf-name').textContent = u.name;
+        document.getElementById('conf-dept').textContent = u.department;
+        document.getElementById('conf-eid').textContent = u.employee_id;
+        document.getElementById('view-scan').style.display = 'none';
+        document.getElementById('view-confirm').style.display = 'block';
+
+        if(this.state.mode === 'AUTO') {
+            document.getElementById('mode-auto').style.display = 'block';
+            document.getElementById('mode-code').style.display = 'none';
+            if(this.state.timer) clearTimeout(this.state.timer);
+            this.state.timer = setTimeout(() => {
+                if(!this.state.locked && document.getElementById('view-confirm').style.display !== 'none') {
+                    this.submitCheckIn();
+                } else if(this.state.locked) {
+                    this.showToast("System Timeout.", "error");
+                    this.reset();
+                }
+            }, 1500);
+        } else {
+            document.getElementById('mode-auto').style.display = 'none';
+            document.getElementById('mode-code').style.display = 'block';
+            setTimeout(() => document.getElementById('input-verify-code').focus(), 100);
+        }
     },
 
     showSuccess(time, isRepeat = false) {
         document.getElementById('view-scan').style.display = 'none';
         document.getElementById('view-confirm').style.display = 'none';
         document.getElementById('view-success').style.display = 'block';
-        document.getElementById('success-time').textContent = time || '剛剛';
+        document.getElementById('success-time').textContent = time || 'NOW';
     },
 
+    // --- Winners Log (Data Grid) ---
+    async winnerSyncLoop() {
+        await this.syncWinners();
+        if(this.state.winnerTimeoutId) clearTimeout(this.state.winnerTimeoutId);
+        this.state.winnerTimeoutId = setTimeout(() => this.winnerSyncLoop(), 15000);
+    },
+
+    async syncWinners(isManual = false) {
+        const icon = document.getElementById('refresh-icon');
+        if(isManual && icon) icon.classList.add('fa-spin');
+        try {
+            const url = isManual ? `${API_BASE}?action=get_winners&t=${Date.now()}` : `${API_BASE}?action=get_winners`;
+            const res = await fetch(url);
+            const json = await res.json();
+            if(json.success) {
+                const newHash = JSON.stringify(json.data);
+                this.state.allWinners = json.data;
+                this.checkMyWinningStatus(); // 更新票券狀態
+                if(newHash !== this.state.lastWinnerHash) {
+                    this.state.lastWinnerHash = newHash;
+                    this.renderWinners(json.data);
+                }
+                if(isManual) this.showToast("Logs Updated.", "success");
+            }
+        } catch(e) { console.error("Sync Error"); }
+        finally { if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500); }
+    },
+
+    renderWinners(data) {
+        const container = document.getElementById('winner-list-container');
+        if(!data || data.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-server"></i><p>No events logged yet.</p></div>`;
+            return;
+        }
+
+        let html = '<table class="data-grid"><thead><tr><th>PRIZE</th><th>WINNER</th></tr></thead><tbody>';
+        data.forEach(prize => {
+            prize.winners.forEach(w => {
+                const isMe = (this.state.currentUser && w.employee_id === this.state.currentUser.employee_id);
+                const rowStyle = isMe ? 'background-color:#fff4ce;' : ''; // Highlight self
+                const icon = isMe ? '<i class="fa-solid fa-star text-warning me-1"></i>' : '';
+                html += `
+                    <tr class="search-item" style="${rowStyle}" data-search="${w.name} ${w.employee_id}">
+                        <td><span class="grid-prize">${this.escapeHtml(prize.prize_name)}</span></td>
+                        <td>${icon}<b>${w.name}</b> <small class="text-muted">(${w.employee_id})</small></td>
+                    </tr>
+                `;
+            });
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+        this.filterWinners();
+    },
+
+    filterWinners() {
+        const term = document.getElementById('winner-search').value.toLowerCase();
+        const rows = document.querySelectorAll('.search-item');
+        rows.forEach(row => {
+            const text = row.getAttribute('data-search').toLowerCase();
+            row.style.display = text.includes(term) ? '' : 'none';
+        });
+    },
+
+    // --- Utilities ---
     reset() {
         if(this.state.timer) clearTimeout(this.state.timer);
         document.getElementById('input-id').value = '';
@@ -695,6 +800,33 @@ const app = {
         document.getElementById('view-confirm').style.display = 'none';
         document.getElementById('view-scan').style.display = 'block';
         setTimeout(() => document.getElementById('input-id').focus(), 300);
+    },
+    
+    setBtnLoading(btnId, isLoading) {
+        const btn = document.getElementById(btnId);
+        if(!btn) return;
+        btn.disabled = isLoading;
+        const n = btn.querySelector('.normal-content');
+        const l = btn.querySelector('.loading-content');
+        if(n && l) { n.className = isLoading?'d-none':'normal-content'; l.className = isLoading?'loading-content':'d-none'; }
+    },
+
+    showToast(msg, type = 'normal') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `win-toast ${type}`;
+        let icon = type === 'error' ? '<i class="fa-solid fa-circle-xmark text-danger"></i>' : '<i class="fa-solid fa-circle-info text-info"></i>';
+        if(type === 'success') icon = '<i class="fa-solid fa-check-circle text-success"></i>';
+        
+        toast.innerHTML = `${icon}<span>${msg}</span>`;
+        container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('show'));
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+    },
+
+    escapeHtml(text) {
+        if (!text) return text;
+        return text.replace(/[&<>"']/g, function(m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]; });
     }
 };
 
