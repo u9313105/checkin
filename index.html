@@ -9,8 +9,8 @@
     <title>國立嘉義大學 - 2026 新春團拜</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <style>
         :root { 
@@ -22,14 +22,15 @@
         }
         body { background-color: var(--bg-color); font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif; padding-bottom: calc(80px + var(--safe-bottom)); user-select: none; -webkit-tap-highlight-color: transparent; }
         
+        /* Enable text selection for inputs */
         input, button { user-select: text !important; -webkit-user-select: text !important; }
 
-        /* 頂部標題 */
+        /* Header */
         .header { background: linear-gradient(180deg, #900000 0%, #800000 100%); color: white; padding: 15px 15px 35px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.15); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
         .header h1 { font-size: 1.3rem; font-weight: 800; margin: 0; letter-spacing: 1.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .header small { opacity: 0.9; font-size: 0.85rem; font-weight: 400; letter-spacing: 1px; }
 
-        /* 系統狀態列 */
+        /* System Status Bar (Floating) */
         .system-status-container { position: fixed; top: 80px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 95; pointer-events: none; }
         .status-pill { 
             background: rgba(255, 255, 255, 0.95); color: #333; padding: 6px 16px; border-radius: 30px; 
@@ -48,7 +49,7 @@
         @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         @keyframes blink { 50% { opacity: 0.5; } }
 
-        /* Toast */
+        /* Toast Container */
         .toast-container { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); z-index: 2050; width: 90%; max-width: 350px; pointer-events: none; display: flex; flex-direction: column; gap: 10px; align-items: center; }
         .custom-toast { background: rgba(30, 30, 30, 0.9); color: white; padding: 12px 20px; border-radius: 50px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(-20px); transition: 0.3s; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-weight: 500; pointer-events: auto; }
         .custom-toast.show { opacity: 1; transform: translateY(0); }
@@ -59,16 +60,20 @@
         .view-section { display: none; animation: fadeIn 0.4s ease-out; }
         .view-section.active { display: block; }
         
-        /* 報到卡片 */
+        /* Check-in Cards */
         .scan-card, .profile-card, .result-card { background: white; border-radius: 24px; padding: 40px 25px; text-align: center; box-shadow: var(--card-shadow); border: 1px solid #fff; position: relative; overflow: hidden; }
         .big-input { width: 100%; height: 65px; text-align: center; font-size: 1.6rem; border: 2px solid #e9ecef; border-radius: 18px; margin: 30px 0; outline: none; background: #f8f9fa; transition: 0.3s; color: #333; font-weight: 800; letter-spacing: 2px; }
         .big-input:focus { border-color: var(--primary-color); background: white; box-shadow: 0 0 0 4px rgba(128,0,0,0.08); transform: translateY(-2px); }
         .avatar { width: 100px; height: 100px; background: #f0f0f0; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #ccc; border: 5px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
         
-        /* 我的摸彩券 */
+        /* My Ticket Styles */
         .raffle-ticket { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; margin-top: 10px; transition: 0.3s; }
         .raffle-ticket.is-winner { box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4); border: 2px solid #e6c07b; }
-        .ticket-header { background: var(--primary-color); color: white; padding: 20px; text-align: center; position: relative; mask-image: radial-gradient(circle at bottom left, transparent 10px, black 11px), radial-gradient(circle at bottom right, transparent 10px, black 11px); -webkit-mask-image: radial-gradient(circle at bottom left, transparent 10px, black 11px), radial-gradient(circle at bottom right, transparent 10px, black 11px); mask-size: 51% 100%; mask-repeat: no-repeat; -webkit-mask-size: 51% 100%; -webkit-mask-repeat: no-repeat; mask-position: bottom left, bottom right; -webkit-mask-position: bottom left, bottom right; }
+        .ticket-header { background: var(--primary-color); color: white; padding: 20px; text-align: center; position: relative; 
+            mask-image: radial-gradient(circle at bottom left, transparent 10px, black 11px), radial-gradient(circle at bottom right, transparent 10px, black 11px); 
+            -webkit-mask-image: radial-gradient(circle at bottom left, transparent 10px, black 11px), radial-gradient(circle at bottom right, transparent 10px, black 11px); 
+            mask-size: 51% 100%; mask-repeat: no-repeat; -webkit-mask-size: 51% 100%; -webkit-mask-repeat: no-repeat; mask-position: bottom left, bottom right; -webkit-mask-position: bottom left, bottom right; 
+        }
         .raffle-ticket.is-winner .ticket-header { background: var(--gold-gradient); color: #5a4005; }
         .ticket-body { padding: 30px 20px; text-align: center; position: relative; background: radial-gradient(circle at top left, transparent 10px, white 11px), radial-gradient(circle at top right, transparent 10px, white 11px); }
         .ticket-info { margin: 20px 0; border-top: 2px dashed #eee; border-bottom: 2px dashed #eee; padding: 15px 0; }
@@ -79,7 +84,7 @@
         .prize-display { background: #fff9e6; padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid #ffeeba; display: none; }
         .raffle-ticket.is-winner .prize-display { display: block; }
 
-        /* === 中獎名單 (手風琴優化) === */
+        /* Accordion Winner List */
         .search-box { position: relative; margin-bottom: 15px; }
         .search-input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 30px; border: 1px solid #eee; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.03); outline: none; transition: 0.2s; }
         .search-input:focus { border-color: var(--primary-color); box-shadow: 0 4px 15px rgba(128,0,0,0.1); }
@@ -88,15 +93,18 @@
         .accordion-item { border: none; margin-bottom: 10px; border-radius: 12px !important; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .accordion-button { font-weight: 700; color: #333; background: white; padding: 15px 20px; box-shadow: none !important; }
         .accordion-button:not(.collapsed) { color: var(--primary-color); background: #fff5f5; }
+        /* Custom Accordion Icon Color */
+        .accordion-button::after { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23333'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e"); }
         .accordion-button:not(.collapsed)::after { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23800000'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e"); }
+        
         .prize-badge { background: var(--primary-color); color: white; font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; margin-left: auto; margin-right: 10px; }
         
         .winner-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; background: #fafafa; }
         .winner-pill { background: white; border: 1px solid #eee; padding: 8px; border-radius: 8px; text-align: center; font-size: 0.95rem; font-weight: 600; color: #333; display: flex; flex-direction: column; align-items: center; }
         .winner-pill small { font-size: 0.75rem; color: #999; font-family: monospace; }
-        .winner-pill.highlight { border: 2px solid #ffc107; background: #fffbeb; } /* 自己中獎的高亮樣式 */
+        .winner-pill.highlight { border: 2px solid #ffc107; background: #fffbeb; }
 
-        /* 底部導航 */
+        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 450px; background: rgba(255,255,255,0.9); box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; height: 65px; border-radius: 40px; z-index: 1000; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.5); padding: 0 5px; align-items: center; justify-content: space-between; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #adb5bd; text-decoration: none; font-size: 0.7rem; transition: 0.3s; cursor: pointer; height: 100%; border-radius: 30px; }
         .nav-item i { font-size: 1.3rem; margin-bottom: 3px; transition: 0.3s; }
@@ -115,6 +123,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes bounceIn { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
         @keyframes stampBounce { 0%{transform: scale(2) rotate(-10deg); opacity:0;} 100%{transform: scale(1) rotate(-10deg); opacity:0.8;} }
+        @keyframes confettiMove { from { background-position: 0 0, 15px 15px, 7px 7px; } to { background-position: 0 100%, 15px calc(100% + 15px), 7px calc(100% + 7px); } }
     </style>
 </head>
 <body>
@@ -282,7 +291,7 @@
 </div>
 
 <script>
-// ★ API 設定
+// ★ API Endpoint (Ensure this is correct)
 const API_BASE = 'https://personnel.kncyu.link/api/checkin/index.php'; 
 
 const app = {
@@ -294,23 +303,23 @@ const app = {
         lastWinnerHash: '',
         statusTimeoutId: null,
         winnerTimeoutId: null,
-        allWinners: [] // 儲存中獎名單供搜尋與比對使用
+        allWinners: [] // Store full winner list locally for search and ticket status
     },
 
     init() {
         this.restoreUserSession();
         this.checkUrlParams();
-        this.statusSyncLoop(); // 啟動系統狀態輪詢
-        this.winnerSyncLoop(); // 啟動中獎名單輪詢 (這會驅動票券狀態更新)
+        this.statusSyncLoop(); 
+        this.winnerSyncLoop(); 
 
-        // 綁定事件
+        // Event Bindings
         document.getElementById('input-id').addEventListener('keypress', e => { if(e.key==='Enter') this.lookupUser(); });
         document.getElementById('btn-lookup').onclick = () => this.lookupUser();
         document.getElementById('btn-submit').onclick = () => this.submitCheckIn();
         document.getElementById('input-verify-code').addEventListener('keypress', e => { if(e.key==='Enter') this.submitCheckIn(); });
         
         this.updateStatusPill('連線中...', 'connecting');
-        this.updateTicketUI(); // 初始化票券UI
+        this.updateTicketUI(); // Init Ticket UI
     },
 
     restoreUserSession() {
@@ -325,10 +334,10 @@ const app = {
     saveUserSession(user) {
         this.state.currentUser = user;
         localStorage.setItem('ncyu_user', JSON.stringify(user));
-        this.updateTicketUI(); // 更新票券
+        this.updateTicketUI();
     },
 
-    // --- Tab 切換 ---
+    // --- Tab Switching ---
     switchTab(tabName, el) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         if(el) el.classList.add('active');
@@ -340,16 +349,15 @@ const app = {
         if(tabName === 'winners' || tabName === 'ticket') this.syncWinners(true);
     },
 
-    // --- 中獎邏輯：客戶端被動計算 (DB-Safe) ---
-    // 這個函式會在每次 syncWinners 後執行
+    // --- Check My Winning Status (Client-Side) ---
+    // Runs after every syncWinners call
     checkMyWinningStatus() {
         const user = this.state.currentUser;
         if (!user) return;
 
         let myPrize = null;
         
-        // 遍歷所有獎項尋找自己
-        // 這裡不需要連資料庫，直接用記憶體裡的 allWinners 算
+        // Loop through all prizes in memory to find current user
         for (const prize of this.state.allWinners) {
             const found = prize.winners.find(w => w.employee_id === user.employee_id);
             if (found) {
@@ -387,16 +395,16 @@ const app = {
             document.getElementById('ticket-user-eid').textContent = user.employee_id;
             document.getElementById('ticket-seq').textContent = user.check_in_time ? user.check_in_time.split(' ')[1] : '已報到';
             
-            // 嘗試從現有名單確認狀態
+            // Check winning status against loaded list
             if(this.state.allWinners.length > 0) this.checkMyWinningStatus();
         }
     },
 
-    // --- 中獎名單 (手風琴渲染) ---
+    // --- Winner List (Accordion Render) ---
     async winnerSyncLoop() {
         await this.syncWinners();
         if(this.state.winnerTimeoutId) clearTimeout(this.state.winnerTimeoutId);
-        // 15秒一次輪詢 (讀取的是靜態JSON，所以頻率可以稍微高一點沒關係)
+        // Poll every 15s (Static JSON is light)
         this.state.winnerTimeoutId = setTimeout(() => this.winnerSyncLoop(), 15000);
     },
 
@@ -415,9 +423,9 @@ const app = {
             
             if(json.success) {
                 const newHash = JSON.stringify(json.data);
-                this.state.allWinners = json.data; // 儲存全域資料
+                this.state.allWinners = json.data; // Update global list
                 
-                // 每次同步都檢查一次自己有沒有中獎 (Client-side Check)
+                // Check if user won based on new data
                 this.checkMyWinningStatus();
 
                 if(newHash !== this.state.lastWinnerHash) {
@@ -452,13 +460,13 @@ const app = {
         let html = '';
         data.forEach((prize, index) => {
             const collapseId = `collapsePrize${index}`;
-            // 預設展開前兩個大獎，其他收合
+            // Expand first 2 prizes by default
             const showClass = index < 2 ? 'show' : '';
             const btnCollapsed = index < 2 ? '' : 'collapsed';
 
             let winnersHtml = '';
             prize.winners.forEach(w => {
-                // 如果是自己，加上高亮樣式
+                // Highlight if it's current user
                 const highlight = (this.state.currentUser && w.employee_id === this.state.currentUser.employee_id) ? 'highlight' : '';
                 winnersHtml += `
                     <div class="winner-pill ${highlight}" data-search="${w.name} ${w.employee_id}">
@@ -483,7 +491,7 @@ const app = {
             `;
         });
         container.innerHTML = html;
-        this.filterWinners(); // 重新渲染後應用目前的搜尋
+        this.filterWinners(); // Apply filter if search box has text
     },
 
     filterWinners() {
@@ -504,11 +512,10 @@ const app = {
                 }
             });
 
-            // 如果該獎項內有符合的人，或者獎項標題符合，就顯示該 Accordion Item
+            // Show accordion item if matches found inside or if title matches
             const title = item.querySelector('.accordion-button').textContent.toLowerCase();
             if (hasMatch || title.includes(term)) {
                 item.style.display = 'block';
-                // 搜尋時自動展開有結果的項目
                 if(term !== '') {
                     const collapse = item.querySelector('.accordion-collapse');
                     if(collapse && !collapse.classList.contains('show')) {
@@ -521,7 +528,7 @@ const app = {
         });
     },
 
-    // --- 其他原有功能保持不變 ---
+    // --- Original Logic Preserved ---
     checkUrlParams() {
         const p = new URLSearchParams(location.search);
         const code = p.get('uuid') || p.get('eid');
@@ -546,6 +553,7 @@ const app = {
                     const msg = d.status === 'CLOSED' ? '🔴 系統已關閉' : '🟡 尚未開始';
                     this.updateStatusPill(msg, 'closed');
                     this.state.locked = true;
+                    // Force kick to home if system closes while confirming (UX Protection)
                     if(document.getElementById('view-confirm').style.display !== 'none' && !this.state.currentUser) {
                         this.showToast('系統已關閉', 'error'); this.reset();
                     }
@@ -592,7 +600,6 @@ const app = {
     },
 
     async lookupUser() {
-        // 放寬前端鎖定，讓請求發出以確認伺服器真實狀態
         const code = document.getElementById('input-id').value.trim();
         if(!code) return this.showToast("請輸入編號", "error");
         this.setBtnLoading('btn-lookup', true);
