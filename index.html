@@ -52,7 +52,6 @@
         }
         .header-title { font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
         .header-title i { font-size: 1.2rem; }
-        .header small { font-size: 0.75rem; opacity: 0.8; font-weight: 400; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 10px; margin-left: 10px; }
 
         /* Status Strip */
         .system-status-container { 
@@ -479,25 +478,34 @@ const app = {
         if(isManual && icon) icon.classList.add('fa-spin');
 
         try {
+            // 加入 timestamp 避免快取
             const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(user.employee_id)}&t=${Date.now()}`);
             const json = await res.json();
 
             if (json.success) {
                 const data = json.data;
-                const ticketEl = document.getElementById('my-ticket');
-                const stampEl = document.getElementById('ticket-status-stamp');
-                const prizeNameEl = document.getElementById('ticket-prize-name');
-
-                this.checkMyWinningStatus();
                 this.saveUserSession({...user, ...data});
                 
+                // 再次觸發比對邏輯 (如果 API 有回傳 prize_name 最好，沒有的話依靠 allWinners 比對)
+                if(this.state.allWinners.length > 0) this.checkMyWinningStatus();
+                else if(data.prize_name) {
+                    // API 直接回傳中獎資訊
+                    const ticketEl = document.getElementById('my-ticket');
+                    const stampEl = document.getElementById('ticket-status-stamp');
+                    const prizeNameEl = document.getElementById('ticket-prize-name');
+                    ticketEl.classList.add('winner');
+                    stampEl.className = 'stamp-box won';
+                    stampEl.textContent = '恭喜中獎';
+                    prizeNameEl.textContent = data.prize_name;
+                }
+
                 if(isManual) this.showToast("票券狀態已更新", "success");
             }
         } catch(e) { console.error(e); } 
         finally { if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500); }
     },
 
-    // ★★★ 關鍵修正：確保此函式存在於 app 物件中 ★★★
+    // ★★★ 修復：確保此函式存在 ★★★
     updateTicketUI() {
         const user = this.state.currentUser;
         if (!user) {
@@ -507,7 +515,6 @@ const app = {
             document.getElementById('ticket-login-prompt').style.display = 'none';
             document.getElementById('my-ticket').style.display = 'block';
             
-            // 確保元素存在再賦值
             const nameEl = document.getElementById('ticket-user-name');
             if(nameEl) nameEl.textContent = user.name;
             
@@ -581,7 +588,7 @@ const app = {
         toast.innerHTML = `${icon}<span>${msg}</span>`;
         container.appendChild(toast);
         
-        // 修正：檢查 user gesture 狀態再震動，避免 console 報錯
+        // 修正震動報錯
         try {
             if(navigator.vibrate) navigator.vibrate(type === 'error' ? [50, 50] : 50);
         } catch(e){}
@@ -676,7 +683,7 @@ const app = {
                 const updatedUser = { ...this.state.currentUser, has_checked_in: true, check_in_time: json.data.check_in_time };
                 this.saveUserSession(updatedUser);
                 this.showSuccess(json.data.check_in_time);
-                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                try{ if(navigator.vibrate) navigator.vibrate([100, 50, 100]); }catch(e){}
             } else {
                 this.showToast(json.message, 'error');
                 if(this.state.mode === 'AUTO') setTimeout(() => this.reset(), 2000);
