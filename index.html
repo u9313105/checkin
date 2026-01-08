@@ -13,11 +13,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === NCYU 2026 Enterprise Style (Windows Fluent / Professional) === */
+        /* === NCYU 2026 Enterprise Style (Clean View) === */
         :root { 
             --primary: #A80000;
             --primary-dark: #7a0000;
-            --gold: #C19C00;
             --bg-body: #F3F2F1;
             --bg-card: #FFFFFF;
             --text-main: #201F1E;
@@ -30,7 +29,7 @@
         body { 
             background-color: var(--bg-body); 
             font-family: 'Segoe UI', 'Microsoft JhengHei UI', 'Microsoft JhengHei', sans-serif; 
-            /* 預留底部空間給 Bottom Nav (60px) + Copyright (30px) */
+            /* 預留底部空間: Nav(60) + Footer(35) + Buffer */
             padding-bottom: calc(100px + var(--safe-bottom)); 
             color: var(--text-main);
             user-select: none;
@@ -39,7 +38,7 @@
         
         input, button { user-select: text !important; -webkit-user-select: text !important; }
 
-        /* Header */
+        /* Header (Clean) */
         .header { 
             background: linear-gradient(90deg, #A80000 0%, #850000 100%); 
             color: white; height: 55px; padding: 0 20px; 
@@ -48,30 +47,8 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* ★★★ 修改重點：狀態列不再懸浮遮擋 ★★★ */
-        .status-container { 
-            position: relative; /* 改為相對定位，不遮擋內容 */
-            width: 100%; 
-            display: flex; 
-            justify-content: center; 
-            margin-bottom: 15px; /* 與下方卡片保持距離 */
-            pointer-events: none;
-        }
-        .status-pill { 
-            background: rgba(255,255,255,0.8); 
-            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05);
-            display: flex; align-items: center; gap: 8px; 
-            opacity: 0; transition: 0.3s; pointer-events: auto;
-        }
-        .status-pill.active { opacity: 1; }
-        .status-pill.connecting { color: #0078D4; }
-        .status-pill.open { color: #107C10; background: #E6FFEC; border-color: #107C10; }
-        .status-pill.closed { color: #A80000; background: #FFF0F0; border-color: #A80000; }
-        .status-pill.ended { color: #333; background: #E1DFDD; border-color: #888; }
-
         /* Main Container */
-        .app-container { max-width: 600px; margin: 0 auto; padding: 15px; }
+        .app-container { max-width: 600px; margin: 0 auto; padding: 20px 15px; }
         .view-section { display: none; opacity: 0; transition: opacity 0.25s; }
         .view-section.active { display: block; opacity: 1; }
 
@@ -102,14 +79,13 @@
         .btn-primary { background: var(--primary); color: white; }
         .btn-outline { background: white; border: 1px solid #8A8886; color: var(--text-main); }
 
-        /* ★★★ 專業數位摸彩券 (Pro Ticket Design) ★★★ */
+        /* Pro Ticket Design */
         .pro-ticket {
             background: white; border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             position: relative; overflow: hidden; margin-top: 10px;
             border: 1px solid rgba(0,0,0,0.05);
         }
-        /* 金色漸層標題 */
         .ticket-top {
             background: linear-gradient(135deg, #A80000 0%, #D13438 100%);
             padding: 20px 20px 25px; color: white; text-align: center; position: relative;
@@ -123,10 +99,7 @@
         .ticket-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; }
         .ticket-sub { font-size: 0.75rem; letter-spacing: 2px; opacity: 0.9; text-transform: uppercase; }
 
-        /* 鋸齒撕線 (Sawtooth) */
-        .ticket-rip {
-            height: 16px; background: #fff; position: relative; margin-top: -8px;
-        }
+        .ticket-rip { height: 16px; background: #fff; position: relative; margin-top: -8px; }
         .ticket-rip::after {
             content: ""; display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, transparent 75%, var(--bg-body) 75%) 0 50%,
@@ -135,8 +108,6 @@
         }
 
         .ticket-body { padding: 10px 25px 30px; position: relative; }
-        
-        /* 浮水印 */
         .ticket-watermark {
             position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
             font-size: 6rem; opacity: 0.04; font-weight: 900; color: #000; pointer-events: none; white-space: nowrap;
@@ -146,7 +117,6 @@
         .info-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
         .info-val { font-size: 1.1rem; font-weight: 600; color: #201F1E; }
 
-        /* 摸彩號碼強調區 */
         .ticket-number-box {
             background: #FFFBF0; border: 2px dashed #D4AF37; border-radius: 8px;
             text-align: center; padding: 15px; margin: 20px 0;
@@ -154,7 +124,6 @@
         .ticket-number-label { font-size: 0.8rem; color: #9A7D0A; font-weight: bold; margin-bottom: 5px; letter-spacing: 1px; }
         .ticket-number { font-family: 'Consolas', monospace; font-size: 2.2rem; font-weight: 700; color: #A80000; letter-spacing: 3px; }
 
-        /* 狀態章 */
         .stamp {
             position: absolute; bottom: 20px; right: 20px;
             border: 3px solid #ccc; color: #ccc;
@@ -164,7 +133,6 @@
         }
         .stamp.won { border-color: #D13438; color: #D13438; background: rgba(209, 52, 56, 0.05); opacity: 1; }
         
-        /* 中獎彩帶 */
         .prize-ribbon {
             background: linear-gradient(90deg, #FFD700, #FFC107);
             color: #5D4037; font-weight: bold; text-align: center;
@@ -173,16 +141,23 @@
         }
         .pro-ticket.is-winner .prize-ribbon { display: block; }
 
-        /* Checkin Success */
+        /* Success */
         .success-circle { width: 80px; height: 80px; background: #DFF6DD; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #107C10; font-size: 2.5rem; }
 
-        /* Copyright Footer */
-        .copyright-footer {
+        /* ★★★ Footer Status Bar (取代頂部提示) ★★★ */
+        .footer-status-bar {
             position: fixed; bottom: 60px; left: 0; width: 100%;
-            text-align: center; font-size: 0.75rem; color: #999;
-            padding: 8px 0; background: var(--bg-body); z-index: 900;
-            border-top: 1px solid rgba(0,0,0,0.05);
+            height: 35px; background: #E1DFDD; z-index: 900;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; color: #605E5C; gap: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            transition: background 0.3s, color 0.3s;
         }
+        /* 狀態顏色變化 */
+        .footer-status-bar.status-connecting { background: #EFF6FC; color: #0078D4; }
+        .footer-status-bar.status-open { background: #E6FFEC; color: #107C10; border-top-color: #107C10; }
+        .footer-status-bar.status-closed { background: #FDE7E9; color: #A80000; border-top-color: #A80000; }
+        .footer-status-bar.status-ended { background: #201F1E; color: #F3F2F1; }
 
         /* Bottom Nav */
         .bottom-nav { 
@@ -198,7 +173,7 @@
         .nav-item.active { color: var(--primary); font-weight: 600; }
         .nav-item.active i { transform: translateY(-2px); }
 
-        /* Winner List Styles */
+        /* Winner List Items (Default Collapsed) */
         .winner-group { margin-bottom: 10px; background: white; border-radius: 4px; border: 1px solid var(--border-light); overflow: hidden; }
         .accordion-button { font-weight: 600; color: var(--text-main); background: #FAFAFA; padding: 12px 15px; }
         .accordion-button:not(.collapsed) { background: #FFF4CE; color: #5D4037; box-shadow: none; }
@@ -208,6 +183,13 @@
         .winner-cell small { display: block; font-size: 0.75rem; color: #888; font-family: 'Consolas', monospace; }
         .winner-cell.highlight { border: 2px solid #C19C00; background: #FFF9E6; font-weight: bold; }
 
+        /* Toast Box (Moved to Bottom) */
+        #toast-box {
+            position: fixed; bottom: 110px; /* 移到下方，避開 Footer */
+            left: 50%; transform: translateX(-50%); 
+            z-index: 2000; width: 90%; max-width: 400px;
+            pointer-events: none;
+        }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -220,16 +202,9 @@
     <div style="font-size:0.8rem; opacity:0.9;">新春團拜</div>
 </div>
 
-<div id="toast-box" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:2000; width:90%; max-width:400px;"></div>
+<div id="toast-box"></div>
 
 <div class="app-container">
-
-    <div class="status-container">
-        <div id="status-pill" class="status-pill connecting">
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
-            <span id="status-text">連線中...</span>
-        </div>
-    </div>
     
     <div id="tab-checkin" class="view-section active">
         <div class="win-card">
@@ -373,8 +348,11 @@
 
 </div>
 
-<div class="copyright-footer">
-    Copyright © 2026 國立嘉義大學人事室
+<div id="footer-status-bar" class="footer-status-bar">
+    <span id="footer-status-icon"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+    <span id="footer-status-text">連線中...</span>
+    <span style="opacity:0.3; margin:0 5px;">|</span>
+    <span>© 國立嘉義大學 人事室</span>
 </div>
 
 <div class="bottom-nav">
@@ -420,7 +398,7 @@ const app = {
         this.updateTicketUI();
     },
 
-    // --- Navigation Logic ---
+    // --- Navigation ---
     switchTab(tab) {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.target === tab));
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -469,7 +447,7 @@ const app = {
                 this.toast(json.message || "查無資料", "error");
                 document.getElementById('input-id').value = '';
             }
-        } catch(e) { this.toast("連線錯誤，請檢查網路", "error"); }
+        } catch(e) { this.toast("連線錯誤", "error"); }
         finally { this.loading('btn-lookup', false); }
     },
 
@@ -482,13 +460,11 @@ const app = {
         document.getElementById('step-scan').style.display = 'none';
         document.getElementById('step-confirm').style.display = 'block';
 
-        // Auto vs Manual logic
         if(this.state.mode === 'AUTO') {
             document.getElementById('mode-auto-ui').style.display = 'block';
             document.getElementById('mode-code-ui').style.display = 'none';
             document.getElementById('btn-submit').style.display = 'none';
             
-            // Auto submit delay
             this.state.timer = setTimeout(() => {
                  if(!this.state.locked && document.getElementById('step-confirm').style.display !== 'none') {
                      this.submit();
@@ -526,7 +502,7 @@ const app = {
                 this.toast(json.message, "error");
                 if(this.state.mode === 'AUTO') setTimeout(() => this.resetCheckIn(), 1500);
             }
-        } catch(e) { this.toast("報到失敗: 連線異常", "error"); }
+        } catch(e) { this.toast("報到失敗", "error"); }
         finally { if(this.state.mode === 'CODE') this.loading('btn-submit', false); }
     },
 
@@ -534,22 +510,19 @@ const app = {
         document.getElementById('step-scan').style.display = 'none';
         document.getElementById('step-confirm').style.display = 'none';
         document.getElementById('step-success').style.display = 'block';
-        // Extract HH:mm:ss
+        
         const timeStr = time ? (time.includes(' ') ? time.split(' ')[1] : time) : '--:--';
         document.getElementById('success-time').textContent = timeStr;
-        
-        // Refresh ticket data silently
         this.refreshTicket(false);
     },
 
-    // --- Ticket Logic (Fixed Display) ---
+    // --- Ticket Logic ---
     async refreshTicket(manual = false) {
         const u = this.state.currentUser;
         if(!u) return;
         const icon = document.getElementById('icon-refresh-ticket');
         if(manual) icon.classList.add('fa-spin');
         try {
-            // Include timestamp to prevent cache
             const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(u.employee_id)}&t=${Date.now()}`);
             const json = await res.json();
             if(json.success) {
@@ -575,14 +548,12 @@ const app = {
         document.getElementById('ticket-user-dept').textContent = u.department;
         document.getElementById('ticket-user-eid').textContent = u.employee_id;
         
-        // Show Time correctly
         let timeStr = '已報到';
         if(u.check_in_time) {
             timeStr = u.check_in_time.includes(' ') ? u.check_in_time.split(' ')[1] : u.check_in_time;
         }
         document.getElementById('ticket-time').textContent = timeStr;
 
-        // Check Winner Status
         let myPrize = null;
         if(this.state.allWinners.length) {
             for(let p of this.state.allWinners) {
@@ -613,24 +584,38 @@ const app = {
             if(json.success) {
                 this.state.mode = json.data.checkin_mode_type || 'AUTO';
                 this.state.locked = (json.data.status !== 'OPEN');
-                this.updateStatusPill(json.data.status);
+                this.updateFooterStatus(json.data.status);
             }
         } catch(e){}
-        // Poll every 5s
         this.state.timeouts.status = setTimeout(()=>this.statusLoop(), 5000);
     },
 
-    updateStatusPill(status) {
-        const pill = document.getElementById('status-pill');
-        const txt = document.getElementById('status-text');
-        const icon = pill.querySelector('i');
+    // ★ Updated: Update Footer Status Bar
+    updateFooterStatus(status) {
+        const bar = document.getElementById('footer-status-bar');
+        const txt = document.getElementById('footer-status-text');
+        const icon = document.getElementById('footer-status-icon');
         
-        // Reset classes
-        pill.className = `status-pill active ${status.toLowerCase()}`;
+        // Remove old status classes
+        bar.classList.remove('status-connecting', 'status-open', 'status-closed', 'status-ended');
         
-        if(status==='OPEN') { txt.textContent='報到開放中'; icon.className='fa-solid fa-check-circle'; }
-        else if(status==='ENDED') { txt.textContent='活動圓滿結束'; icon.className='fa-solid fa-flag-checkered'; }
-        else { txt.textContent='系統已關閉'; icon.className='fa-solid fa-ban'; }
+        if(status==='OPEN') { 
+            bar.classList.add('status-open');
+            txt.textContent='活動進行中'; 
+            icon.innerHTML='<i class="fa-solid fa-check-circle"></i>'; 
+        } else if(status==='ENDED') { 
+            bar.classList.add('status-ended');
+            txt.textContent='活動圓滿結束'; 
+            icon.innerHTML='<i class="fa-solid fa-flag-checkered"></i>'; 
+        } else if(status==='CLOSED') {
+            bar.classList.add('status-closed');
+            txt.textContent='系統已關閉'; 
+            icon.innerHTML='<i class="fa-solid fa-ban"></i>';
+        } else {
+            bar.classList.add('status-connecting');
+            txt.textContent='連線中...'; 
+            icon.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i>';
+        }
     },
 
     async syncWinners(manual = false) {
@@ -641,7 +626,7 @@ const app = {
             if(json.success) {
                 const newHash = JSON.stringify(json.data);
                 this.state.allWinners = json.data;
-                this.updateTicketUI(); // Update my ticket in case I won
+                this.updateTicketUI();
                 
                 if(newHash !== this.state.lastWinnerHash) {
                     this.state.lastWinnerHash = newHash;
@@ -667,7 +652,7 @@ const app = {
             return; 
         }
         
-        // Render Accordion Items (Collapsed by default)
+        // ★ Force Collapsed by default
         box.innerHTML = data.map((prize, i) => {
             const winners = prize.winners.map(w => {
                 const hl = (this.state.currentUser && w.employee_id === this.state.currentUser.employee_id) ? 'highlight' : '';
@@ -688,26 +673,22 @@ const app = {
             </div>`;
         }).join('');
         
-        this.filterWinners(); // Re-apply search filter if any
+        this.filterWinners();
     },
 
     filterWinners() {
         const term = document.getElementById('winner-search').value.toLowerCase();
         document.querySelectorAll('.winner-group').forEach(g => {
             let match = false;
-            // Check individual winners
             g.querySelectorAll('.winner-cell').forEach(c => {
                 const hit = c.dataset.str.toLowerCase().includes(term);
                 c.style.display = hit ? 'block' : 'none';
                 if(hit) match = true;
             });
-            // Check prize title
             if(g.dataset.term.toLowerCase().includes(term)) match = true;
             
-            // Toggle Group Visibility
             if(term === '' || match) {
                 g.style.display = 'block';
-                // Auto-expand if searching
                 if(term !== '' && match) {
                     const col = g.querySelector('.collapse');
                     if(col && !col.classList.contains('show')) new bootstrap.Collapse(col, {toggle:true});
@@ -718,7 +699,7 @@ const app = {
         });
     },
 
-    // --- Utilities ---
+    // --- Utils ---
     restoreSession() { try { this.state.currentUser = JSON.parse(localStorage.getItem('ncyu_user')); } catch(e){} },
     saveSession() { localStorage.setItem('ncyu_user', JSON.stringify(this.state.currentUser)); this.updateTicketUI(); },
     checkParams() { const c = new URLSearchParams(location.search).get('uuid'); if(c) { document.getElementById('input-id').value=c; setTimeout(()=>this.lookup(),500); }},
@@ -729,7 +710,7 @@ const app = {
         const bg = type==='error' ? '#D13438' : '#333';
         const icon = type==='error' ? 'circle-exclamation' : 'check-circle';
         
-        t.style.cssText = `background:${bg}; color:white; padding:12px 20px; border-radius:4px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2); animation:fadeIn 0.3s forwards; display:flex; align-items:center; gap:10px; font-weight:600;`;
+        t.style.cssText = `background:${bg}; color:white; padding:12px 20px; border-radius:4px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2); animation:fadeIn 0.3s forwards; display:flex; align-items:center; gap:10px; font-weight:600; pointer-events:auto;`;
         t.innerHTML = `<i class="fa-solid fa-${icon}"></i> ${msg}`;
         box.appendChild(t);
         setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
