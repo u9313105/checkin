@@ -48,23 +48,30 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* System Status Pill */
-        .status-container { position: fixed; top: 65px; left: 0; right: 0; z-index: 900; display: flex; justify-content: center; pointer-events: none; }
-        .status-pill { 
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(5px);
-            padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);
-            display: flex; align-items: center; gap: 8px; 
-            transform: translateY(-20px); opacity: 0; transition: 0.3s; pointer-events: auto;
+        /* ★★★ 修改重點：狀態列不再懸浮遮擋 ★★★ */
+        .status-container { 
+            position: relative; /* 改為相對定位，不遮擋內容 */
+            width: 100%; 
+            display: flex; 
+            justify-content: center; 
+            margin-bottom: 15px; /* 與下方卡片保持距離 */
+            pointer-events: none;
         }
-        .status-pill.active { transform: translateY(0); opacity: 1; }
+        .status-pill { 
+            background: rgba(255,255,255,0.8); 
+            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05);
+            display: flex; align-items: center; gap: 8px; 
+            opacity: 0; transition: 0.3s; pointer-events: auto;
+        }
+        .status-pill.active { opacity: 1; }
         .status-pill.connecting { color: #0078D4; }
-        .status-pill.open { color: #107C10; }
-        .status-pill.closed { color: #A80000; }
-        .status-pill.ended { color: #333; }
+        .status-pill.open { color: #107C10; background: #E6FFEC; border-color: #107C10; }
+        .status-pill.closed { color: #A80000; background: #FFF0F0; border-color: #A80000; }
+        .status-pill.ended { color: #333; background: #E1DFDD; border-color: #888; }
 
         /* Main Container */
-        .app-container { max-width: 600px; margin: 0 auto; padding: 20px 15px; }
+        .app-container { max-width: 600px; margin: 0 auto; padding: 15px; }
         .view-section { display: none; opacity: 0; transition: opacity 0.25s; }
         .view-section.active { display: block; opacity: 1; }
 
@@ -213,16 +220,16 @@
     <div style="font-size:0.8rem; opacity:0.9;">新春團拜</div>
 </div>
 
-<div class="status-container">
-    <div id="status-pill" class="status-pill connecting">
-        <i class="fa-solid fa-circle-notch fa-spin"></i>
-        <span id="status-text">連線中...</span>
-    </div>
-</div>
-
 <div id="toast-box" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:2000; width:90%; max-width:400px;"></div>
 
 <div class="app-container">
+
+    <div class="status-container">
+        <div id="status-pill" class="status-pill connecting">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+            <span id="status-text">連線中...</span>
+        </div>
+    </div>
     
     <div id="tab-checkin" class="view-section active">
         <div class="win-card">
@@ -367,7 +374,7 @@
 </div>
 
 <div class="copyright-footer">
-    Copyright © 2026 國立嘉義大學 人事室 (NCYU Personnel Office)
+    Copyright © 2026 國立嘉義大學人事室
 </div>
 
 <div class="bottom-nav">
