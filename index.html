@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#800000">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#A80000"> <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>國立嘉義大學 - 2026 新春團拜</title>
@@ -14,149 +13,184 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === Microsoft Fluent / Windows Server Design Language === */
+        /* === NCYU 2026 Windows Style Professional Theme === */
         :root { 
-            --primary-color: #A80000;
-            --primary-hover: #800000;
-            --bg-color: #F3F2F1;
-            --card-bg: #FFFFFF;
-            --border-color: #E1DFDD;
-            --text-primary: #201F1E;
-            --text-secondary: #605E5C;
+            --primary: #A80000;
+            --primary-dark: #7a0000;
+            --bg-body: #F3F2F1;
+            --bg-card: #FFFFFF;
+            --border-color: #8A8886; /* 加深邊框顏色增加對比 */
+            --border-light: #E1DFDD;
+            --text-main: #201F1E;
+            --text-sub: #605E5C;
+            --shadow-win: 0 3.2px 7.2px 0 rgba(0,0,0,0.132), 0 0.6px 1.8px 0 rgba(0,0,0,0.108); /* 加深陰影 */
             --safe-bottom: env(safe-area-inset-bottom);
-            --windows-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
-            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
         }
 
         body { 
-            background-color: var(--bg-color); 
+            background-color: var(--bg-body); 
             font-family: 'Segoe UI', 'Microsoft JhengHei UI', 'Microsoft JhengHei', sans-serif; 
             padding-bottom: calc(70px + var(--safe-bottom)); 
             user-select: none; 
             -webkit-tap-highlight-color: transparent; 
-            color: var(--text-primary);
+            color: var(--text-main);
+            overflow-y: scroll; /* 保持滾動條流暢 */
         }
         
         input, button { user-select: text !important; -webkit-user-select: text !important; }
 
+        /* Header - Sticky & Clean */
         .header { 
-            background: var(--primary-color); color: white; padding: 12px 20px; 
-            display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); height: 55px;
+            background: var(--primary); color: white; height: 55px;
+            padding: 0 20px; display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 1000; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .header-title { font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
-        .header-title i { font-size: 1.2rem; }
+        .header-title { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
 
-        .system-status-container { 
-            position: fixed; top: 55px; left: 0; width: 100%; z-index: 95; pointer-events: none; 
-            display: flex; justify-content: center; padding-top: 10px;
+        /* System Status Pill */
+        .status-container { 
+            position: fixed; top: 65px; left: 0; right: 0; z-index: 900; 
+            display: flex; justify-content: center; pointer-events: none;
         }
         .status-pill { 
-            background: #FFF4CE; color: #3B3A39; border: 1px solid #FDE7E9;
-            padding: 6px 16px; font-size: 0.85rem; font-weight: 600; 
-            box-shadow: var(--windows-shadow);
-            display: flex; align-items: center; gap: 8px; transition: all 0.3s;
-            transform: translateY(-50px); opacity: 0; pointer-events: auto;
+            background: #FFF; border: 1px solid var(--border-light); color: var(--text-main);
+            padding: 6px 18px; font-size: 0.85rem; font-weight: 600; 
+            box-shadow: var(--shadow-win); border-radius: 2px; /* 方角 */
+            display: flex; align-items: center; gap: 8px; 
+            transition: all 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            transform: translateY(-20px); opacity: 0; pointer-events: auto;
         }
-        .status-pill.show { transform: translateY(0); opacity: 1; }
-        .status-pill.closed { background: #FDE7E9; color: #A80000; border-color: #A80000; } 
-        .status-pill.open { background: #DFF6DD; color: #107C10; border-color: #107C10; }   
-        .status-pill.connecting { background: #EFF6FC; color: #0078D4; border-color: #0078D4; } 
-        .status-pill.ended { background: #212529; color: #f8f9fa; border-color: #000; }
+        .status-pill.active { transform: translateY(0); opacity: 1; }
+        .status-pill.connecting { color: #0078D4; border-left: 3px solid #0078D4; }
+        .status-pill.open { color: #107C10; border-left: 3px solid #107C10; background: #F1FDF1; }
+        .status-pill.closed { color: #A80000; border-left: 3px solid #A80000; background: #FFF0F0; }
+        .status-pill.ended { color: #201F1E; border-left: 3px solid #000; background: #E1DFDD; }
+
+        /* Main Layout */
+        .app-container { max-width: 768px; margin: 0 auto; padding: 20px 15px; position: relative; }
         
-        .container-box { max-width: 800px; margin: 0 auto; padding: 25px 15px; }
-        .view-section { display: none; animation: fadeIn 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); }
-        .view-section.active { display: block; }
-        
-        .windows-card {
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            box-shadow: var(--windows-shadow); padding: 24px; margin-bottom: 15px; position: relative;
+        .view-section { display: none; opacity: 0; transition: opacity 0.2s; }
+        .view-section.active { display: block; opacity: 1; }
+
+        /* Windows Style Card */
+        .win-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-win); padding: 0; margin-bottom: 20px;
+            position: relative; overflow: hidden; border-radius: 2px;
         }
-        .windows-card-header {
-            font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; 
-            color: var(--text-primary); display: flex; align-items: center; gap: 8px;
-            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        .win-card-header {
+            padding: 15px 20px; background: #FAFAFA; border-bottom: 1px solid var(--border-light);
+            font-size: 1.1rem; font-weight: 700; color: var(--text-main);
+            display: flex; align-items: center; gap: 10px;
         }
-        
+        .win-card-body { padding: 25px 20px; }
+
+        /* Form Elements - Fluent Style */
         .fluent-input {
-            width: 100%; padding: 10px 12px; font-size: 1.1rem;
-            border: 1px solid #8A8886; border-radius: 2px;
-            outline: none; background: white; transition: 0.2s;
-            color: var(--text-primary); font-weight: 600;
+            width: 100%; padding: 12px; font-size: 1.1rem;
+            border: 1px solid var(--border-color); border-radius: 2px;
+            background: white; color: var(--text-main); font-weight: 500;
+            transition: all 0.2s; outline: none;
         }
-        .fluent-input:focus { border-color: var(--primary-color); border-bottom-width: 2px; }
-        
+        .fluent-input:focus { border-color: var(--primary); border-bottom-width: 3px; padding-bottom: 10px; }
+        .fluent-input:disabled { background: #F3F2F1; color: #A19F9D; border-color: #E1DFDD; }
+
         .btn-win {
-            background-color: var(--primary-color); color: white;
-            border: 1px solid transparent; border-radius: 2px;
-            padding: 10px 24px; font-size: 1rem; font-weight: 600;
-            transition: all 0.1s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            cursor: pointer; min-width: 120px;
+            border: none; border-radius: 2px; padding: 10px 24px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: 0.1s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-width: 120px; position: relative; overflow: hidden;
         }
-        .btn-win:active:not(:disabled) { transform: translateY(2px); background-color: #6a0000; }
-        .btn-win:disabled { background-color: #C8C6C4; color: #F3F2F1; cursor: not-allowed; }
-        .btn-win-outline { background: white; color: var(--text-primary); border: 1px solid #8A8886; }
-        .btn-win-outline:active { background: #E1DFDD; transform: translateY(2px); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:active { background: var(--primary-dark); transform: scale(0.98); }
+        .btn-outline { background: white; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-outline:active { background: #EDEBE9; transform: scale(0.98); }
+        .btn-win:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
 
-        .avatar-box {
-            width: 100px; height: 100px; background: #E1DFDD; 
-            display: flex; align-items: center; justify-content: center;
-            font-size: 3rem; color: #605E5C; margin: 0 auto 20px;
-            border: 1px solid #8A8886;
+        /* Check-in Steps Integration */
+        .step-container { display: none; animation: slideUp 0.3s ease-out; }
+        .step-container.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Profile Display */
+        .profile-card {
+            background: #F8F9FA; border: 1px solid var(--border-light);
+            padding: 20px; text-align: center; margin-bottom: 20px;
         }
-        .profile-info { text-align: center; }
-        .user-name { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
-        .user-meta { color: var(--text-secondary); font-size: 1rem; margin-top: 5px; }
-        .code-input-group { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .code-input { width: 100%; max-width: 200px; text-align: center; letter-spacing: 10px; font-family: 'Consolas', monospace; font-weight: bold; font-size: 1.5rem; }
+        .profile-avatar {
+            width: 80px; height: 80px; background: #E1DFDD; color: #605E5C;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; margin: 0 auto 15px; border: 2px solid #FFF; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .profile-name { font-size: 1.6rem; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
+        .profile-meta { color: var(--text-sub); font-size: 0.95rem; }
+        .mono-font { font-family: 'Consolas', monospace; font-weight: bold; }
 
-        .result-icon { font-size: 4rem; color: #107C10; margin-bottom: 20px; }
-        .result-box { background: #DFF6DD; border: 1px solid #107C10; color: #107C10; padding: 15px; margin-top: 20px; text-align: center; font-weight: 600; }
-        .confetti-bg { position: absolute; inset:0; pointer-events: none; z-index: 0; opacity: 0.1; background-image: radial-gradient(#A80000 2px, transparent 2px); background-size: 20px 20px; }
+        /* Success State */
+        .success-icon { font-size: 4rem; color: #107C10; margin-bottom: 15px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        /* Code Input */
+        .code-input-row { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        .code-input { width: 100%; max-width: 200px; text-align: center; letter-spacing: 8px; font-size: 1.5rem; font-family: 'Consolas', monospace; }
 
-        .digital-ticket { background: white; border: 1px solid #8A8886; margin-top: 20px; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .digital-ticket::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--primary-color); }
-        .ticket-content { padding: 20px 20px 20px 30px; }
-        .ticket-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #E1DFDD; padding-bottom: 15px; margin-bottom: 15px; }
-        .ticket-title { font-size: 0.8rem; text-transform: uppercase; color: #605E5C; letter-spacing: 1px; font-weight: 700; }
-        .ticket-id { font-family: 'Consolas', monospace; font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+        /* Ticket Style */
+        .digital-ticket { 
+            background: white; border: 1px solid var(--border-color); 
+            position: relative; box-shadow: var(--shadow-win);
+            margin-top: 10px; overflow: hidden;
+        }
+        .digital-ticket::before { 
+            content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 6px; 
+            background: var(--primary); 
+        }
+        .ticket-body { padding: 20px 20px 20px 30px; }
+        .ticket-row { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; margin-bottom: 15px; }
+        .ticket-label { font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        .ticket-value { font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
         .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .ticket-field label { display: block; font-size: 0.75rem; color: #605E5C; margin-bottom: 2px; }
-        .ticket-field div { font-size: 1rem; font-weight: 600; color: #201F1E; }
         
-        .digital-ticket.winner { border-color: #C19C00; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
-        .digital-ticket.winner::before { background: #C19C00; }
-        .stamp-box { position: absolute; right: 20px; bottom: 20px; border: 3px solid #E1DFDD; color: #E1DFDD; padding: 5px 15px; font-weight: 900; text-transform: uppercase; transform: rotate(-15deg); font-size: 1.5rem; pointer-events: none; }
-        .stamp-box.won { border-color: #D13438; color: #D13438; background: rgba(209, 52, 56, 0.05); }
-        .prize-banner { background: #FFF4CE; border: 1px solid #FDE7E9; padding: 15px; margin-top: 15px; text-align: center; display: none; animation: fadeIn 0.5s; }
-        .digital-ticket.winner .prize-banner { display: block; }
-        .prize-name { font-size: 1.4rem; font-weight: 800; color: #A80000; }
+        .digital-ticket.is-winner { border: 2px solid #C19C00; }
+        .digital-ticket.is-winner::before { background: linear-gradient(180deg, #FFD700, #FDB931); }
+        .winner-banner { 
+            background: #FFF4CE; color: #8A6D00; padding: 10px; text-align: center; 
+            font-weight: bold; border: 1px dashed #C19C00; margin-top: 15px; display: none; 
+        }
+        .digital-ticket.is-winner .winner-banner { display: block; }
 
-        .search-bar { position: relative; margin-bottom: 15px; }
-        .search-bar input { padding-left: 35px; }
-        .search-bar i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #605E5C; }
-        .accordion-item { border: 1px solid #E1DFDD; margin-bottom: -1px; border-radius: 0 !important; }
-        .accordion-button { background: white; color: var(--text-primary); font-weight: 600; }
-        .accordion-button:not(.collapsed) { background: #EFF6FC; color: var(--primary-color); box-shadow: none; }
-        .winner-grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 15px; background: #FAFAFA; }
-        .winner-cell { background: white; border: 1px solid #E1DFDD; padding: 8px; text-align: center; font-size: 0.9rem; display: flex; flex-direction: column; align-items: center; }
-        .winner-cell small { color: #605E5C; font-family: 'Consolas', monospace; }
-        .winner-cell.highlight { border: 2px solid #C19C00; background: #FFF4CE; }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #201F1E; height: 60px; z-index: 1000; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #A19F9D; text-decoration: none; font-size: 0.75rem; transition: 0.2s; cursor: pointer; border-bottom: 3px solid transparent; }
+        /* Bottom Nav */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px;
+            background: #201F1E; z-index: 1000; display: flex;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+        }
+        .nav-item { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #A19F9D; text-decoration: none; font-size: 0.75rem; 
+            cursor: pointer; border-top: 3px solid transparent; transition: 0.2s;
+        }
         .nav-item i { font-size: 1.2rem; margin-bottom: 3px; }
-        .nav-item.active { color: white; background-color: #3B3A39; border-bottom-color: var(--primary-color); }
+        .nav-item.active { color: white; background-color: #323130; border-top-color: var(--primary); }
 
-        #toast-container { position: fixed; bottom: 70px; right: 10px; z-index: 2000; width: 320px; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .win-toast { background: #201F1E; color: white; padding: 15px; border-left: 4px solid var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 0.9rem; display: flex; align-items: center; gap: 12px; opacity: 0; transform: translateX(50px); transition: 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); pointer-events: auto; }
-        .win-toast.show { opacity: 1; transform: translateX(0); }
-        
-        .loader-overlay { position: fixed; inset:0; background: rgba(255,255,255,0.8); z-index:3000; display:none; justify-content:center; align-items:center; }
-        .empty-state { text-align: center; padding: 60px 0; color: #A19F9D; }
-        .empty-state i { font-size: 3rem; margin-bottom: 15px; }
+        /* Toast & Loader */
+        #toast-box { position: fixed; bottom: 80px; right: 20px; z-index: 2000; pointer-events: none; }
+        .toast-msg { 
+            background: #323130; color: white; padding: 12px 20px; margin-top: 10px;
+            border-left: 4px solid var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-size: 0.95rem; display: flex; align-items: center; gap: 12px;
+            opacity: 0; transform: translateX(50px); transition: 0.3s; pointer-events: auto;
+        }
+        .toast-msg.show { opacity: 1; transform: translateX(0); }
+        .toast-msg.success { border-left-color: #107C10; }
+        .toast-msg.error { border-left-color: #A80000; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* Search & Winners */
+        .search-wrapper { position: relative; margin-bottom: 15px; }
+        .search-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+        .search-wrapper input { padding-left: 40px; }
+        .accordion-button:not(.collapsed) { background-color: #F3F2F1; color: var(--primary); }
+        .winner-badge { background: #C19C00; color: black; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -165,110 +199,123 @@
     <div class="header-title">
         <i class="fa-solid fa-building-columns"></i> 
         <span>NCYU 2026</span>
-        <small>新春團拜活動系統</small>
+        <small class="ms-2 opacity-75">新春團拜</small>
     </div>
 </div>
 
-<div class="system-status-container">
+<div class="status-container">
     <div id="status-pill" class="status-pill connecting">
-        <i class="fa-solid fa-circle-notch fa-spin"></i>
+        <i class="status-icon fa-solid fa-circle-notch fa-spin"></i>
         <span id="status-text">連線中...</span>
     </div>
 </div>
 
-<div id="toast-container"></div>
+<div id="toast-box"></div>
 
-<div class="container-box">
+<div class="app-container">
     
     <div id="tab-checkin" class="view-section active">
-        <div class="windows-card">
-            <div class="windows-card-header">
-                <i class="fa-solid fa-user-check"></i> 教職員報到 (Check-in)
+        <div class="win-card">
+            <div class="win-card-header">
+                <i class="fa-solid fa-user-check" style="color:var(--primary);"></i> 
+                <span>教職員報到</span>
             </div>
-
-            <div id="view-scan">
-                <p style="color:var(--text-secondary); margin-bottom: 20px;">請輸入教職員編號或使用掃描槍進行報到。</p>
-                <input type="text" id="input-id" class="fluent-input" placeholder="請輸入教職員編號" autocomplete="off" inputmode="text">
-                <div style="margin-top: 25px; text-align: right;">
-                    <button id="btn-lookup" class="btn-win">
-                        <i class="fa-solid fa-magnifying-glass"></i> 查詢資料
-                        <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                    </button>
-                </div>
-            </div>
-
-            <div id="view-confirm" style="display:none;">
-                <div class="avatar-box"><i class="fa-solid fa-user"></i></div>
-                <div class="profile-info">
-                    <div id="conf-name" class="user-name"></div>
-                    <div id="conf-dept" class="user-meta"></div>
-                    <div id="conf-eid" class="user-meta" style="font-family:consolas;"></div>
-                </div>
-
-                <div id="mode-auto" style="margin-top: 30px; text-align: center;">
-                    <div class="spinner-border text-danger" role="status"></div>
-                    <p style="margin-top:10px; color:var(--text-secondary);">資料確認中...</p>
-                </div>
-
-                <div id="mode-code" class="code-input-group" style="display:none;">
-                    <input type="tel" id="input-verify-code" class="fluent-input code-input" maxlength="4" placeholder="----">
-                </div>
+            
+            <div class="win-card-body">
                 
-                <div style="margin-top: 30px; display:flex; gap:10px;">
-                    <button onclick="app.reset()" class="btn-win btn-win-outline" style="flex:1;">取消</button>
-                    <button id="btn-submit" class="btn-win" style="flex:1;">確認報到</button>
+                <div id="step-scan" class="step-container active">
+                    <p class="text-secondary mb-3">請輸入教職員編號或掃描條碼：</p>
+                    <div class="mb-4">
+                        <input type="text" id="input-id" class="fluent-input" placeholder="教職員編號 (Employee ID)" autocomplete="off" inputmode="text">
+                    </div>
+                    <div class="text-end">
+                        <button id="btn-lookup" class="btn-win btn-primary">
+                            <i class="fa-solid fa-magnifying-glass"></i> 查詢資料
+                            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div id="view-success" style="display:none; text-align: center; padding: 20px 0;">
-                <div class="confetti-bg"></div>
-                <i class="fa-solid fa-circle-check result-icon"></i>
-                <h3 style="font-weight:700;">報到成功</h3>
-                <p style="color:var(--text-secondary);">歡迎參加新春團拜</p>
-                <div class="result-box">
-                    報到時間: <span id="success-time">--:--:--</span>
+                <div id="step-confirm" class="step-container">
+                    <div class="profile-card">
+                        <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                        <div id="conf-name" class="profile-name"></div>
+                        <div id="conf-dept" class="profile-meta"></div>
+                        <div id="conf-eid" class="profile-meta mono-font mt-1"></div>
+                    </div>
+
+                    <div id="mode-auto-indicator" class="text-center py-3">
+                        <div class="spinner-border text-danger mb-2" role="status"></div>
+                        <div class="text-secondary small">系統自動確認中...</div>
+                    </div>
+
+                    <div id="mode-code-input" class="code-input-row" style="display:none;">
+                        <input type="tel" id="input-verify-code" class="fluent-input code-input" maxlength="4" placeholder="----">
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button onclick="app.resetCheckIn()" class="btn-win btn-outline flex-fill">取消</button>
+                        <button id="btn-submit" class="btn-win btn-primary flex-fill">確認報到</button>
+                    </div>
                 </div>
-                <div style="margin-top:30px;">
-                    <button onclick="app.switchTab('ticket', document.querySelectorAll('.nav-item')[1])" class="btn-win">查看我的摸彩券</button>
-                    <button onclick="app.reset()" class="btn-win btn-win-outline" style="margin-top:10px;">返回首頁</button>
+
+                <div id="step-success" class="step-container text-center py-3">
+                    <i class="fa-solid fa-circle-check success-icon"></i>
+                    <h3 class="fw-bold mb-1">報到成功</h3>
+                    <p class="text-secondary mb-4">歡迎參加新春團拜活動</p>
+                    
+                    <div class="alert alert-success d-inline-block px-4 py-2 fw-bold border-0 bg-opacity-25 bg-success text-success">
+                        <i class="fa-regular fa-clock me-2"></i><span id="success-time">--:--</span>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button onclick="app.switchTab('ticket')" class="btn-win btn-primary">
+                            <i class="fa-solid fa-ticket"></i> 查看摸彩券
+                        </button>
+                        <button onclick="app.resetCheckIn()" class="btn-win btn-outline">
+                            <i class="fa-solid fa-arrow-left"></i> 返回首頁
+                        </button>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
 
     <div id="tab-ticket" class="view-section">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 style="font-weight:700; color:var(--text-primary); margin:0;">我的摸彩券</h5>
-            <button onclick="app.refreshTicket(true)" class="btn-win btn-win-outline" style="padding: 5px 15px; font-size: 0.85rem;">
-                <i id="icon-refresh-ticket" class="fa-solid fa-rotate"></i> 更新狀態
+            <h5 class="fw-bold m-0"><i class="fa-solid fa-ticket me-2 text-danger"></i>我的摸彩券</h5>
+            <button onclick="app.refreshTicket(true)" class="btn-win btn-outline" style="padding: 6px 12px; font-size: 0.85rem; min-width: auto;">
+                <i id="icon-refresh-ticket" class="fa-solid fa-rotate"></i>
             </button>
         </div>
 
-        <div id="ticket-container">
-            <div id="ticket-login-prompt" class="empty-state">
-                <i class="fa-solid fa-lock"></i>
-                <h5>尚未取得憑證</h5>
-                <p>請先完成報到手續以取得摸彩資格</p>
-                <button onclick="app.switchTab('checkin', document.querySelector('.nav-item:first-child'))" class="btn-win mt-3">前往報到</button>
-            </div>
+        <div id="ticket-login-prompt" class="text-center py-5 text-secondary">
+            <i class="fa-solid fa-lock fa-3x mb-3 text-secondary opacity-50"></i>
+            <h5>尚未報到</h5>
+            <p class="small">請先完成報到手續以取得摸彩資格</p>
+            <button onclick="app.switchTab('checkin')" class="btn-win btn-primary mt-3">前往報到</button>
+        </div>
 
-            <div id="my-ticket" class="digital-ticket" style="display:none;">
-                <div class="ticket-header">
-                    <div class="ticket-title">NCYU 2026 新春團拜</div>
-                    <div style="font-size:0.8rem; opacity:0.8;">數位摸彩憑證</div>
+        <div id="my-ticket" class="digital-ticket" style="display:none;">
+            <div class="ticket-body">
+                <div class="ticket-row">
+                    <div class="fw-bold text-danger">NCYU 2026 新春團拜</div>
+                    <div class="text-secondary small">數位憑證</div>
                 </div>
-                <div class="ticket-content">
-                    <div class="ticket-grid">
-                        <div class="ticket-field"><label>姓名</label><div id="ticket-user-name">--</div></div>
-                        <div class="ticket-field"><label>單位</label><div id="ticket-user-dept">--</div></div>
-                        <div class="ticket-field"><label>教職員編號</label><div id="ticket-user-eid" style="font-family:consolas;">--</div></div>
-                        <div class="ticket-field"><label>報到序號</label><div id="ticket-seq">--</div></div>
-                    </div>
-                    <div class="prize-banner">
-                        <div style="font-size:0.8rem; color:#605E5C;">恭喜您獲得</div>
-                        <div class="prize-name" id="ticket-prize-name">--</div>
-                    </div>
-                    <div id="ticket-status-stamp" class="stamp-box waiting">待開獎</div>
+                <div class="ticket-grid">
+                    <div><div class="ticket-label">姓名</div><div id="ticket-user-name" class="ticket-value">--</div></div>
+                    <div><div class="ticket-label">單位</div><div id="ticket-user-dept" class="ticket-value">--</div></div>
+                    <div><div class="ticket-label">編號</div><div id="ticket-user-eid" class="ticket-value mono-font">--</div></div>
+                    <div><div class="ticket-label">序號</div><div id="ticket-seq" class="ticket-value">--</div></div>
+                </div>
+                
+                <div class="winner-banner">
+                    <i class="fa-solid fa-trophy me-2"></i><span id="ticket-prize-name">恭喜中獎</span>
+                </div>
+                
+                <div id="ticket-status-text" class="text-end mt-3 text-secondary small fst-italic">
+                    <i class="fa-regular fa-clock"></i> 等待開獎中...
                 </div>
             </div>
         </div>
@@ -276,168 +323,486 @@
 
     <div id="tab-winners" class="view-section">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 style="font-weight:700; color:var(--text-primary); margin:0;">中獎名單</h5>
-            <button onclick="app.syncWinners(true)" class="btn-win btn-win-outline" style="padding: 5px 15px; font-size: 0.85rem;">
-                <i id="refresh-icon" class="fa-solid fa-rotate"></i> 刷新
+            <h5 class="fw-bold m-0"><i class="fa-solid fa-list-ol me-2 text-danger"></i>中獎名單</h5>
+            <button onclick="app.syncWinners(true)" class="btn-win btn-outline" style="padding: 6px 12px; font-size: 0.85rem; min-width: auto;">
+                <i id="refresh-icon" class="fa-solid fa-rotate"></i>
             </button>
         </div>
-        <div class="search-bar">
+        
+        <div class="search-wrapper">
             <i class="fa-solid fa-search"></i>
             <input type="text" id="winner-search" class="fluent-input" placeholder="搜尋姓名或編號..." oninput="app.filterWinners()">
         </div>
-        <div id="winner-list-container" class="accordion">
-            <div class="empty-state">
+
+        <div id="winner-list-container" class="accordion" id="winnersAccordion">
+            <div class="text-center py-5 text-secondary">
                 <div class="spinner-border text-secondary mb-3" role="status"></div>
-                <p>正在載入資料...</p>
+                <p>載入中...</p>
             </div>
         </div>
-        <div style="text-align:right; margin-top:10px; font-size:0.8rem; color:#605E5C;">
+        
+        <div class="text-end mt-2 text-secondary small">
             <span id="last-update-time">--</span>
         </div>
     </div>
+
 </div>
 
 <div class="bottom-nav">
-    <div class="nav-item active" onclick="app.switchTab('checkin', this)">
+    <div class="nav-item active" data-target="checkin" onclick="app.switchTab('checkin')">
         <i class="fa-solid fa-user-check"></i> <span>報到</span>
     </div>
-    <div class="nav-item" onclick="app.switchTab('ticket', this)">
+    <div class="nav-item" data-target="ticket" onclick="app.switchTab('ticket')">
         <i class="fa-solid fa-ticket"></i> <span>摸彩券</span>
     </div>
-    <div class="nav-item" onclick="app.switchTab('winners', this)">
-        <i class="fa-solid fa-list-ol"></i> <span>即時開獎</span>
+    <div class="nav-item" data-target="winners" onclick="app.switchTab('winners')">
+        <i class="fa-solid fa-gift"></i> <span>開獎</span>
     </div>
-</div>
-
-<div id="loader" class="loader-overlay">
-    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status"></div>
 </div>
 
 <script>
-// ★ API 設定 (請確保網址正確)
+// ★ API Endpoint Configuration
 const API_BASE = 'https://personnel.kncyu.link/api/checkin/index.php'; 
 
 const app = {
     state: {
-        mode: 'AUTO',
+        mode: 'AUTO',       // AUTO or CODE
+        step: 'SCAN',       // SCAN, CONFIRM, SUCCESS
         currentUser: null,
-        locked: false, 
+        locked: false,      // System global lock
         timer: null,
         lastWinnerHash: '',
-        statusTimeoutId: null,
-        winnerTimeoutId: null,
+        statusTimeout: null,
+        winnerTimeout: null,
         allWinners: [] 
     },
 
     init() {
-        this.restoreUserSession();
+        this.restoreSession();
         this.checkUrlParams();
-        this.statusSyncLoop(); 
-        this.winnerSyncLoop(); 
-
-        document.getElementById('input-id').addEventListener('keypress', e => { if(e.key==='Enter') this.lookupUser(); });
-        document.getElementById('btn-lookup').onclick = () => this.lookupUser();
-        document.getElementById('btn-submit').onclick = () => this.submitCheckIn();
-        document.getElementById('input-verify-code').addEventListener('keypress', e => { if(e.key==='Enter') this.submitCheckIn(); });
-        
-        this.updateStatusPill('伺服器連線中...', 'connecting');
+        this.statusLoop();
+        this.winnerLoop();
+        this.bindEvents();
+        this.updateStatus('伺服器連線中...', 'connecting');
         this.updateTicketUI();
     },
 
-    restoreUserSession() {
+    bindEvents() {
+        // Global Input Handling
+        document.getElementById('input-id').addEventListener('keypress', e => { 
+            if(e.key === 'Enter') this.lookupUser(); 
+        });
+        document.getElementById('input-verify-code').addEventListener('keypress', e => { 
+            if(e.key === 'Enter') this.submitCheckIn(); 
+        });
+
+        // Buttons
+        document.getElementById('btn-lookup').onclick = () => this.lookupUser();
+        document.getElementById('btn-submit').onclick = () => this.submitCheckIn();
+    },
+
+    // --- Core UI Logic ---
+
+    switchTab(tabName) {
+        // Nav Styling
+        document.querySelectorAll('.nav-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.target === tabName);
+        });
+        
+        // View Switching
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + tabName).classList.add('active');
+        window.scrollTo(0, 0);
+
+        // Data Refresh
+        if (tabName === 'ticket') this.refreshTicket();
+        if (tabName === 'winners') this.syncWinners(true);
+    },
+
+    setCheckInStep(stepName) {
+        this.state.step = stepName;
+        // Hide all steps
+        document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+        
+        // Show target step with animation
+        const target = document.getElementById(`step-${stepName.toLowerCase()}`);
+        if(target) target.classList.add('active');
+
+        // Focus logic
+        if(stepName === 'SCAN') {
+            setTimeout(() => document.getElementById('input-id').focus(), 300);
+            document.getElementById('input-id').value = '';
+        } else if(stepName === 'CONFIRM') {
+            if(this.state.mode === 'CODE') {
+                setTimeout(() => document.getElementById('input-verify-code').focus(), 300);
+            }
+        }
+    },
+
+    resetCheckIn() {
+        if(this.state.timer) clearTimeout(this.state.timer);
+        this.setCheckInStep('SCAN');
+        document.getElementById('input-verify-code').value = '';
+    },
+
+    // --- API & Business Logic ---
+
+    async statusLoop() {
+        try {
+            const res = await fetch(`${API_BASE}?action=get_system_status&t=${Date.now()}`);
+            if(res.ok) {
+                const json = await res.json();
+                if(json.success) {
+                    const d = json.data;
+                    this.state.mode = d.checkin_mode_type || 'AUTO';
+                    
+                    if (d.status === 'OPEN') {
+                        this.updateStatus('系統開放中', 'open');
+                        this.state.locked = false;
+                    } else if (d.status === 'ENDED') {
+                        this.updateStatus('活動圓滿結束', 'ended');
+                        this.state.locked = true;
+                    } else {
+                        const msg = d.status === 'CLOSED' ? '系統已關閉' : '尚未開始';
+                        this.updateStatus(msg, 'closed');
+                        this.state.locked = true;
+                        // Kick out if in confirm process
+                        if(this.state.step === 'CONFIRM') {
+                            this.showToast('系統已關閉', 'error');
+                            this.resetCheckIn();
+                        }
+                    }
+                }
+            }
+        } catch(e) { 
+            this.updateStatus('連線不穩', 'connecting'); 
+        } finally {
+            clearTimeout(this.state.statusTimeout);
+            this.state.statusTimeout = setTimeout(() => this.statusLoop(), 3000);
+        }
+    },
+
+    updateStatus(msg, type) {
+        const pill = document.getElementById('status-pill');
+        const text = document.getElementById('status-text');
+        const icon = pill.querySelector('.status-icon');
+        
+        text.textContent = msg;
+        pill.className = `status-pill active ${type}`;
+        
+        if(type === 'connecting') icon.className = 'status-icon fa-solid fa-circle-notch fa-spin';
+        else if(type === 'open') icon.className = 'status-icon fa-solid fa-check-circle';
+        else if(type === 'ended') icon.className = 'status-icon fa-solid fa-flag-checkered';
+        else icon.className = 'status-icon fa-solid fa-ban';
+
+        const inputsDisabled = (type === 'ended');
+        document.getElementById('input-id').disabled = inputsDisabled;
+        document.getElementById('btn-lookup').disabled = inputsDisabled;
+    },
+
+    async lookupUser() {
+        const code = document.getElementById('input-id').value.trim();
+        if(!code) return this.showToast("請輸入教職員編號", "error");
+        
+        this.setLoading('btn-lookup', true);
+        
+        try {
+            const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(code)}&t=${Date.now()}`);
+            const json = await res.json();
+            
+            if(json.success) {
+                this.saveSession({ ...json.data, qrcode: code });
+                
+                if(json.data.has_checked_in) {
+                    this.showSuccessView(json.data.check_in_time);
+                } else {
+                    if(this.state.locked) {
+                        this.showToast("系統目前尚未開放報到", "error");
+                        // Force refresh status
+                        this.statusLoop();
+                    } else {
+                        this.showConfirmView();
+                    }
+                }
+            } else {
+                this.showToast(json.message || "查無資料", 'error');
+                document.getElementById('input-id').select();
+            }
+        } catch(e) {
+            console.error(e);
+            this.showToast("連線錯誤，請檢查網路", "error");
+        } finally {
+            this.setLoading('btn-lookup', false);
+        }
+    },
+
+    showConfirmView() {
+        const u = this.state.currentUser;
+        document.getElementById('conf-name').textContent = u.name;
+        document.getElementById('conf-dept').textContent = u.department;
+        document.getElementById('conf-eid').textContent = u.employee_id;
+        
+        this.setCheckInStep('CONFIRM');
+
+        // Mode Handling
+        if(this.state.mode === 'AUTO') {
+            document.getElementById('mode-auto-indicator').style.display = 'block';
+            document.getElementById('mode-code-input').style.display = 'none';
+            document.getElementById('btn-submit').style.display = 'none'; // Auto submit doesn't need button
+            
+            if(this.state.timer) clearTimeout(this.state.timer);
+            this.state.timer = setTimeout(() => {
+                if(!this.state.locked && this.state.step === 'CONFIRM') {
+                    this.submitCheckIn();
+                }
+            }, 1200); // 1.2s delay for UX
+        } else {
+            document.getElementById('mode-auto-indicator').style.display = 'none';
+            document.getElementById('mode-code-input').style.display = 'flex';
+            document.getElementById('btn-submit').style.display = 'block';
+        }
+    },
+
+    async submitCheckIn() {
+        if(this.state.locked) return this.showToast("系統已關閉", "error");
+        
+        const codeInput = document.getElementById('input-verify-code');
+        const verifyCode = codeInput.value.trim();
+        
+        if(this.state.mode === 'CODE' && !verifyCode) {
+            return this.showToast("請輸入驗證碼", "error");
+        }
+
+        if(this.state.mode === 'CODE') this.setLoading('btn-submit', true);
+
+        try {
+            const res = await fetch(`${API_BASE}?action=check_in`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    qrcode: this.state.currentUser.qrcode, 
+                    verify_code: verifyCode 
+                })
+            });
+            const json = await res.json();
+            
+            if(json.success) {
+                const newUser = { ...this.state.currentUser, has_checked_in: true, check_in_time: json.data.check_in_time };
+                this.saveSession(newUser);
+                this.showSuccessView(json.data.check_in_time);
+            } else {
+                this.showToast(json.message, 'error');
+                if(this.state.mode === 'AUTO') {
+                    // Auto fail -> go back to scan
+                    setTimeout(() => this.resetCheckIn(), 2000);
+                }
+            }
+        } catch(e) {
+            this.showToast("報到連線失敗", "error");
+        } finally {
+            if(this.state.mode === 'CODE') this.setLoading('btn-submit', false);
+        }
+    },
+
+    showSuccessView(time) {
+        document.getElementById('success-time').textContent = time ? time.split(' ')[1] : '剛剛';
+        this.setCheckInStep('SUCCESS');
+        this.refreshTicket(); // Update ticket info in background
+    },
+
+    // --- Ticket & Helpers ---
+
+    restoreSession() {
         try {
             const saved = localStorage.getItem('ncyu_user');
-            if (saved) {
-                this.state.currentUser = JSON.parse(saved);
-            }
+            if(saved) this.state.currentUser = JSON.parse(saved);
         } catch(e) {}
     },
 
-    saveUserSession(user) {
+    saveSession(user) {
         this.state.currentUser = user;
         localStorage.setItem('ncyu_user', JSON.stringify(user));
-        this.updateTicketUI(); 
-    },
-
-    switchTab(tabName, el) {
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(el) el.classList.add('active');
-        
-        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-        document.getElementById('tab-' + tabName).classList.add('active');
-        window.scrollTo(0, 0);
-        
-        if(tabName === 'winners' || tabName === 'ticket') this.syncWinners(true);
-        if(tabName === 'ticket') this.refreshTicket(true);
+        this.updateTicketUI();
     },
 
     async refreshTicket(isManual = false) {
         const user = this.state.currentUser;
-        if (!user) {
-            document.getElementById('ticket-login-prompt').style.display = 'block';
-            document.getElementById('my-ticket').style.display = 'none';
-            return;
-        }
-
-        document.getElementById('ticket-login-prompt').style.display = 'none';
-        document.getElementById('my-ticket').style.display = 'block';
-
-        document.getElementById('ticket-user-name').textContent = user.name;
-        document.getElementById('ticket-user-dept').textContent = user.department;
-        document.getElementById('ticket-user-eid').textContent = user.employee_id;
-        document.getElementById('ticket-seq').textContent = user.check_in_time ? user.check_in_time.split(' ')[1] : '已報到';
+        if (!user) return; // No user, UI handles it
 
         const icon = document.getElementById('icon-refresh-ticket');
         if(isManual && icon) icon.classList.add('fa-spin');
 
         try {
-            // 加入 timestamp 避免快取
             const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(user.employee_id)}&t=${Date.now()}`);
             const json = await res.json();
-
             if (json.success) {
-                const data = json.data;
-                this.saveUserSession({...user, ...data});
-                
-                // 再次觸發比對邏輯 (如果 API 有回傳 prize_name 最好，沒有的話依靠 allWinners 比對)
-                if(this.state.allWinners.length > 0) this.checkMyWinningStatus();
-                else if(data.prize_name) {
-                    // API 直接回傳中獎資訊
-                    const ticketEl = document.getElementById('my-ticket');
-                    const stampEl = document.getElementById('ticket-status-stamp');
-                    const prizeNameEl = document.getElementById('ticket-prize-name');
-                    ticketEl.classList.add('winner');
-                    stampEl.className = 'stamp-box won';
-                    stampEl.textContent = '恭喜中獎';
-                    prizeNameEl.textContent = data.prize_name;
-                }
-
-                if(isManual) this.showToast("票券狀態已更新", "success");
+                this.saveSession({...user, ...json.data});
+                if(isManual) this.showToast("票券已更新", "success");
             }
-        } catch(e) { console.error(e); } 
-        finally { if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500); }
-    },
-
-    // ★★★ 關鍵修正：已補回 updateTicketUI ★★★
-    updateTicketUI() {
-        const user = this.state.currentUser;
-        if (!user) {
-            document.getElementById('ticket-login-prompt').style.display = 'block';
-            document.getElementById('my-ticket').style.display = 'none';
-        } else {
-            document.getElementById('ticket-login-prompt').style.display = 'none';
-            document.getElementById('my-ticket').style.display = 'block';
-            
-            const nameEl = document.getElementById('ticket-user-name');
-            if(nameEl) nameEl.textContent = user.name;
-            
-            document.getElementById('ticket-user-dept').textContent = user.department;
-            document.getElementById('ticket-user-eid').textContent = user.employee_id;
-            document.getElementById('ticket-seq').textContent = user.check_in_time ? user.check_in_time.split(' ')[1] : '已報到';
-            
-            if(this.state.allWinners.length > 0) this.checkMyWinningStatus();
+        } catch(e) { console.error(e); }
+        finally {
+            if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500);
         }
     },
+
+    updateTicketUI() {
+        const user = this.state.currentUser;
+        const prompt = document.getElementById('ticket-login-prompt');
+        const card = document.getElementById('my-ticket');
+        
+        if (!user) {
+            prompt.style.display = 'block';
+            card.style.display = 'none';
+            return;
+        }
+
+        prompt.style.display = 'none';
+        card.style.display = 'block';
+
+        document.getElementById('ticket-user-name').textContent = user.name;
+        document.getElementById('ticket-user-dept').textContent = user.department;
+        document.getElementById('ticket-user-eid').textContent = user.employee_id;
+        document.getElementById('ticket-seq').textContent = user.check_in_time ? user.check_in_time.split(' ')[1] : '尚未報到';
+
+        this.checkMyWinningStatus();
+    },
+
+    checkMyWinningStatus() {
+        const user = this.state.currentUser;
+        if (!user || !this.state.allWinners.length) return;
+
+        let myPrize = null;
+        for (const prize of this.state.allWinners) {
+            if (prize.winners.some(w => w.employee_id === user.employee_id)) {
+                myPrize = prize.prize_name;
+                break;
+            }
+        }
+
+        const card = document.getElementById('my-ticket');
+        const prizeNameEl = document.getElementById('ticket-prize-name');
+        const statusText = document.getElementById('ticket-status-text');
+
+        if (myPrize) {
+            card.classList.add('is-winner');
+            prizeNameEl.textContent = `恭喜獲得：${myPrize}`;
+            statusText.innerHTML = '<i class="fa-solid fa-star text-warning"></i> 請至服務台領獎';
+        } else {
+            card.classList.remove('is-winner');
+            statusText.innerHTML = '<i class="fa-regular fa-clock"></i> 等待開獎中...';
+        }
+    },
+
+    // --- Winner System ---
+
+    async winnerLoop() {
+        await this.syncWinners();
+        clearTimeout(this.state.winnerTimeout);
+        this.state.winnerTimeout = setTimeout(() => this.winnerLoop(), 15000);
+    },
+
+    async syncWinners(isManual = false) {
+        const icon = document.getElementById('refresh-icon');
+        if(isManual && icon) icon.classList.add('fa-spin');
+
+        try {
+            const res = await fetch(`${API_BASE}?action=get_winners&t=${Date.now()}`);
+            const json = await res.json();
+            
+            if(json.success) {
+                const newHash = JSON.stringify(json.data);
+                this.state.allWinners = json.data;
+                
+                // Update Ticket View logic simultaneously
+                this.checkMyWinningStatus();
+
+                if(newHash !== this.state.lastWinnerHash) {
+                    this.state.lastWinnerHash = newHash;
+                    this.renderWinners(json.data);
+                }
+                
+                const now = new Date();
+                document.getElementById('last-update-time').textContent = `最後更新: ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+                
+                if(isManual) this.showToast("名單已更新", "success");
+            }
+        } catch(e) { console.error(e); }
+        finally {
+            if(isManual && icon) setTimeout(() => icon.classList.remove('fa-spin'), 500);
+        }
+    },
+
+    renderWinners(data) {
+        const container = document.getElementById('winner-list-container');
+        if(!data || !data.length) {
+            container.innerHTML = `<div class="text-center py-5 text-secondary"><i class="fa-solid fa-gift fa-2x mb-2"></i><p>目前尚未開獎</p></div>`;
+            return;
+        }
+
+        let html = '';
+        data.forEach((prize, idx) => {
+            const id = `collapse-${idx}`;
+            const isShow = idx < 2 ? 'show' : ''; // Open first 2 prizes
+            const btnState = idx < 2 ? '' : 'collapsed';
+            
+            let itemsHtml = '';
+            prize.winners.forEach(w => {
+                const isMe = (this.state.currentUser && w.employee_id === this.state.currentUser.employee_id);
+                const bgClass = isMe ? 'bg-warning bg-opacity-25 border-warning' : 'bg-white';
+                itemsHtml += `
+                    <div class="col-6 col-md-4 col-lg-3 search-item" data-str="${w.name}${w.employee_id}">
+                        <div class="p-2 border rounded text-center ${bgClass}">
+                            <div class="fw-bold text-truncate">${w.name}</div>
+                            <small class="text-secondary mono-font">${w.employee_id}</small>
+                        </div>
+                    </div>`;
+            });
+
+            html += `
+                <div class="accordion-item mb-2 border rounded overflow-hidden">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button ${btnState} fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#${id}">
+                            ${prize.prize_name}
+                            <span class="badge winner-badge ms-auto rounded-pill">${prize.winners.length}</span>
+                        </button>
+                    </h2>
+                    <div id="${id}" class="accordion-collapse collapse ${isShow}" data-bs-parent="#winnersAccordion">
+                        <div class="accordion-body bg-light">
+                            <div class="row g-2">${itemsHtml}</div>
+                        </div>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = html;
+        this.filterWinners(); // Re-apply filter if any
+    },
+
+    filterWinners() {
+        const term = document.getElementById('winner-search').value.toLowerCase();
+        document.querySelectorAll('.accordion-item').forEach(group => {
+            let hasMatch = false;
+            group.querySelectorAll('.search-item').forEach(item => {
+                const match = item.dataset.str.toLowerCase().includes(term);
+                item.style.display = match ? 'block' : 'none';
+                if(match) hasMatch = true;
+            });
+            
+            // Show group if matches or search is empty
+            if(term === '' || hasMatch) {
+                group.style.display = 'block';
+                if(term !== '') { // Open accordion on search
+                    const collapse = group.querySelector('.accordion-collapse');
+                    if(collapse && !collapse.classList.contains('show')) {
+                        new bootstrap.Collapse(collapse, { toggle: true });
+                    }
+                }
+            } else {
+                group.style.display = 'none';
+            }
+        });
+    },
+
+    // --- Utilities ---
 
     checkUrlParams() {
         const p = new URLSearchParams(location.search);
@@ -448,313 +813,26 @@ const app = {
         }
     },
 
-    async statusSyncLoop() {
-        try {
-            const res = await fetch(`${API_BASE}?action=get_system_status&t=${Date.now()}`);
-            if(!res.ok) throw new Error("Network");
-            const json = await res.json();
-            
-            if(json.success) {
-                const d = json.data;
-                this.state.mode = d.checkin_mode_type || 'AUTO';
-                if (d.status === 'OPEN') {
-                    this.updateStatusPill('系統開放中', 'open');
-                    this.state.locked = false;
-                } else if (d.status === 'ENDED') {
-                    this.updateStatusPill('活動圓滿結束', 'ended');
-                    this.state.locked = true;
-                } else {
-                    const msg = d.status === 'CLOSED' ? '系統已關閉' : '尚未開始';
-                    this.updateStatusPill(msg, 'closed');
-                    this.state.locked = true;
-                    // 如果在報到確認畫面，強制踢回
-                    if(document.getElementById('view-confirm').style.display !== 'none' && !this.state.currentUser) {
-                        this.showToast('系統已關閉', 'error');
-                        this.reset();
-                    }
-                }
-            }
-        } catch(e) { this.updateStatusPill('連線不穩', 'connecting'); } 
-        finally {
-            if (this.state.statusTimeoutId) clearTimeout(this.state.statusTimeoutId);
-            this.state.statusTimeoutId = setTimeout(() => this.statusSyncLoop(), 3000);
-        }
-    },
-
-    updateStatusPill(msg, type) {
-        const el = document.getElementById('status-pill');
-        const text = document.getElementById('status-text');
-        text.textContent = msg;
-        el.className = `status-pill ${type} show`;
-        if(type==='connecting') el.querySelector('i').className = 'fa-solid fa-circle-notch fa-spin';
-        else if(type==='open') el.querySelector('i').className = 'fa-solid fa-check-circle';
-        else if(type==='ended') el.querySelector('i').className = 'fa-solid fa-flag-checkered';
-        else el.querySelector('i').className = 'fa-solid fa-ban';
-
-        // 若活動結束，鎖定輸入
-        const isEnded = (type === 'ended');
-        document.getElementById('input-id').disabled = isEnded;
-        document.getElementById('btn-lookup').disabled = isEnded;
-    },
-
     showToast(msg, type = 'normal') {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = `win-toast`;
-        if(type === 'error') toast.style.borderLeftColor = '#A80000';
-        else if(type === 'success') toast.style.borderLeftColor = '#107C10';
+        const box = document.getElementById('toast-box');
+        const el = document.createElement('div');
+        el.className = `toast-msg ${type}`;
+        el.innerHTML = `<i class="fa-solid ${type==='success'?'fa-check':'fa-info-circle'}"></i> <span>${msg}</span>`;
+        box.appendChild(el);
         
-        let icon = '<i class="fa-solid fa-info-circle"></i>';
-        if(type === 'success') icon = '<i class="fa-solid fa-check-circle"></i>';
-        if(type === 'error') icon = '<i class="fa-solid fa-circle-exclamation"></i>';
-        
-        toast.innerHTML = `${icon}<span>${msg}</span>`;
-        container.appendChild(toast);
-        
-        requestAnimationFrame(() => toast.classList.add('show'));
+        requestAnimationFrame(() => el.classList.add('show'));
         setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 3000);
+            el.classList.remove('show');
+            setTimeout(() => el.remove(), 300);
         }, 3000);
     },
 
-    setBtnLoading(btnId, isLoading) {
+    setLoading(btnId, isLoading) {
         const btn = document.getElementById(btnId);
         if(!btn) return;
         btn.disabled = isLoading;
-        const spinner = btn.querySelector('.spinner-border');
-        if(spinner) {
-            if(isLoading) spinner.classList.remove('d-none');
-            else spinner.classList.add('d-none');
-        }
-    },
-
-    async lookupUser() {
-        const code = document.getElementById('input-id').value.trim();
-        if(!code) return this.showToast("請輸入教職員編號", "error");
-        this.setBtnLoading('btn-lookup', true);
-        try {
-            console.log(`正在連線至: ${API_BASE}?action=get_participant_info&code=${code}`);
-            const res = await fetch(`${API_BASE}?action=get_participant_info&code=${encodeURIComponent(code)}&t=${Date.now()}`);
-            if (!res.ok) {
-                const text = await res.text();
-                throw new Error(`伺服器錯誤 (${res.status})`);
-            }
-            const json = await res.json();
-            if(json.success) {
-                this.saveUserSession({ ...json.data, qrcode: code });
-                if(json.data.has_checked_in) {
-                    this.showSuccess(json.data.check_in_time, true);
-                } else {
-                    if(this.state.locked) {
-                        this.showToast("系統目前尚未開放報到", "error");
-                        this.statusSyncLoop();
-                    } else {
-                        this.showConfirm();
-                    }
-                }
-            } else {
-                this.showToast(json.message || "查無資料", 'error');
-                document.getElementById('input-id').value = '';
-                document.getElementById('input-id').focus();
-            }
-        } catch(e) { 
-            console.error("Fetch Error:", e);
-            if (e.message.includes('Failed to fetch')) this.showToast("無法連線至伺服器", 'error');
-            else this.showToast(`連線錯誤`, 'error'); 
-        } 
-        finally { this.setBtnLoading('btn-lookup', false); }
-    },
-
-    showConfirm() {
-        const u = this.state.currentUser;
-        document.getElementById('conf-name').textContent = u.name;
-        document.getElementById('conf-dept').textContent = u.department;
-        document.getElementById('conf-eid').textContent = u.employee_id;
-        document.getElementById('view-scan').style.display = 'none';
-        document.getElementById('view-confirm').style.display = 'block';
-
-        if(this.state.mode === 'AUTO') {
-            document.getElementById('mode-auto').style.display = 'block';
-            document.getElementById('mode-code').style.display = 'none';
-            if(this.state.timer) clearTimeout(this.state.timer);
-            this.state.timer = setTimeout(() => {
-                if(!this.state.locked && document.getElementById('view-confirm').style.display !== 'none') {
-                    this.submitCheckIn();
-                } else if(this.state.locked) {
-                    this.showToast("報到時間已結束", "error");
-                    this.reset();
-                }
-            }, 1500);
-        } else {
-            document.getElementById('mode-auto').style.display = 'none';
-            document.getElementById('mode-code').style.display = 'flex';
-            setTimeout(() => document.getElementById('input-verify-code').focus(), 100);
-        }
-    },
-
-    async submitCheckIn() {
-        if(this.state.locked) return this.showToast("系統已關閉，無法報到", "error");
-        const verifyCode = document.getElementById('input-verify-code').value.trim();
-        if(this.state.mode === 'CODE' && !verifyCode) return this.showToast("請輸入驗證碼", "error");
-        if(this.state.mode === 'CODE') this.setBtnLoading('btn-submit', true);
-
-        try {
-            const res = await fetch(`${API_BASE}?action=check_in`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ qrcode: this.state.currentUser.qrcode, verify_code: verifyCode })
-            });
-            const json = await res.json();
-            if(json.success) {
-                const updatedUser = { ...this.state.currentUser, has_checked_in: true, check_in_time: json.data.check_in_time };
-                this.saveUserSession(updatedUser);
-                this.showSuccess(json.data.check_in_time);
-            } else {
-                this.showToast(json.message, 'error');
-                if(this.state.mode === 'AUTO') setTimeout(() => this.reset(), 2000);
-            }
-        } catch(e) { this.showToast("報到連線失敗", 'error'); }
-        finally { if(this.state.mode === 'CODE') this.setBtnLoading('btn-submit', false); }
-    },
-
-    showSuccess(time, isRepeat = false) {
-        document.getElementById('view-scan').style.display = 'none';
-        document.getElementById('view-confirm').style.display = 'none';
-        document.getElementById('view-success').style.display = 'block';
-        document.getElementById('success-time').textContent = time || '剛剛';
-    },
-
-    reset() {
-        if(this.state.timer) clearTimeout(this.state.timer);
-        document.getElementById('input-id').value = '';
-        document.getElementById('input-verify-code').value = '';
-        document.getElementById('view-success').style.display = 'none';
-        document.getElementById('view-confirm').style.display = 'none';
-        document.getElementById('view-scan').style.display = 'block';
-        setTimeout(() => document.getElementById('input-id').focus(), 300);
-    },
-
-    checkMyWinningStatus() {
-        const user = this.state.currentUser;
-        if (!user) return;
-        let myPrize = null;
-        for (const prize of this.state.allWinners) {
-            const found = prize.winners.find(w => w.employee_id === user.employee_id);
-            if (found) { myPrize = prize.prize_name; break; }
-        }
-        const ticketEl = document.getElementById('my-ticket');
-        const stampEl = document.getElementById('ticket-status-stamp');
-        const prizeNameEl = document.getElementById('ticket-prize-name');
-
-        if (myPrize) {
-            ticketEl.classList.add('winner');
-            stampEl.className = 'stamp-box won';
-            stampEl.textContent = '恭喜中獎';
-            prizeNameEl.textContent = myPrize;
-        } else {
-            ticketEl.classList.remove('winner');
-            stampEl.className = 'stamp-box waiting';
-            stampEl.textContent = '等待開獎';
-        }
-    },
-
-    async winnerSyncLoop() {
-        await this.syncWinners();
-        if(this.state.winnerTimeoutId) clearTimeout(this.state.winnerTimeoutId);
-        this.state.winnerTimeoutId = setTimeout(() => this.winnerSyncLoop(), 15000);
-    },
-
-    async syncWinners(isManual = false) {
-        const icon = document.getElementById('refresh-icon');
-        const ticketIcon = document.getElementById('icon-refresh-ticket');
-        if(isManual) {
-            if(icon) icon.classList.add('fa-spin');
-            if(ticketIcon) ticketIcon.classList.add('fa-spin');
-        }
-
-        try {
-            const url = isManual ? `${API_BASE}?action=get_winners&t=${Date.now()}` : `${API_BASE}?action=get_winners`;
-            const res = await fetch(url);
-            const json = await res.json();
-            
-            if(json.success) {
-                const newHash = JSON.stringify(json.data);
-                this.state.allWinners = json.data; 
-                this.checkMyWinningStatus();
-
-                if(newHash !== this.state.lastWinnerHash) {
-                    this.state.lastWinnerHash = newHash;
-                    this.renderWinners(json.data);
-                }
-                const timeStr = new Date().toLocaleTimeString('en-US', {hour12:false, hour:'2-digit', minute:'2-digit'});
-                const timeEl = document.getElementById('last-update-time');
-                if(timeEl) timeEl.textContent = `更新於: ${timeStr}`;
-                if(isManual) this.showToast("資料已更新", "success");
-            }
-        } catch(e) { console.error(e); }
-        finally {
-            if(isManual) {
-                setTimeout(() => {
-                    if(icon) icon.classList.remove('fa-spin');
-                    if(ticketIcon) ticketIcon.classList.remove('fa-spin');
-                }, 500);
-            }
-        }
-    },
-
-    renderWinners(data) {
-        const container = document.getElementById('winner-list-container');
-        if(!data || data.length === 0) {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-gift"></i><p>尚未開獎</p></div>`;
-            return;
-        }
-        let html = '';
-        data.forEach((prize, index) => {
-            const collapseId = `collapsePrize${index}`;
-            const showClass = index < 2 ? 'show' : '';
-            const btnCollapsed = index < 2 ? '' : 'collapsed';
-            let winnersHtml = '';
-            prize.winners.forEach(w => {
-                const highlight = (this.state.currentUser && w.employee_id === this.state.currentUser.employee_id) ? 'highlight' : '';
-                winnersHtml += `<div class="winner-cell ${highlight}" data-search="${w.name} ${w.employee_id}">${w.name}<small>${w.employee_id}</small></div>`;
-            });
-            html += `
-                <div class="accordion-item search-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button ${btnCollapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}">
-                            ${prize.prize_name} <span class="badge bg-danger ms-auto rounded-pill">${prize.winners.length}</span>
-                        </button>
-                    </h2>
-                    <div id="${collapseId}" class="accordion-collapse collapse ${showClass}" data-bs-parent="#winner-list-container">
-                        <div class="winner-grid-layout">${winnersHtml}</div>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-        this.filterWinners();
-    },
-
-    filterWinners() {
-        const term = document.getElementById('winner-search').value.toLowerCase();
-        const items = document.querySelectorAll('.search-item');
-        items.forEach(item => {
-            const cells = item.querySelectorAll('.winner-cell');
-            let hasMatch = false;
-            cells.forEach(cell => {
-                if (cell.getAttribute('data-search').toLowerCase().includes(term)) { cell.style.display = 'flex'; hasMatch = true; }
-                else cell.style.display = 'none';
-            });
-            const title = item.querySelector('.accordion-button').textContent.toLowerCase();
-            if (hasMatch || title.includes(term)) {
-                item.style.display = 'block';
-                if(term !== '') {
-                    const collapse = item.querySelector('.accordion-collapse');
-                    if(collapse && !collapse.classList.contains('show')) new bootstrap.Collapse(collapse, { toggle: true });
-                }
-            } else item.style.display = 'none';
-        });
+        const spin = btn.querySelector('.spinner-border');
+        if(spin) isLoading ? spin.classList.remove('d-none') : spin.classList.add('d-none');
     }
 };
 
