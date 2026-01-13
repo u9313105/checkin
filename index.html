@@ -211,14 +211,12 @@
                             <i class="fa-solid fa-check"></i> 確認報到
                         </button>
                     </div>
-                    <div class="mt-3">
-                        <button onclick="app.logout()" class="btn btn-sm btn-link text-muted" style="text-decoration:none; font-size:0.8rem;">非本人？登出</button>
-                    </div>
                 </div>
 
                 <div id="step-success" style="display:none; padding:10px 0;">
-                    <i class="fa-solid fa-circle-check text-success" style="font-size:4rem; margin-bottom:15px;"></i>
-                    <h3 style="font-weight:800; color:#333;">報到成功</h3>
+                    <div id="success-icon-box" style="margin-bottom:15px;"></div>
+                    <h3 id="success-title" style="font-weight:800; color:#333;">--</h3>
+                    
                     <div style="background:#E8F5E9; padding:10px; border-radius:8px; margin:20px 0; color:#2E7D32;">
                         <i class="fa-regular fa-clock me-1"></i> <span id="success-time" style="font-family:consolas; font-weight:bold;">--:--</span>
                     </div>
@@ -383,11 +381,10 @@ const app = {
     init() {
         this.restoreSession();
         
-        // Handle URL Params (Direct Link)
+        // Handle Link Auto-Checkin
         const params = new URLSearchParams(location.search);
         const uuid = params.get('uuid') || params.get('eid');
         if(uuid) {
-            // Auto Lookup if link is present
             document.getElementById('input-id').value = uuid;
             this.lookup(uuid);
         }
@@ -396,7 +393,6 @@ const app = {
 
         this.checkStatus();
         
-        // Event Bindings
         document.getElementById('input-id').addEventListener('keypress', e => e.key==='Enter' && this.lookup());
         document.getElementById('input-verify-code').addEventListener('keypress', e => e.key==='Enter' && this.submit());
         document.getElementById('bonus-input-id').addEventListener('keypress', e => e.key==='Enter' && this.submitBonus());
@@ -408,7 +404,7 @@ const app = {
         this.updateTicketUI();
     },
 
-    // --- 1. Check-in (Identity First Logic) ---
+    // --- 1. Check-in ---
     async lookup(val = null) {
         const code = val || document.getElementById('input-id').value.trim();
         if(!code) return this.toast("請輸入員編", "error");
@@ -422,7 +418,7 @@ const app = {
             if(json.success) {
                 this.state.currentUser = { ...json.data, qrcode: code };
                 this.saveSession();
-                this.renderCheckinUI(); // Determine UI state based on data
+                this.renderCheckinUI();
             } else {
                 this.toast("查無資料", "error");
             }
@@ -430,10 +426,11 @@ const app = {
         finally { this.loading('btn-lookup', false); }
     },
 
+    // ★★★ 關鍵 UI 渲染邏輯 ★★★
     renderCheckinUI() {
         const u = this.state.currentUser;
         
-        // A. Identity Not Found
+        // A. 尚未登入
         if(!u) {
             document.getElementById('checkin-guest').style.display = 'block';
             document.getElementById('checkin-confirm').style.display = 'none';
@@ -441,19 +438,25 @@ const app = {
             return;
         }
 
-        // B. Already Checked In
+        // B. 已經報到過 (顯示已報到狀態，不顯示確認鈕)
         if(u.has_checked_in) {
             document.getElementById('checkin-guest').style.display = 'none';
             document.getElementById('checkin-confirm').style.display = 'none';
             document.getElementById('step-success').style.display = 'block';
+            
+            // 設置為「已完成」樣式
+            document.getElementById('success-icon-box').innerHTML = '<i class="fa-solid fa-circle-info text-primary" style="font-size:4rem;"></i>';
+            document.getElementById('success-title').innerText = "您已完成報到";
+            
             let t = u.check_in_time || '--:--';
             if(t.includes(' ')) t = t.split(' ')[1];
             document.getElementById('success-time').innerText = t.substring(0,5);
+            
             this.refreshTicket(false);
             return;
         }
 
-        // C. Ready to Confirm (Regular Mode)
+        // C. 尚未報到，顯示確認畫面
         document.getElementById('checkin-guest').style.display = 'none';
         document.getElementById('checkin-confirm').style.display = 'block';
         document.getElementById('step-success').style.display = 'none';
@@ -486,7 +489,18 @@ const app = {
                 this.state.currentUser.check_in_time = json.data.check_in_time;
                 this.state.currentUser.has_checked_in = true;
                 this.saveSession();
-                this.renderCheckinUI(); // Will switch to Success View
+                
+                // 設置為「成功」樣式
+                document.getElementById('checkin-confirm').style.display = 'none';
+                document.getElementById('step-success').style.display = 'block';
+                document.getElementById('success-icon-box').innerHTML = '<i class="fa-solid fa-circle-check text-success" style="font-size:4rem;"></i>';
+                document.getElementById('success-title').innerText = "報到成功";
+                
+                let t = json.data.check_in_time;
+                if(t.includes(' ')) t = t.split(' ')[1];
+                document.getElementById('success-time').innerText = t.substring(0,5);
+                
+                this.refreshTicket(false);
             } else {
                 this.toast(json.message, "error");
             }
@@ -494,7 +508,7 @@ const app = {
         finally { this.loading('btn-submit', false); }
     },
 
-    // --- 4. Bonus Logic (Scan + Input) ---
+    // --- Bonus Logic ---
     async submitBonus() {
         const eid = document.getElementById('bonus-input-id').value.trim();
         const vCode = document.getElementById('bonus-input-verify').value.trim();
@@ -559,10 +573,8 @@ const app = {
             if(json.success) {
                 this.state.regularMode = json.data.checkin_mode_type || 'AUTO';
                 this.state.bonusOpen = (json.data.bonus_mode === 'OPEN');
-                // If user is loaded, update Regular Check-in UI dynamically
-                if(this.state.currentUser && !this.state.currentUser.has_checked_in) {
-                    this.renderCheckinUI();
-                }
+                // Refresh UI if needed
+                if(this.state.currentUser) this.renderCheckinUI();
             }
         } catch(e){}
     },
@@ -665,7 +677,6 @@ const app = {
         document.getElementById('ticket-user-name').innerText = u.name;
         document.getElementById('ticket-user-dept').innerText = u.department;
         document.getElementById('ticket-user-eid').innerText = u.employee_id;
-        
         let t = u.check_in_time || '--';
         if(t.includes(' ')) t = t.split(' ')[1].substring(0,5);
         document.getElementById('ticket-time').innerText = t;
@@ -689,11 +700,7 @@ const app = {
     },
 
     restoreSession() { try { this.state.currentUser = JSON.parse(localStorage.getItem('ncyu_u')); } catch(e){} },
-    saveSession() { 
-        localStorage.setItem('ncyu_u', JSON.stringify(this.state.currentUser)); 
-        this.updateTicketUI(); 
-        this.updateBonusUI(); 
-    },
+    saveSession() { localStorage.setItem('ncyu_u', JSON.stringify(this.state.currentUser)); this.updateTicketUI(); this.updateBonusUI(); },
     
     toast(msg, type) {
         const box = document.getElementById('toast-box');
